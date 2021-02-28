@@ -1,0 +1,4 @@
+my-hypercore/
+my-hyperdrive/
+node_modules/
+package-lock.json
