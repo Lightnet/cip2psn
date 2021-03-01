@@ -52,7 +52,7 @@ app.use(new CSRF({
   disableQuery: false
 }));
 
-app.use(logger());
+//app.use(logger());
 // https://github.com/koajs/koa
 // https://github.com/koajs/koa/blob/master/docs/guide.md
 async function responseTimeLogger(ctx, next){
@@ -61,7 +61,7 @@ async function responseTimeLogger(ctx, next){
   var ms = new Date - start;
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
 }
-app.use(responseTimeLogger);
+//app.use(responseTimeLogger);
 
 //app.use(async ctx => {
 //  ctx.body = 'Hello World';
@@ -77,11 +77,10 @@ app.use(async (ctx, next) => {
   }
   let n = ctx.session.views || 0;
   ctx.session.views = ++n;
-  console.log(ctx.session.views);
+  //console.log(ctx.session.views);
   //console.log("ctx.keys:",ctx.keys);
   return next(); // next progress
 });
-
 
 function index_html(data){
   return`
@@ -108,10 +107,9 @@ function index_html(data){
   `;
 }
 
-
 async function url_index(ctx) {
-  //ctx.body = 'Hello World';
-  ctx.body = index_html({});
+  ctx.body = 'Hello World! koa!';
+  //ctx.body = index_html({});
 }
 
 // route definitions
@@ -135,4 +133,4 @@ var route_user=require('./koa/route_user.js');
 app.use(route_user.routes());
 
 
-app.listen(80);
+app.listen(3000);
