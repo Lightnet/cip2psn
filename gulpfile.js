@@ -73,8 +73,8 @@ function reload_server(done) {
     'NODE_ENV': 'development' // ex. process.env.NODE_ENV
     ,'PORT': config.port || 3000
     ,'HOST': config.host || 'localhost'
-    ,'SECRET': config.secretkey || '1234567890123456789012345678901234567890'
-    ,'TOKEN': config.tokenkey || 'token'
+    ,'SECRET': config.secretKey || '1234567890123456789012345678901234567890'
+    ,'TOKEN': config.tokenKey || 'token'
   }
   ,ignore: [
     'gulpfile.js'

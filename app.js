@@ -8,7 +8,42 @@
   Information:
     Test build while gulp auto build run test.
  */
+// https://medium.com/@LindaVivah/the-beginners-guide-understanding-node-js-express-js-fundamentals-e15493462be1
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await
+// 
+/*
+let myPromise = new Promise(function(myResolve, myReject) {
+  // "Producing Code" (May take some time)
+  
+    myResolve("OK"); // when successful
+    myReject("Error");  // when error
+});
 
+// "Consuming Code" (Must wait for a fulfilled Promise)
+myPromise.then(
+  function(value) {  //code if successful 
+    console.log('value:',value);
+  },
+  function(error) { // code if some error 
+    console.log('error:',error);
+  }
+);
+
+function resolveAfter2Seconds(x) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(x);
+    }, 2000);
+  });
+}
+
+async function f1() {
+  var x = await resolveAfter2Seconds(10);
+  console.log(x); // 10
+}
+
+f1();
+*/
 
 console.log('init web server...');
 //const port = process.env.PORT;

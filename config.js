@@ -2,12 +2,13 @@
 var config={
   host:"localhost"
   ,port:3000
-  ,salt:'0123456789'
-  ,secretkey:'a secret with minimum length of 32 characters'
-  ,tokenkey:'token'
+  ,saltKey:'0123456789'
+  ,secretKey:'a secret with minimum length of 32 characters'
+  ,tokenKey:'token'
   ,session_TTL:1800000
   ,sessionId:'sessionId'
   ,cookieId:'sessionid'
+  ,cookieKey:'cookieKey'
 };
 //exports=config;
 module.exports = config;

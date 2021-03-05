@@ -51,6 +51,7 @@ koa             2.16 ms        3581.91
 express         5.47 ms        1667.60
 hapi            1.45 ms        5276.30
 polka           2.28 ms        3821.50
+http            0.53 ms        8607.21
 ```
 # Notes:
   * Base on hello world print page
@@ -65,7 +66,7 @@ restify       dt                 1159 (can't store session)
 fastify       ts                  717
 @hapi/hapi    dt                  421
 polka         dt                  124
-
+http          js               nodejs
 sails                             168
 derby                              17
 
@@ -84,6 +85,8 @@ Notes:
    * https://hapi.dev
  * restify
    * http://restify.com
+
+# NOT TESTED Frameworks:   
  * Nestjs ( cli )
     * https://nestjs.com
  * sails ( create project )

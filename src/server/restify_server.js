@@ -35,7 +35,7 @@ const db = require('./db/hcv1/index');
 const user = require('./model/user');
 
 const jwt = require("jsonwebtoken");
-const jwtKey = "my_secret_key";
+//const jwtKey = "my_secret_key";
 
 db.init();
 
@@ -308,9 +308,9 @@ server.post('/login', function(req, res, next) {
 
 function signUpPage () {
   return '<html>' +
-    '<head><title>Login</title></head>' +
+    '<head><title>Sign Up</title></head>' +
     '<body>' +
-    '<label>Login</label>' +
+    '<label>Sign Up</label>' +
     '<form action="/signup" method="post">' +
     '<table>'+
     '<tr><td>'+

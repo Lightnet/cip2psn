@@ -9,17 +9,31 @@
 // https://nodejs.org/en/docs/guides/anatomy-of-an-http-transaction/
 // https://stackoverflow.com/questions/4295782/how-to-process-post-data-in-node-js
 // https://dev.to/ajkachnic/make-a-simple-http-server-with-node-in-6-steps-491c
+// https://stackoverflow.com/questions/27978868/destroy-cookie-nodejs
+// https://nodejs.org/dist/latest-v14.x/docs/api/http.html#http_response_getheader_name
+// https://nodejs.org/dist/latest-v14.x/docs/api/http.html#http_response_statuscode
+// https://nodejs.org/en/docs/guides/anatomy-of-an-http-transaction/
+// https://www.w3schools.com/nodejs/
+// 
 const http = require('http');
 //const cookie = require('cookie');
 const Cookies = require('cookies');
 const qs = require('querystring');
+const db = require('./db/hcv1/index');
+const user = require('./model/user');
+const jwt = require("jsonwebtoken");
+
+const config=require('../../config');
+
+
 const host = 'localhost';
 const port = 3000;
-
 // Optionally define keys to sign cookie values
 // to prevent client tampering
-const keys = ['keyboard cat']
-
+//const keys = ['keyboard cat']
+var keys = [config.cookieKey] || ['keyboard cat'];
+//INIT DATABASE
+db.init();
 //===============================================
 // Cookies
 //===============================================
@@ -35,6 +49,10 @@ function stringifyCookies(cookies) {
     .map( ([k,v]) => k + '=' + encodeURIComponent(v) )
     .join( '; ');
 }
+
+function isEmpty(str) {
+  return (typeof str === 'string' && 0 === str.length);
+}
 //===============================================
 //
 //===============================================
@@ -42,7 +60,7 @@ function html_index(){
   return `
 <html>
   <head>
-    <title>Index</title>
+    <title>nodejs http</title>
   </head>
   <body>
     <a href="/login">Login</a>
@@ -51,6 +69,19 @@ function html_index(){
     <a href="/forgot">Forgot</a>
     -->
     <br> <label> Weclome Guest! [http]</label>
+  </body>
+</html>
+`;
+}
+function html_access(){
+  return `
+<html>
+  <head>
+    <title>Index</title>
+  </head>
+  <body>
+    <a href="/logout">Logout</a>
+    <br> <label> Weclome Guest! [Restify]</label>
   </body>
 </html>
 `;
@@ -91,7 +122,7 @@ function url_login(req,res){
     return;
   }
   if(req.method=='POST'){
-    res.writeHead(200);
+    //res.writeHead(200);
     let body = [];
     req.on('error', (err) => {
       console.error(err);
@@ -101,11 +132,35 @@ function url_login(req,res){
     }).on('end', () => {
       body = Buffer.concat(body).toString();
       let post = qs.parse(body);
-      console.log(body);
-      console.log(post);
+      //console.log(body);
+      //console.log(post);
+      let {alias, passphrase} = post;
+      if(isEmpty(alias)==true || isEmpty(passphrase)==true){
+        res.end('Not the Alias || passphrase');
+        return;
+      }
+      //CHECK USER AND TOKEN KEY
+      user.authenticate(alias, passphrase, (error,data) => {
+        if(error){
+          console.log('error >> ');
+          console.log(error);
+        }
+        //console.log(data);
+        if(data){
+          if(data.message=='FOUND'){
+            console.log('SET COOOKIE');
+            //res.setCookie('token', data.token );
+            let cookies = new Cookies(req, res, { keys: keys });
+            cookies.set('token', data.token, { signed: true });
+          }
+        }
+        //res.send(data);
+        //res.send(`POST LOGIN [${data.message}]`);
+        res.end(`<html><body>POST LOGIN [${data.message}] <a href='/'>Home</a></body></html>`);
+      });
       // At this point, we have the headers, method, url and body, and can now
       // do whatever we need to in order to respond to this request.
-      res.end(`login`);
+      //res.end(`login`);
     });
   }
 }
@@ -114,9 +169,9 @@ function url_login(req,res){
 //===============================================
 function signUpPage () {
   return '<html>' +
-    '<head><title>Login</title></head>' +
+    '<head><title>Sign Up</title></head>' +
     '<body>' +
-    '<label>Login</label>' +
+    '<label>Sign Up</label>' +
     '<form action="/signup" method="post">' +
     '<table>'+
     '<tr><td>'+
@@ -162,156 +217,85 @@ function url_signup(req,res){
       let post = qs.parse(body);
       console.log(body);
       console.log(post);
+      let {alias, passphrase1, passphrase2} = post;
+      console.log(alias);
+      console.log(isEmpty(alias));
+      if(isEmpty(alias)==true || isEmpty(passphrase1)==true || isEmpty(passphrase2)==true || passphrase1!=passphrase2){
+        res.end('Not the Alias || passphrase');
+        return;
+      }
+      //CHECK USER EXIST AND IF CREATE
+      user.create(alias, passphrase1, passphrase2, (error, data) => {
+        if(error){
+          res.end('signup error!');
+          return;
+        }
+        console.log(data);
+        res.end(`<html><body>POST SIGNUP [${data.message}] <a href='/'>Home</a></body></html>`);
+        return;
+      });
       // At this point, we have the headers, method, url and body, and can now
       // do whatever we need to in order to respond to this request.
-      res.end(`login`);
+      //res.end(`url_signup`);
     });
   }
 }
-
+// REQUEST HANDLE
 const requestListener = function (req, res) {
+  // Create a cookies object
+  let cookies = new Cookies(req, res, { keys: keys });
+  var token = cookies.get('token', { signed: true });
+  console.log('token:',token);
+  // MATCH URL SWITCH
   switch (req.url) {
+    case "/favicon.ico":
+      res.statusCode=204;
+      break
     case "/":
-      res.writeHead(200);
-      res.end(html_index());
+      //res.writeHead(200);
+      //res.statusCode=200;
+      res.writeHead(200, {'Content-Type': 'text/html'});
+      let body;
+      if(token){//check user has token key
+        body=html_access();
+      }else{
+        body=html_index();
+      }
+      res.end(body);
       break
     case "/login":
-      res.writeHead(200);
+      //res.writeHead(200);
+      res.statusCode=200;
       //console.log(req.method);
       url_login(req,res);
       break
     case "/signup":
-      res.writeHead(200);
+      //res.writeHead(200);
+      res.statusCode=200;
       url_signup(req,res);
       //res.end(`signup`);
       break
     case "/logout":
-      res.writeHead(200);
+      // https://www.npmjs.com/package/cookies
+      //res.writeHead(200);
+      // Set the cookie to a value
+      cookies.set('token', '', { 
+        signed: true
+        ,maxAge:Date.now()
+      })
+      res.statusCode=200;
       res.end(`<html><body>[ Logout ] <a href="/">Home</a></body></html>`);
       break
     default:
-      res.writeHead(404);
+      //res.writeHead(404);
+      res.statusCode=404;
       res.end(JSON.stringify({error:"Resource not found"}));
   }
 }
-
+// SET UP SERVER
 const server = http.createServer(requestListener);
+// INIT SERVER
 server.listen(port, () => {
-    console.log(`Server is running on http://${host}:${port}`);
+    console.log(`>http Server is running on http://${host}:${port}`);
 });
-
-/*
-const requestListener = function (req, res) {
-  // Create a cookies object
-  var cookies = new Cookies(req, res, { keys: keys })
-  // Get a cookie
-  var lastVisit = cookies.get('LastVisit', { signed: true });
-  //console.log('>>',lastVisit);
-  //console.log(typeof lastVisit);
-  if(typeof lastVisit == 'string'){
-    //console.log('convert?');
-    lastVisit = parseInt(lastVisit);
-    //console.log(typeof lastVisit);
-  }else{
-    lastVisit = lastVisit || 0;
-  }
-  lastVisit = lastVisit + 1;
-  //console.log(typeof lastVisit);
-  //console.log(lastVisit);
-  lastVisit = lastVisit.toString();
-
-  // Set the cookie to a value
-  //cookies.set('LastVisit', new Date().toISOString(), { signed: true })
-  cookies.set('LastVisit', lastVisit, { signed: true })
-
-  if (!lastVisit) {
-    res.setHeader('Content-Type', 'text/plain')
-    res.end('Welcome, first time visitor!')
-  } else {
-    res.setHeader('Content-Type', 'text/plain')
-    res.end('Welcome back! Nothing much changed since your last visit at ' + lastVisit + '.')
-  }
-}
-*/
-
-/*
-const requestListener = function (request, response) {
-  let cookies = parseCookies( request.headers.cookie );
-  console.log( 'Input cookies: ', cookies );
-  cookies.search = 'google';
-  if ( cookies.counter )
-    cookies.counter++;
-  else
-    cookies.counter = 1;
-  console.log( 'Output cookies: ', cookies );
-  response.writeHead( 200, {
-    'Set-Cookie': stringifyCookies(cookies),
-    'Content-Type': 'text/plain'
-  } );
-  response.end('Hello World\n');
-}
-*/
-
-/*
-const requestListener = function (req, res) {
-  // To Read a Cookie
-  
-  // To Write a Cookie
-  //res.setHeader("Content-Type", "application/json");
-  //res.writeHead(200, {
-    //'Set-Cookie': 'mycookie=test',
-    //'Content-Type': 'text/plain'
-  //});
-
-  let cookies = parseCookies( req.headers.cookie );
-  console.log( 'Input cookies: ', cookies );
-  cookies.search = 'google';
-  if ( cookies.counter )
-    cookies.counter++;
-  else
-    cookies.counter = 1;
-  console.log( 'Output cookies: ', cookies );
-  res.writeHead( 200, {
-    'Set-Cookie': stringifyCookies(cookies),
-    'Content-Type': 'text/plain'
-  });
-
-  switch (req.url) {
-    case "/":
-      //res.writeHead(200);
-      res.end(html_index());
-      break
-    case "/login":
-      res.writeHead(200);
-      res.end(`login`);
-      break
-    case "/signup":
-      res.writeHead(200);
-      res.end(`signup`);
-      break
-    default:
-      res.writeHead(404);
-      res.end(JSON.stringify({error:"Resource not found"}));
-  }
-}
-*/
-
-//const server = http.createServer(requestListener);
-//server.listen(port, () => {
-    //console.log(`Server is running on http://${host}:${port}`);
-//});
-
-//create a server object:
-//http.createServer(function (req, res) {
-  // res.write(req.url);
-  //res.writeHead(200, {'Content-Type': 'text/html'});
-  //res.write('Hello World!'); //write a response to the client
-  //res.end(); //end the response
-//}).listen(3000); //the server object listens on port 8080
-//const requestListener = function (req, res) {
-  //res.write('Hello World! http'); //write a response to the client
-  //res.end(); //end the response
-//};
-//server.listen(port, host, () => {
-    //console.log(`Server is running on http://${host}:${port}`);
-//});
+// 
