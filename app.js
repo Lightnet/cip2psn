@@ -58,8 +58,8 @@ console.log('init web server...');
 //require('./src/server/koa_server'); // ok
 //require('./src/server/hapi_server'); // ok
 //require('./src/server/express_server'); // ok
-//require('./src/server/restify_server'); // fail // no session. cookie to able to store user token
-require('./src/server/http_server');
+require('./src/server/restify_server'); // ok // no session. cookie to able to store user token
+//require('./src/server/http_server');
 
 
 //require('./src/tests/http_server01');

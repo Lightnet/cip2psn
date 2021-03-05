@@ -12,11 +12,11 @@
 // https://github.com/sohamkamani/jwt-nodejs-example
 const jwt = require("jsonwebtoken");
 const jwtKey = "my_secret_key";
-const jwtExpirySeconds = 300;
-//var test = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGlhcyI6InRlc3RhbGlhcyIsImlhdCI6MTYxNDc5MDkyNn0.zbM6_RlSR-yIN_cwjQ6Y8BZmTWKwH3cP1uAvi6rreyc';
+//const jwtExpirySeconds = 300;
 const bcrypt=require('bcrypt');
 var db=require('../db/hcv1/index');
 console.log('user init db?');
+var config=require('../../../config');
 
 //console.log(db.getuser);
 //console.log(db.getuser());
@@ -73,20 +73,29 @@ async function authenticate(alias,passphrase,callback){
       console.log(data);
       //data.passphrase
       //let pass = jwt.sign({ passphrase: passphrase }, 'shhhhh');
-      let decoded = jwt.verify(data.passphrase, 'shhhhh');
+      //let decoded = jwt.verify(data.passphrase, 'shhhhh');
+      let decoded = bcrypt.compareSync(passphrase, data.passphrase);
+      console.log('decoded:',decoded);
+
       if(decoded){
-        console.log('PASS???????',decoded);
+        //console.log('PASS???????',decoded);
+        //console.log('PASS PASSPHRASE!');
+          // SECRET KEY NEEED CONFIG
+        let token = jwt.sign({ alias: alias }, config.tokenKey);
+        return callback(null,{message:'FOUND',token:token});
+        /*
         if(decoded.passphrase == passphrase){
           console.log('PASS PASSPHRASE!');
           // SECRET KEY NEEED CONFIG
           let token = jwt.sign({ alias: alias }, 'shhhhh');
-          
           return callback(null,{message:'FOUND',token:token});
         }else{
           return callback(null,{message:'FAIL'});
         }
+        */
       }else{
-        return callback(null,{message:'NOTFOUND'});  
+        //return callback(null,{message:'NOTFOUND'});  
+        return callback(null,{message:'FAIL'});  
       }
       //return callback(null,{message:'FOUND',token:''});
     }

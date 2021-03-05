@@ -33,8 +33,8 @@ var CookieParser = require('restify-cookies');
 
 const db = require('./db/hcv1/index');
 const user = require('./model/user');
-
 const jwt = require("jsonwebtoken");
+const config=require('../../config');
 //const jwtKey = "my_secret_key";
 
 db.init();
@@ -95,7 +95,13 @@ function authenticate(req, res, next){
   //res.clearCookie('token');
   let token;
   if(req.cookies['token']){
-    token = jwt.verify(req.cookies['token'], 'shhhhh');
+    // if there key are change it will error out
+    try{
+      token = jwt.verify(req.cookies['token'], config.tokenKey);
+      //console.log('[ token ]: ',token);
+    }catch(err){
+      console.log('TOKEN ERROR');
+    }
   }
   console.log("token:",token);
   if(!token){
@@ -194,7 +200,13 @@ server.get('/', async function(req, res, next) {
   console.log('key: ',key);
   let token;
   if(key){
-    token = jwt.verify(req.cookies['token'], 'shhhhh');
+    try{
+      token = jwt.verify(req.cookies['token'], config.tokenKey);
+      //console.log('[ token ]: ',token);
+    }catch(err){
+      console.log('TOKEN ERROR');
+    }
+    
   }
   console.log('token: ',token);
   let body;

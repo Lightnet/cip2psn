@@ -2,11 +2,15 @@
 var config={
   host:"localhost"
   ,port:3000
-  ,saltKey:'0123456789'
-  ,secretKey:'a secret with minimum length of 32 characters'
+  // key for user
+  ,saltKey: '0123456789'
+  ,saltRounds: 10
+  // jwt.sign
   ,tokenKey:'token'
-  ,session_TTL:1800000
   ,sessionId:'sessionId'
+  ,secretKey:'a secret with minimum length of 32 characters'
+  ,session_TTL:1800000
+  //COOKIE
   ,cookieId:'sessionid'
   ,cookieKey:'cookieKey'
 };

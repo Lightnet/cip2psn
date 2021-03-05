@@ -1,5 +1,34 @@
+# CHEAT SHEETS
 
 
+```javascript
+
+```
+
+
+
+# bcrypt
+```javascript
+const bcrypt=require('bcrypt');
+const saltRounds = 10;
+const myPlaintextPassword = 'not_bacon';
+
+const hash = bcrypt.hashSync(myPlaintextPassword, saltRounds);
+var check =bcrypt.compareSync(myPlaintextPassword, hash); // true
+console.log(check);
+```
+# jsonwebtoken
+```javascript
+const jwt = require('jsonwebtoken');
+let token = jwt.sign({ name: 'guest'}, 'tokenkey');
+
+let body = jwt.verify(token, 'tokenkey');
+console.log(body);
+```
+
+```javascript
+
+```
 
 ```javascript
 // https://stackoverflow.com/questions/14031763/doing-a-cleanup-action-just-before-node-js-exits
