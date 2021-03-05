@@ -1,8 +1,15 @@
+/**
+  Project Name: cip2psn
+
+  LICENSE: MIT
+
+  Created By: Lightnet
+
+ */
+
 // https://hypercore-protocol.org/guides/walkthroughs/creating-and-sharing-hypercores/
 // https://github.com/hypercore-protocol/walkthroughs/blob/main/hypercore/step-2.js
 //const Corestore = require('corestore');
-
-
 
 const Hypercore = require('hypercore');
 const { toPromises } = require('hypercore-promisifier');

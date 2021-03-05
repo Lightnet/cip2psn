@@ -18,7 +18,7 @@ app.listen(port, () => console.log(`Port on which the app is listening ${port}!`
 const bodyParser = require('body-parser');
 // http://expressjs.com/en/resources/middleware/session.html
 const session = require('express-session');
-const auth = require('./express/auth');
+const auth = require('../server/express/auth');
 const express = require('express');
 const app = express();
 

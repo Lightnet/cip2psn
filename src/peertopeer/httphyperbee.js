@@ -1,9 +1,17 @@
 /**
+  Project Name: cip2psn
+
+  LICENSE: MIT
+
+  Created By: Lightnet
+
+ */
+
+/**
 https://www.youtube.com/watch?v=RymFCytTWz8
-
 51:00 finish
-
 Note: not to used it
+
 */
 
 const http = require('http');

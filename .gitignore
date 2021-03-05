@@ -1,4 +1,7 @@
 my-hypercore/
 my-hyperdrive/
 node_modules/
+public/
+mydb/
+radata/
 package-lock.json

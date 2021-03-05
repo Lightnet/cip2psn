@@ -1,11 +1,17 @@
+/**
+  Project Name: cip2psn
+
+  LICENSE: MIT
+
+  Created By: Lightnet
+
+ */
 'use strict';
 
 exports.plugin = {
   name:"auth",
   register: async function (server, options) {
-    console.log("init auth...");
-
-    
+    console.log("init auth..."); 
     // Create a route for example
     /*
     server.route({

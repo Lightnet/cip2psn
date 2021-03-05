@@ -7,12 +7,12 @@
 
  */
 // HTML PAGE
-function loginPage () {
+function forgotPage () {
   return '<html>' +
-    '<head><title>Login</title></head>' +
+    '<head><title>Forgot</title></head>' +
     '<body>' +
-    '<label>Login</label>' +
-    '<form action="/login" method="post">' +
+    '<label>Forgot</label>' +
+    '<form action="/forgot" method="post">' +
     '<table>'+
     '<tr><td>'+
     '<label>Alias:</label>' +
@@ -35,19 +35,19 @@ function loginPage () {
 }
 // ROUTES
 module.exports = function (fastify, opts, done) {
-  // GET LOGIN
-  fastify.get('/login', function (request, reply) {
+  // GET FORGOT
+  fastify.get('/forgot', function (request, reply) {
     reply.type('text/html');
-    reply.send(loginPage());
+    reply.send(forgotPage());
   });
-  // POST LOGIN
-  fastify.post('/login', function (request, reply) {
+  // POST FORGOT 
+  fastify.post('/forgot', function (request, reply) {
     const { alias, passphrase } = request.body;
     //console.log(request.session);
     console.log("alias:",alias);
     console.log("passphrase:",passphrase);
-    reply.send("POST LOGIN");
+    reply.send("POST FORGOT");
   });
-  // FINISH
+  //FINISH
   done();
 }

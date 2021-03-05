@@ -12,7 +12,7 @@
 // https://github.com/koajs/session
 // https://github.com/koajs/csrf
 
-//const logger = require('koa-logger');
+const logger = require('koa-logger');
 const session = require('koa-session');
 const Koa = require('koa');
 const router = require('@koa/router')();
@@ -25,6 +25,7 @@ const app = new Koa();
 // https://stackoverflow.com/questions/35362507/why-need-more-than-one-secret-key-on-koa
 //key
 app.keys = ['session secret'];
+
 // for post request body 
 app.use(koaBody());
 const CONFIG = {
@@ -44,6 +45,7 @@ const CONFIG = {
   //sameSite: null, /** (string) session cookie sameSite options (default null, don't set it) */
 };
 app.use(session(CONFIG, app));
+
 // https://stackoverflow.com/questions/35362507/why-need-more-than-one-secret-key-on-koa
 // add the CSRF middleware
 app.use(new CSRF({
@@ -52,6 +54,7 @@ app.use(new CSRF({
   excludedMethods: [ 'GET', 'HEAD', 'OPTIONS' ],
   disableQuery: false
 }));
+
 //app.use(logger());
 // https://github.com/koajs/koa
 // https://github.com/koajs/koa/blob/master/docs/guide.md
@@ -62,6 +65,10 @@ async function responseTimeLogger(ctx, next){
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
 }
 //app.use(responseTimeLogger);
+
+//app.use(async ctx => {
+//  ctx.body = 'Hello World';
+//});
 //===============================================
 // FAVICON / COUNT VIEWS
 app.use(async (ctx, next) => {
@@ -77,7 +84,7 @@ app.use(async (ctx, next) => {
   //console.log("ctx.keys:",ctx.keys);
   return next(); // next progress
 });
-// INDEX PAGE
+
 function index_html(data){
   return`
   <!doctype html>
@@ -102,26 +109,30 @@ function index_html(data){
   </html>
   `;
 }
-// INDEX URL
+
 async function url_index(ctx) {
   ctx.body = 'Hello World! koa!';
   //ctx.body = index_html({});
 }
+
 // route definitions
 router.get('/', url_index);
+  //.get('/login',get_login)
+  //.post('/login',post_login)
 app.use(router.routes());
-// LOGIN
-var route_login=require('./koa/route_login.js');
+
+var route_login=require('../server/koa/route_login.js');
 app.use(route_login.routes());
-// SIGN UP
-var route_signup=require('./koa/route_signup.js');
+
+var route_signup=require('../server/koa/route_signup.js');
 app.use(route_signup.routes());
-// ADMIN
-var route_admin=require('./koa/route_admin.js');
+
+var route_admin=require('../server/koa/route_admin.js');
 app.use(route_admin.routes());
+
 //last for url for user name /:user
 // filter by order added
-var route_user=require('./koa/route_user.js');
+var route_user=require('../server/koa/route_user.js');
 app.use(route_user.routes());
 // SET PORT
 const PORT = process.env.PORT || 3000;
@@ -135,3 +146,16 @@ app.listen(PORT, function(){
   console.log(`> Koa Server running on ${protocol}://${address}:${port}`);
   //console.log(`> Koa Server running on http://localhost:${PORT}`);
 });
+
+// https://alexewerlof.medium.com/koa-listening-on-http-and-https-and-reporting-port-and-ip-e52e2e5ec7ff
+//app.listen(3000);
+//var server = app.listen(PORT,'localhost' , function(){
+  // `this` refers to the http server here
+  //var { address, port } = this.address();
+  //console.log(this.addContext);
+  //const protocol = this.addContext ? 'https' : 'http';
+  //if(address == '::'){address='localhost';}
+  //console.log(`Listening on ${protocol}://${address}:${port}`);
+  //console.log(`> Koa Server running on http://localhost:${PORT}`);
+//});
+// console.log(server.address());

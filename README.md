@@ -6,9 +6,11 @@ P2P = Peer to Peer network
 Server
 Network
 ```
-# Created by: Lightnet
+# Date: 2021.02.27
 
 # LICENSE: MIT
+
+# Created by: Lightnet
 
 # Status:
  * Work in progress
@@ -48,7 +50,7 @@ fastify         1.22 ms        6126.90
 koa             2.16 ms        3581.91
 express         5.47 ms        1667.60
 hapi            1.45 ms        5276.30
-polka           3.1 ms         2811.60
+polka           2.28 ms        3821.50
 ```
 # Notes:
   * Base on hello world print page
@@ -58,15 +60,19 @@ polka           3.1 ms         2811.60
 ```
 Name:         Language:        Dependents:
 express       dt                50962
-fastify       ts                  717
 koa           dt                 5143
+restify       dt                 1159 (can't store session)
+fastify       ts                  717
 @hapi/hapi    dt                  421
-restify       dt                 1160
 polka         dt                  124
+
 sails                             168
 derby                              17
 
+Notes:
+ * Some packages are not include for add on like session, cookies, body and others.
 ```
+
 # Packages / Frameworks:
  * express
    * https://expressjs.com

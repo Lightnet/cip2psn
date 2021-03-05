@@ -1,8 +1,14 @@
+/**
+  Project Name: cip2psn
+
+  LICENSE: MIT
+
+  Created By: Lightnet
+
+ */
+
 // https://openclassrooms.com/en/courses/5614116-go-full-stack-with-node-js-express-and-mongodb/5656301-set-up-authentication-middleware
-
-
 //const jwt = require('jsonwebtoken');
-
 module.exports = (req, res, next) => {
   //console.log(req.headers);
   //console.log(req.session);

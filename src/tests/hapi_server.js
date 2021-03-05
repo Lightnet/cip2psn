@@ -18,7 +18,7 @@ const Hapi = require('@hapi/hapi');
 
 const PORT = process.env.PORT || 3000;
 
-var routes = require('./hapi/routes');
+var routes = require('../server/hapi/routes');
 const init = async () => {
     const server = Hapi.server({
       port: PORT,

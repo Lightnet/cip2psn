@@ -6,13 +6,14 @@
   Created By: Lightnet
 
  */
+
 // HTML PAGE
-function loginPage () {
+function signUpPage() {
   return '<html>' +
-    '<head><title>Login</title></head>' +
+    '<head><title>Sign Up</title></head>' +
     '<body>' +
-    '<label>Login</label>' +
-    '<form action="/login" method="post">' +
+    '<label>Sign Up</label>' +
+    '<form action="/signup" method="post">' +
     '<table>'+
     '<tr><td>'+
     '<label>Alias:</label>' +
@@ -33,20 +34,20 @@ function loginPage () {
     '</body>' +
     '</html>'
 }
-// ROUTES
+//ROUTES
 module.exports = function (fastify, opts, done) {
-  // GET LOGIN
-  fastify.get('/login', function (request, reply) {
+  // GET SIGN UP
+  fastify.get('/signup', function (request, reply) {
     reply.type('text/html');
-    reply.send(loginPage());
+    reply.send(signUpPage());
   });
-  // POST LOGIN
-  fastify.post('/login', function (request, reply) {
+  // POST SIGN UP
+  fastify.post('/signup', function (request, reply) {
     const { alias, passphrase } = request.body;
     //console.log(request.session);
     console.log("alias:",alias);
     console.log("passphrase:",passphrase);
-    reply.send("POST LOGIN");
+    reply.send("POST SIGN UP");
   });
   // FINISH
   done();

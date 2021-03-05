@@ -1,9 +1,15 @@
+/**
+  Project Name: cip2psn
+
+  LICENSE: MIT
+
+  Created By: Lightnet
+
+ */
 
 // https://hypercore-protocol.org/guides/walkthroughs/sharing-files-with-hyperdrive/
 // https://hypercore-protocol.org/guides/examples/hyperdrive-app/
 // https://github.com/hypercore-protocol/hyperdrive
-
-
 
 const Hyperdrive = require('hyperdrive')
 

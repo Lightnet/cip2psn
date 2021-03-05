@@ -1,6 +1,13 @@
+/**
+  Project Name: cip2psn
+
+  LICENSE: MIT
+
+  Created By: Lightnet
+
+ */
 
 // https://hapi.dev/tutorials/auth/?lang=en_US
-
 
 function loginPage () {
   return '<html>' +
