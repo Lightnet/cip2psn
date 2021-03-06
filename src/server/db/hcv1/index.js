@@ -119,6 +119,7 @@ async function checkcreateuser(alias,passphrase,callback){
 exports.checkcreateuser = checkcreateuser;
 // CHECK ALIAS PASSPHRASE
 function checkaliaspassphrase(alias, callback){
+  //console.log(gun);
   gun.get(alias).once(function(data, key){
     if(data){
       //console.log('FOUND ALIAS!');

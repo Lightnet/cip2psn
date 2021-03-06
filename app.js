@@ -18,7 +18,6 @@ let myPromise = new Promise(function(myResolve, myReject) {
     myResolve("OK"); // when successful
     myReject("Error");  // when error
 });
-
 // "Consuming Code" (Must wait for a fulfilled Promise)
 myPromise.then(
   function(value) {  //code if successful 
@@ -28,7 +27,6 @@ myPromise.then(
     console.log('error:',error);
   }
 );
-
 function resolveAfter2Seconds(x) {
   return new Promise(resolve => {
     setTimeout(() => {
@@ -36,12 +34,10 @@ function resolveAfter2Seconds(x) {
     }, 2000);
   });
 }
-
 async function f1() {
   var x = await resolveAfter2Seconds(10);
   console.log(x); // 10
 }
-
 f1();
 */
 
@@ -53,12 +49,12 @@ console.log('init web server...');
 //var config = require('./config');
 //console.log(config);
 
-//require('./src/server/fastifty_server'); // ok // out date session package
+require('./src/server/fastifty_server'); // ok // out date session package
 //require('./src/server/polka_server'); // ok
 //require('./src/server/koa_server'); // ok
 //require('./src/server/hapi_server'); // ok
 //require('./src/server/express_server'); // ok
-require('./src/server/restify_server'); // ok // no session. cookie to able to store user token
+//require('./src/server/restify_server'); // ok // no session. cookie to able to store user token
 //require('./src/server/http_server');
 
 

@@ -22,9 +22,7 @@ const qs = require('querystring');
 const db = require('./db/hcv1/index');
 const user = require('./model/user');
 const jwt = require("jsonwebtoken");
-
 const config=require('../../config');
-
 
 const host = 'localhost';
 const port = 3000;
@@ -246,6 +244,12 @@ const requestListener = function (req, res) {
   let cookies = new Cookies(req, res, { keys: keys });
   var token = cookies.get('token', { signed: true });
   console.log('token:',token);
+  try{
+    let data = jwt.verify(token, config.tokenKey);
+    console.log('[ data ]: ', data);
+  }catch(err){
+    console.log('TOKEN ERROR');
+  }
   // MATCH URL SWITCH
   switch (req.url) {
     case "/favicon.ico":

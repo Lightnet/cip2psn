@@ -6,14 +6,16 @@
   Created By: Lightnet
 
  */
-const router = require('@koa/router')();
+
+// https://hapi.dev/tutorials/auth/?lang=en_US
 const user=require('../model/user');
 
+// 
 function isEmpty(str) {
   return (typeof str === 'string' && 0 === str.length);
 }
-
-function html_signup(){
+// 
+function signUpPage() {
   return '<!doctype html><html lang="en">' +
     '<head><title>Sign Up</title></head>' +
     '<body>' +
@@ -44,12 +46,7 @@ function html_signup(){
     '</body>' +
     '</html>';
 }
-
-async function get_signup(ctx) {
-  //ctx.body = 'GET Login';
-  ctx.body = html_signup();
-}
-
+//
 function signUpSync(alias, passphrase1, passphrase2) {
   return new Promise((resolve) => {
     user.create(alias, passphrase1, passphrase2, (error, data) => {
@@ -72,38 +69,46 @@ function signUpSync(alias, passphrase1, passphrase2) {
       //res.end(`<html><body>POST SIGNUP [${data.message}] <a href='/'>Home</a></body></html>`);
       //return next(false);
     })
-
   });
 }
-
-// https://github.com/koajs/koa/issues/719
-// https://www.npmjs.com/package/koa-body
-async function post_signup(ctx) {
-  console.log("POST!");
-  //ctx.request.body // your POST params
-  console.log(ctx.request.body );
-  //ctx.params // URL params, like :id
-  //console.log(ctx.params);
-  //ctx.body = 'POST Signup';
-
-  let {alias, passphrase1, passphrase2 } = ctx.request.body;
-  if(!alias || !passphrase1 || !passphrase2 || passphrase1!=passphrase2){
-    //res.send({error:'Not the Alias || passphrase'});
-    ctx.body='Not the Alias || passphrase';
-    return;
+//
+module.exports = [
+  {
+    method: 'GET',
+    path: '/signup',
+    handler: (request, h) => {
+      //return 'GET LOGIN !';
+      return signUpPage();
+    }
   }
+  ,
+  {
+    method: 'POST',
+    path: '/signup',
+    handler: async (request, h) => {
+      const post = request.payload;
+      //console.log(request.body);
+      console.log("post: ",post);
+      console.log(post.alias);
+      let {alias, passphrase1, passphrase2} =post;
+      console.log(alias);
 
-  let data = await signUpSync(alias, passphrase1, passphrase2);
-  if(data){ 
-    console.log(data);
+      if(isEmpty(alias)==true || isEmpty(passphrase1)==true || isEmpty(passphrase2)==true || passphrase1!=passphrase2){
+        return 'Not the Alias || passphrase';
+      }
+
+      let data = await signUpSync(alias, passphrase1, passphrase2);
+      let message='FAIL';
+      if(data){ 
+        console.log(data);
+        if(data.message){
+          message=data.message;
+        }
+
+      }
+      return `<html><body>POST SIGNUP [${message}] <a href='/'>Home</a></body></html>`;
+      //ctx.body=`<html><body>POST SIGNUP [${data.message}] <a href='/'>Home</a></body></html>`;
+      //return 'POST SIGN UP!';
+    }
   }
-  //res.end(`<html><body>POST SIGNUP [${data.message}] <a href='/'>Home</a></body></html>`);
-  ctx.body=`<html><body>POST SIGNUP [${data.message}] <a href='/'>Home</a></body></html>`;
-
-}
-
-// route definitions
-router.get('/signup',get_signup);
-router.post('/signup',post_signup);
-
-module.exports = router;
+];

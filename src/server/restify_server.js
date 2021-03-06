@@ -103,12 +103,13 @@ function authenticate(req, res, next){
       console.log('TOKEN ERROR');
     }
   }
-  console.log("token:",token);
+  //console.log("auth >> token:",token);
   if(!token){
     res.status(401);
-    res.send('Unauthorized');
+    //res.send('Unauthorized');
+    res.end('Unauthorized');
     //return next('Unauthorized');
-    console.log(restify.errors)
+    //console.log(restify.errors);
     //return next(new restify.errors.NotAuthorizedError());
     return next(false);//stop next process
   }
@@ -128,7 +129,7 @@ server.use(authenticate);
 //================================================
 // https://stackoverflow.com/questions/38504107/why-restify-not-have-its-own-plugin-for-support-cookies
 // https://www.npmjs.com/package/restify-cookies
-server.use(function (req, res, next) {
+//server.use(function (req, res, next) {
   // set cookie
   //res.setCookie('my-new-cookie', 'Hi There! Restify!'); // Adds a new cookie to the response
 
@@ -141,16 +142,16 @@ server.use(function (req, res, next) {
   //console.log('mycookie: ',mycookie);
   //let token = req.cookies['token'];//pass  
   //console.log('token: ',token);
-  next();
-});
+  //next();
+//});
 
 //===============================================
 // Universal handlers
-server.use(function(req, res, next) {
+//server.use(function(req, res, next) {
   //console.log('> server.use((req,res,next)=>{next();}) Universal handlers');
   //console.warn('run for all routes!');
-  return next();
-});
+  //return next();
+//});
 //===============================================
 server.get('/favicon.ico', function(req, res, next) {
   ///favicon.ico
@@ -250,7 +251,7 @@ server.get('/c', function(req, res, next) {
   //return next();
 //});
 //===============================================
-function loginPage () {
+function loginPage() {
   return '<html>' +
     '<head><title>Login</title></head>' +
     '<body>' +
@@ -289,12 +290,22 @@ server.get('/login', function(req, res, next) {
   res.end();
   return next();
 });
+
+function isEmpty(str) {
+  return (typeof str === 'string' && 0 === str.length);
+}
 server.post('/login', function(req, res, next) {
   //console.log("req login:");
   //console.log(req.body);
   //console.log(req.username);
   //console.log(req.authorization);
   let {alias, passphrase} = req.body;
+
+  if(isEmpty(alias)==true || isEmpty(passphrase)==true){
+    res.end('Not the Alias || passphrase');
+    return;
+  }
+
   user.authenticate(alias, passphrase, (error,data) => {
     if(error){
       console.log('error >> ');
@@ -318,8 +329,8 @@ server.post('/login', function(req, res, next) {
 //===============================================
 // SIGNUP
 
-function signUpPage () {
-  return '<html>' +
+function signUpPage() {
+  return '<!doctype html><html lang="en">' +
     '<head><title>Sign Up</title></head>' +
     '<body>' +
     '<label>Sign Up</label>' +
@@ -347,7 +358,7 @@ function signUpPage () {
     '</table>'+
     '</form>' +
     '</body>' +
-    '</html>'
+    '</html>';
 }
 server.get('/signup', function(req, res, next) {
   //res.send('hello world!');

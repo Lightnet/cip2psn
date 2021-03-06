@@ -17,10 +17,14 @@ const session = require('koa-session');
 const Koa = require('koa');
 const router = require('@koa/router')();
 const koaBody = require('koa-body');
-const CSRF = require('koa-csrf');
-
+//const CSRF = require('koa-csrf');
+const db = require('./db/hcv1/index');
+// INIT DATABASE
+console.log('Init database...');
+db.init();
+// CREATE WEB SERVER MODULE
+console.log('Init web server modules...');
 const app = new Koa();
-
 // https://koajs.com/#app-keys-
 // https://stackoverflow.com/questions/35362507/why-need-more-than-one-secret-key-on-koa
 //key
@@ -46,12 +50,12 @@ const CONFIG = {
 app.use(session(CONFIG, app));
 // https://stackoverflow.com/questions/35362507/why-need-more-than-one-secret-key-on-koa
 // add the CSRF middleware
-app.use(new CSRF({
-  invalidTokenMessage: 'Invalid CSRF token',
-  invalidTokenStatusCode: 403,
-  excludedMethods: [ 'GET', 'HEAD', 'OPTIONS' ],
-  disableQuery: false
-}));
+//app.use(new CSRF({
+  //invalidTokenMessage: 'Invalid CSRF token',
+  //invalidTokenStatusCode: 403,
+  //excludedMethods: [ 'GET', 'HEAD', 'OPTIONS' ],
+  //disableQuery: false
+//}));
 //app.use(logger());
 // https://github.com/koajs/koa
 // https://github.com/koajs/koa/blob/master/docs/guide.md
@@ -78,7 +82,7 @@ app.use(async (ctx, next) => {
   return next(); // next progress
 });
 // INDEX PAGE
-function index_html(data){
+function html_index(){
   return`
   <!doctype html>
   <html lang="en">
@@ -91,24 +95,52 @@ function index_html(data){
         <!--
         <script src="/client_login.js"></script>
         -->
-        <form action="/login" method="post">
-          
-          <a href="/login">Login</a>
-          <a href="/signup">Sign Up</a>
-          <a href="/forgot">Forgot</a>
-          <br><label> INDEX </label>
-        </form>
+        <a href="/login">Login</a>
+        <a href="/signup">Sign Up</a>
+        <!--<a href="/forgot">Forgot</a>-->
+        <br><label> Hello World! [Koa] </label>
       </body>
   </html>
   `;
 }
+
+function html_access(){
+  return `
+<html>
+  <head>
+    <title>Index</title>
+  </head>
+  <body>
+    <a href="/logout">Logout</a>
+    <br> <label> Weclome Guest! [Restify]</label>
+  </body>
+</html>
+`;
+}
+//===
+
 // INDEX URL
 async function url_index(ctx) {
-  ctx.body = 'Hello World! koa!';
-  //ctx.body = index_html({});
+  //ctx.body = 'Hello World! koa!';
+  let token = ctx.cookies.get('token',{signed:true});
+  console.log('Token: ',token);
+  if(token){
+    ctx.body = html_access({});
+  }else{
+    ctx.body = html_index({});
+  }
 }
 // route definitions
 router.get('/', url_index);
+
+router.get('/logout', function(ctx){
+  ctx.cookies.set('token','',{
+    maxAge:Date.now()
+    ,signed:true
+  });
+  ctx.body = `<html><body>GET LOGOUT <a href='/'>Home</a></body></html>`;
+});
+
 app.use(router.routes());
 // LOGIN
 var route_login=require('./koa/route_login.js');

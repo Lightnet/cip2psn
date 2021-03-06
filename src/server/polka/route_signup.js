@@ -9,27 +9,34 @@
 const polka = require('polka');
 const bodyParser = require('body-parser');
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
-const user = require('../model/user');
+
+const user=require('../model/user');
+
 function isEmpty(str) {
   return (typeof str === 'string' && 0 === str.length);
 }
 
-function loginPage () {
+function signUpPage () {
   return '<html>' +
-    '<head><title>Login</title></head>' +
+    '<head><title>Sign Up</title></head>' +
     '<body>' +
-    '<label>Login</label>' +
-    '<form action="/login" method="post">' +
+    '<label>Sign Up</label>' +
+    '<form action="/signup" method="post">' +
     '<table>'+
     '<tr><td>'+
     '<label>Alias:</label>' +
     '</td><td>'+
-    '<input type="text" name="alias" value="testalias">' +
+    '<input type="text" name="alias" value="testalias" placeholder="alias">' +
     '<td></tr>'+
     '<tr><td>'+
-    '<label>Passphrase:</label>' +
+    '<label>Passphrase 1:</label>' +
     '</td><td>'+
-    '<input type="passphrase" name="passphrase" value="testpass">' +
+    '<input type="text" name="passphrase1" value="testpass"  placeholder="passphrase">' +
+    '<td></tr>'+
+    '<tr><td>'+
+    '<label>Passphrase 2:</label>' +
+    '</td><td>'+
+    '<input type="text" name="passphrase2" value="testpass"  placeholder="passphrase">' +
     '<td></tr>'+
     '<tr><td colspan="2">'+
     '<a href="/">Home</a>'+
@@ -43,7 +50,7 @@ function loginPage () {
 const app = polka();
 app.get('/', (req, res) => {
   //res.end('Hello there !');
-  res.end(loginPage());
+  res.end(signUpPage());
 });
 
 app.post('/', urlencodedParser, (req, res) => {
@@ -53,32 +60,24 @@ app.post('/', urlencodedParser, (req, res) => {
   //let json = JSON.stringify(req.body);
   //console.log(json);
   //res.end(json);
-  let {alias, passphrase} = req.body;
-  if(isEmpty(alias)==true || isEmpty(passphrase)==true){
+  let {alias, passphrase1, passphrase2} = req.body;
+
+  if(isEmpty(alias)==true || isEmpty(passphrase1)==true || isEmpty(passphrase2)==true || passphrase1!=passphrase2){
     res.end('Not the Alias || passphrase');
     return;
   }
 
-  user.authenticate(alias, passphrase, (error,data) => {
+  //CHECK USER EXIST AND IF CREATE
+  user.create(alias, passphrase1, passphrase2, (error, data) => {
     if(error){
-      console.log('error >> ');
-      console.log(error);
+      res.end('signup error!');
+      return;
     }
-    //console.log(data);
-    if(data){
-      if(data.message=='FOUND'){
-        console.log('SET COOOKIE');
-        //res.setCookie('token', data.token );
-        //let cookies = new Cookies(req, res, { keys: keys });
-        //cookies.set('token', data.token, { signed: true });
-        req.session.token=data.token;
-      }
-    }
-    //res.send(data);
-    //res.send(`POST LOGIN [${data.message}]`);
-    res.end(`<html><body>POST LOGIN [${data.message}] <a href='/'>Home</a></body></html>`);
+    console.log(data);
+    res.end(`<html><body>POST SIGNUP [${data.message}] <a href='/'>Home</a></body></html>`);
+    return;
   });
-  //res.end('POST LOGIN');
+  //res.end('POST SIGN UP');
 });
 
 module.exports=app;

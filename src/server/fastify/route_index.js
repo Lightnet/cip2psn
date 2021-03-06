@@ -15,13 +15,13 @@ function html_index(){
   return `
 <html>
   <head>
-    <title>Index</title>
+    <title>Fastify</title>
   </head>
   <body>
     <a href="/login">Login</a>
     <a href="/signup">Sign Up</a>
-    <a href="/forgot">Forgot</a>
-    <br> <label> Weclome Guest! </label>
+    <!--<a href="/forgot">Forgot</a>-->
+    <br> <label> Weclome Guest! [Fastify]</label>
   </body>
 </html>
 `;
@@ -47,30 +47,47 @@ async function routes (fastify, options, done) {
   //});
   // GET INDEX PAGE
   fastify.get('/', async function (request, reply) {
+
+    reply.code(200);
+    reply.header('Content-Type', 'text/html');
+    let token=request.session.token;
+    let body='';
+    if(token){
+      body=html_main();
+    }else{
+      body=html_index();
+    }
+    reply.send(body);
     //console.log(request.session);
     //request.user="tester";
     //console.log(request.user);
-    reply.code(200);
-    reply.header('Content-Type', 'text/html');
     //reply.send({ hello: 'world! fastify!' });
     //console.log(request.session);
-    reply.send(html_index());
     //reply.view('./src/server/templates/index.ejs', { alias: 'Guest' });
   });
+
+  fastify.get('/logout', async function (request, reply) {
+    reply.code(200);
+    reply.type('text/html');
+    console.log('LOGOUT');
+    request.session.token=null;
+    reply.send(`<html><body>[ Logout ] <a href="/">Home</a></body></html>`);
+  });
+
   // GET TEST ASSIGN
   fastify.get('/tester', async function (request, reply) {
+    reply.code(200);
     //console.log(request.session);
     //request.user.set("tester");
-    console.log(request.user);
-    reply.code(200);
+    //console.log(request.user);
     //reply.header('Content-Type', 'text/html');
     reply.send({ hello: 'world! fastify!' });
   });
   // GET TEST ASSIGN
   fastify.get('/guest', async function (request, reply) {
-    request.user = "guest";
-    console.log(request.user);
     reply.code(200);
+    //request.user = "guest";
+    //console.log(request.user);
     //reply.header('Content-Type', 'text/html');
     reply.send({ hello: 'world! fastify!' });
   });

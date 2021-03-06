@@ -14,17 +14,29 @@
 // 
 
 'use strict';
+const db = require('./db/hcv1/index');
 const Hapi = require('@hapi/hapi');
 
 const PORT = process.env.PORT || 3000;
 
 var routes = require('./hapi/routes');
 const init = async () => {
+    //INIT DATABASE
+    console.log('Init Database...');
+    db.init();
+    console.log('Init Web Server Modules...');
+    // SET UP WEB SERVER MODULES
     const server = Hapi.server({
       port: PORT,
       host: 'localhost'
     });
-
+    // COOKIE
+    server.state('token', {
+      ttl: null,
+      isSecure: false,
+      isHttpOnly: true
+    });
+    // SESSION
     await server.register({
       plugin: require('hapi-server-session'),
       options: {

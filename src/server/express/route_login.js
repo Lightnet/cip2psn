@@ -1,20 +1,15 @@
-/**
-  Project Name: cip2psn
-
-  LICENSE: MIT
-
-  Created By: Lightnet
-
- */
-const polka = require('polka');
+var express = require('express');
+var router = express.Router();
 const bodyParser = require('body-parser');
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
-const user = require('../model/user');
+const user=require('../model/user');
+
 function isEmpty(str) {
   return (typeof str === 'string' && 0 === str.length);
 }
 
-function loginPage () {
+//HTML LOGIN PAGE
+function loginPage() {
   return '<html>' +
     '<head><title>Login</title></head>' +
     '<body>' +
@@ -40,20 +35,19 @@ function loginPage () {
     '</body>' +
     '</html>'
 }
-const app = polka();
-app.get('/', (req, res) => {
-  //res.end('Hello there !');
-  res.end(loginPage());
+//LOGIN GET PAGE
+router.get('/', function (req, res) {
+  res.send(loginPage());
 });
+// create application/x-www-form-urlencoded parser
 
-app.post('/', urlencodedParser, (req, res) => {
-  //res.writeHead(200, { 'Content-Type': 'application/json' });
-  res.writeHead(200, { 'Content-Type': 'text/html' });
-  //console.log(req.body);
-  //let json = JSON.stringify(req.body);
-  //console.log(json);
-  //res.end(json);
+// POST /login gets urlencoded bodies
+//LOGIN POST PAGE
+router.post('/', urlencodedParser, function (req, res) {
+  //res.send('welcome, ' + req.body.alias);
+
   let {alias, passphrase} = req.body;
+
   if(isEmpty(alias)==true || isEmpty(passphrase)==true){
     res.end('Not the Alias || passphrase');
     return;
@@ -71,6 +65,7 @@ app.post('/', urlencodedParser, (req, res) => {
         //res.setCookie('token', data.token );
         //let cookies = new Cookies(req, res, { keys: keys });
         //cookies.set('token', data.token, { signed: true });
+        console.log('data.token:',data.token);
         req.session.token=data.token;
       }
     }
@@ -78,7 +73,6 @@ app.post('/', urlencodedParser, (req, res) => {
     //res.send(`POST LOGIN [${data.message}]`);
     res.end(`<html><body>POST LOGIN [${data.message}] <a href='/'>Home</a></body></html>`);
   });
-  //res.end('POST LOGIN');
 });
-
-module.exports=app;
+//EXPORT
+module.exports = router

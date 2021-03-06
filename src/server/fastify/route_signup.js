@@ -7,9 +7,14 @@
 
  */
 
+const user=require('../model/user');
+
+function isEmpty(str) {
+  return (typeof str === 'string' && 0 === str.length);
+}
 // HTML PAGE
 function signUpPage() {
-  return '<html>' +
+  return '<!doctype html><html lang="en">' +
     '<head><title>Sign Up</title></head>' +
     '<body>' +
     '<label>Sign Up</label>' +
@@ -18,12 +23,17 @@ function signUpPage() {
     '<tr><td>'+
     '<label>Alias:</label>' +
     '</td><td>'+
-    '<input type="text" name="alias" value="testalias">' +
+    '<input type="text" name="alias" value="testalias" placeholder="alias">' +
     '<td></tr>'+
     '<tr><td>'+
-    '<label>Passphrase:</label>' +
+    '<label>Passphrase 1:</label>' +
     '</td><td>'+
-    '<input type="passphrase" name="passphrase" value="testpass">' +
+    '<input type="text" name="passphrase1" value="testpass"  placeholder="passphrase">' +
+    '<td></tr>'+
+    '<tr><td>'+
+    '<label>Passphrase 2:</label>' +
+    '</td><td>'+
+    '<input type="text" name="passphrase2" value="testpass"  placeholder="passphrase">' +
     '<td></tr>'+
     '<tr><td colspan="2">'+
     '<a href="/">Home</a>'+
@@ -32,7 +42,7 @@ function signUpPage() {
     '</table>'+
     '</form>' +
     '</body>' +
-    '</html>'
+    '</html>';
 }
 //ROUTES
 module.exports = function (fastify, opts, done) {
@@ -43,11 +53,27 @@ module.exports = function (fastify, opts, done) {
   });
   // POST SIGN UP
   fastify.post('/signup', function (request, reply) {
-    const { alias, passphrase } = request.body;
+    reply.type('text/html');
+    //const { alias, passphrase } = request.body;
     //console.log(request.session);
-    console.log("alias:",alias);
-    console.log("passphrase:",passphrase);
-    reply.send("POST SIGN UP");
+    //console.log("alias:",alias);
+    //console.log("passphrase:",passphrase);
+    //reply.send("POST SIGN UP");
+    const { alias, passphrase1, passphrase2} = request.body;
+    if(isEmpty(alias)==true || isEmpty(passphrase1)==true || isEmpty(passphrase2)==true || passphrase1!=passphrase2){
+      reply.send('Not the Alias || passphrase');
+      return;
+    }
+
+    user.create(alias, passphrase1, passphrase2, (error, data) => {
+      if(error){
+        reply.send('signup error!');
+        return;
+      }
+      console.log(data);
+      reply.send(`<html><body>POST SIGNUP [${data.message}] <a href='/'>Home</a></body></html>`);
+      return;
+    });
   });
   // FINISH
   done();

@@ -32,31 +32,28 @@ const fastifyCaching = require('fastify-caching');
 const fastifyFormbody = require('fastify-formbody');
 //const SESSION_SECRET = 'a secret with minimum length of 32 characters';
 //var SESSION_TTL = 864e3; // 1 day in seconds
+var db = require('./db/hcv1/index');
+// DATABASE
+//console.log(db);
+console.log('Init Database...');
+db.init();
+//console.log(db.get());
 // Require the framework and instantiate it
+console.log('Init Fastify Web Server Modules...')
 const fastify = require('fastify')({ 
   //logger: true 
   logger: false
 });
-
-// HYPERCORE
-var hyperCore = require('./db/hcv1/index');
-console.log(hyperCore);
-hyperCore.init();
-//console.log(hyperCore.get());
-
-
 // https://stackoverflow.com/questions/35408729/express-js-prevent-get-favicon-ico/35408810
 //fastify.register(require('fastify-favicon'))
 fastify.get('/favicon.ico', function (request, reply) {
   console.log("No Favicon!");
   reply.code(204); // 204 No Content
 });
-
 // BODY PRASE
 fastify.register(fastifyFormbody);
 fastify.register(fastifyCookie);
 fastify.register(fastifyCaching);
-
 //===============================================
 // START SESSION
 //===============================================
@@ -128,7 +125,7 @@ fastify.register(require('fastify-static'), {
 // https://www.fastify.io/docs/latest/Hooks/
 fastify.addHook('preHandler', (request, reply, next) => {
   //console.log(request.session);
-  console.log("sessionId: ",request.session.sessionId);
+  //console.log("sessionId: ",request.session.sessionId);
   let views = request.session.views || 0;
   request.session.views = ++views;
   console.log("views",request.session.views);
