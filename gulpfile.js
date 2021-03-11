@@ -14,11 +14,20 @@ const nodemon = require('gulp-nodemon');
 const src_client_file=[
   './src/client/client_access.js'
   ,'./src/client/client_theme.js'
+  ,'./src/client/client_gethint.js'
+  ,'./src/client/client_account.js'
 ];
 
 const src_html_file=[
   './src/html/access_page.html'
   ,'./src/html/theme.html'
+  ,'./src/html/icons.html'
+];
+
+const src_svg_file=[
+  './src/files/star.svg'
+  ,'./src/files/cross.svg'
+  ,'./src/files/underscore.svg'
 ];
 
 const output_dest = 'public';
@@ -37,9 +46,14 @@ function copy_html(callback){
   // task body
   return src(src_html_file)
     .pipe(dest(output_dest));
-  //callback();
 }
 exports.copy_html = copy_html;
+// COPY SVG
+function copy_svg(callback){
+  return src(src_svg_file)
+    .pipe(dest(output_dest));
+}
+exports.copy_svg = copy_svg;
 // WATCH FILES
 function watchFiles(callback) {
   watch(src_client_file, client_build);
@@ -87,7 +101,13 @@ function reload_server(done) {
 exports.reload_server = reload_server;
 // GULP DEFAULT CONFIGS
 //exports.default = series(runLinter,parallel(generateCSS,generateHTML),runTests);
-exports.default = series(client_build, copy_html, watchFiles, reload_server);
+exports.default = series(
+  client_build
+  , copy_html
+  , copy_svg
+  , watchFiles
+  , reload_server
+);
 //cmd: gulp default 
 
 

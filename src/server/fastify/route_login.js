@@ -8,14 +8,16 @@
  */
 
 const user=require('../model/user');
+var { isEmpty }=require('../model/utilities');
 
-function isEmpty(str) {
-  return (typeof str === 'string' && 0 === str.length);
-}
 // HTML PAGE
 function loginPage () {
   return '<html>' +
-    '<head><title>Login</title></head>' +
+    `<head>
+      <title>Login</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    ` +
     '<body>' +
     '<label>Login</label>' +
     '<form action="/login" method="post">' +
@@ -47,7 +49,7 @@ module.exports = function (fastify, opts, done) {
     reply.send(loginPage());
   });
   // POST LOGIN
-  fastify.post('/login', function (request, reply) {
+  fastify.post('/login', async function (request, reply) {
     reply.type('text/html');
     const { alias, passphrase } = request.body;
     //console.log(request.session);
@@ -55,35 +57,20 @@ module.exports = function (fastify, opts, done) {
     //console.log("passphrase:",passphrase);
     //reply.send("POST LOGIN");
     if(isEmpty(alias)==true || isEmpty(passphrase)==true){
-      reply.send('Not the Alias || passphrase');
+      reply.send('Empty Alias || passphrase');
       return;
     }
-
-    user.authenticate(alias, passphrase, (error,data) => {
-      if(error){
-        console.log('error >> ');
-        console.log(error);
-      }
-      //console.log(data);
-      if(data){
-        if(data.message=='FOUND'){
-          console.log('SET COOOKIE');
-          //res.setCookie('token', data.token );
-          //let cookies = new Cookies(req, res, { keys: keys });
-          //cookies.set('token', data.token, { signed: true });
-          console.log('data.token:',data.token);
-          request.session.token=data.token;
-        }
-      }
-      reply.send(`<html><body>POST LOGIN [${data.message}] <a href='/'>Home</a></body></html>`);
-      //res.end(`<html><body>POST LOGIN [${data.message}] <a href='/'>Home</a></body></html>`);
+    let data = await user.loginAliasSync({
+      alias:alias
+      ,passphrase:passphrase
     });
-
-
-
-
-
-
+    //console.log(data);
+    if(data){
+      request.session.token=data;
+      reply.send(`<html><body>POST LOGIN [Pass] <a href='/'>Home</a></body></html>`);
+    }else{
+      reply.send(`<html><body>POST LOGIN [Fail] <a href='/'>Home</a></body></html>`);
+    }
   });
   // FINISH
   done();

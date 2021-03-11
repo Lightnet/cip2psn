@@ -170,7 +170,7 @@ function html_index(){
   <body>
     <a href="/login">Login</a>
     <a href="/signup">Sign Up</a>
-    <a href="/forgot">Forgot</a>
+    <!--<a href="/forgot">Forgot</a>-->
     <br> <label> Weclome Guest! [Restify]</label>
   </body>
 </html>

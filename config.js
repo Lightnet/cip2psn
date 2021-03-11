@@ -13,6 +13,13 @@ var config={
   //COOKIE
   ,cookieId:'sessionid'
   ,cookieKey:'cookieKey'
+  ,isEmail:false
+  ,email:{
+    login:'user'
+    ,pass:'pass'
+    ,host:'localhost'
+    ,port:507
+  }
 };
 //exports=config;
 module.exports = config;

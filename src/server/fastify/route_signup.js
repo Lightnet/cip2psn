@@ -7,15 +7,17 @@
 
  */
 
+const e = require('express');
 const user=require('../model/user');
+var { isEmpty }=require('../model/utilities');
 
-function isEmpty(str) {
-  return (typeof str === 'string' && 0 === str.length);
-}
 // HTML PAGE
 function signUpPage() {
-  return '<!doctype html><html lang="en">' +
-    '<head><title>Sign Up</title></head>' +
+  return `<!doctype html><html lang="en">` +
+    `<head>
+      <title>Sign Up</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>` +
     '<body>' +
     '<label>Sign Up</label>' +
     '<form action="/signup" method="post">' +
@@ -52,7 +54,7 @@ module.exports = function (fastify, opts, done) {
     reply.send(signUpPage());
   });
   // POST SIGN UP
-  fastify.post('/signup', function (request, reply) {
+  fastify.post('/signup',async function (request, reply) {
     reply.type('text/html');
     //const { alias, passphrase } = request.body;
     //console.log(request.session);
@@ -65,15 +67,19 @@ module.exports = function (fastify, opts, done) {
       return;
     }
 
-    user.create(alias, passphrase1, passphrase2, (error, data) => {
-      if(error){
-        reply.send('signup error!');
-        return;
-      }
-      console.log(data);
-      reply.send(`<html><body>POST SIGNUP [${data.message}] <a href='/'>Home</a></body></html>`);
+    let isExist = await user.checkAliasExistSync(alias);
+    if(isExist){
+      //reply.send('Alias Exist!');
+      reply.send(`<html><body>POST SIGNUP [ Alias Exist! ] <a href='/'>Home</a></body></html>`);
       return;
-    });
+    }
+
+    let isDone = await user.createAliasSync({alias:alias,passphrase:passphrase1 });
+    if(isDone){
+      reply.send(`<html><body>POST SIGNUP [${isDone}] <a href='/'>Home</a></body></html>`);
+    }else{
+      reply.send('Alias Error!');
+    }
   });
   // FINISH
   done();

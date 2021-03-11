@@ -2,8 +2,39 @@
 
 
 ```javascript
+const Gun =require('gun');
+const SEA =require('gun/sea');
 
+var pass='test';
+//1 method random salt
+let salt = Gun.text.random(64);
+console.log(salt);
+let saltkey = await SEA.work(pass,salt);
+
+//2 method random salt
+let saltkey = await SEA.work(pass);
+
+//encode
+var enc = await SEA.encrypt('hello self', saltkey);
+//decode
+var dec = await SEA.decrypt(enc, saltkey);
+console.log('dec1: ',dec);
+
+//note it can used once for password checked
+
+let saltkey = await SEA.work(pass);
+var enc = await SEA.encrypt('hello self', saltkey);
+var dec = await SEA.decrypt(enc, saltkey);
+console.log('dec1: ',dec); //pass
+
+saltkey = await SEA.work(pass);
+dec = await SEA.decrypt(enc, saltkey);
+console.log('dec1: ',dec); //fail
+//note there are other package to compare password
+//sea.js has but not look into how it check password salt
 ```
+
+
 
 
 

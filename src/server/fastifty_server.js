@@ -16,20 +16,21 @@
 // https://github.com/fastify/fastify-auth
 // https://github.com/fastify/example/blob/master/fastify-session-authentication/authentication.js
 // https://devhints.io/fastify CHEATS
-//===============================================
-//https://www.npmjs.com/package/fastify-csrf
-//===============================================
+// https://www.npmjs.com/package/fastify-csrf
 // https://github.com/mgcrea/fastify-session
-//const fastifySession = require('@mgcrea/fastify-session');
 // https://www.npmjs.com/package/fastify-session
-//const fastifySession = require('fastify-session'); // error FastifyDeprecation: request 
 // https://openbase.com/js/fastify-server-session/documentation
+//const fastifySession = require('@mgcrea/fastify-session');
+//const fastifySession = require('fastify-session'); // error FastifyDeprecation: request 
 //const fastifySession = require('fastify-server-session'); // error FastifyDeprecation: request 
 //===============================================
+//const localIpUrl = require('local-ip-url');
+//console.log(localIpUrl());
 const path = require('path');
 const fastifyCookie = require('fastify-cookie');
 const fastifyCaching = require('fastify-caching');
 const fastifyFormbody = require('fastify-formbody');
+//const mobile = require('is-mobile');
 //const SESSION_SECRET = 'a secret with minimum length of 32 characters';
 //var SESSION_TTL = 864e3; // 1 day in seconds
 var db = require('./db/hcv1/index');
@@ -57,30 +58,8 @@ fastify.register(fastifyCaching);
 //===============================================
 // START SESSION
 //===============================================
-/*
-var { session } = require('fastify-session-sets');
-fastify.register( session , {
-  references: {
-    user_id: {}
-  }
-});
-*/
-//fastify.register(fastifyCookie);
-// fastify-server-session
-// https://github.com/jsumners/fastify-server-session/issues/9
-/*
-fastify.register(require('fastify-server-session'), {
-  secretKey: 'some-secret-password-at-least-32-characters-long',
-  sessionMaxAge: 900000, // 15 minutes in milliseconds
-  cookie: {
-    //domain: '.example.com',
-    path: '/'
-  }
-});
-*/
 // https://github.com/SerayaEryn/fastify-session
 // https://www.npmjs.com/package/fastify-session
-
 //let fastifySession = require(`fastify-session`);
 //let mySessionStore = new fastifySession.MemoryStore;
 //console.log(mySessionStore);
@@ -95,11 +74,10 @@ fastify.register(require('fastify-session'), { //error on "Property: sessionStor
   //store: new SessionStore(),
   //store: mySessionStore
 });
-fastify.addHook('preHandler', (request, reply, next) => {
-  const session = request.session;
-  request.sessionStore.destroy(session.sessionId, next);
-}); //need to check later...
-
+//fastify.addHook('preHandler', (request, reply, next) => {
+  //const session = request.session;
+  //request.sessionStore.destroy(session.sessionId, next);
+//}); //need to check later...
 //===============================================
 // END SESSION
 //===============================================
@@ -109,7 +87,6 @@ fastify.register(require('fastify-static'), {
   //,prefix: '/public/', // optional: default '/'
   ,prefix:'/'
 });
-
 // https://github.com/fastify/fastify/blob/master/docs/Middleware.md
 // https://www.fastify.io/docs/latest/Decorators/
 // Decorate request with a 'user' property
@@ -117,13 +94,12 @@ fastify.register(require('fastify-static'), {
 //fastify.addHook('preHandler', (req, reply, done) => {
   //req.user = 'Bob Dylan';
   //done();
-//})
+//});
 // PLUGIN TEST
 //https://www.fastify.io/docs/latest/Plugins/
 //fastify.register(require('./fastify/myPlugin'));
-
 // https://www.fastify.io/docs/latest/Hooks/
-fastify.addHook('preHandler', (request, reply, next) => {
+fastify.addHook('onRequest', (request, reply, next) => {
   //console.log(request.session);
   //console.log("sessionId: ",request.session.sessionId);
   let views = request.session.views || 0;
@@ -131,7 +107,6 @@ fastify.addHook('preHandler', (request, reply, next) => {
   console.log("views",request.session.views);
   next();
 });
-
 /*
 fastify.addHook('preHandler', (request, reply, next) => {
   // Some code
@@ -151,38 +126,43 @@ fastify.addHook('preHandler', (request, reply, next) => {
   next();
 });
 */
-
+// https://github.com/fastify/help/issues/50
+//fastify.addHook('onRequest', (req, reply, done) => {
+  //req.log.info({ url: req.raw.url, id: req.id }, 'received request');
+  //console.log('isMobile?:',
+    //mobile({ ua: req })
+  //);
+  //done();
+//})
 //===============================================
 // ROUTES
 //===============================================
-// Declare a route index #1
-//fastify.get('/', async (request, reply) => {
-  //return { hello: 'world' }
-//})
-// Declare a route index #2
-//fastify.get('/', function (request, reply) {
-  //reply.send({ hello: 'world' });
-//});
-// Declare a route index #3
 fastify.register(require('./fastify/route_index'));
-//fastify.register(require('./fastify/route_login')); //added into the index route
-// PORT SERVER
+// SERVER PORT
 const PORT = process.env.PORT || 3000;
 // LISTEN TRY CATCH
 const start = async () => {
-  // Run the server!
+  // TRY RUN SERVER!
   try {
     // https://www.fastify.io/docs/v1.13.x/Server/
+    // https://www.fastify.io/docs/latest/Server/
     //await fastify.listen(PORT);
     //console.log(`Fastify server running on http://localhost:${PORT}`);
-    fastify.listen(PORT, (err, address) => {
-      if (err) {
-        fastify.log.error(err);
-        process.exit(1);
-      }
-      //console.log(address);
-      //console.log(`>Fastify server running on http://localhost:${PORT}`);
-      console.log(`>Fastify server running on %s`,address);
+    // SERVER LISTEN 
+    fastify.listen(
+      {
+        port:PORT
+        //,host: '127.0.0.1' // localhost dev, closed network
+        ,host: '0.0.0.0' // open to network
+      }  
+      , (err, address) => {
+        if (err) {
+          fastify.log.error(err);
+          process.exit(1);
+        }
+        //console.log(address);
+        //console.log(`>Fastify server running on http://localhost:${PORT}`);
+        console.log(`>Fastify server running on %s`,address);
     });
   } catch (err) {
     fastify.log.error(err);

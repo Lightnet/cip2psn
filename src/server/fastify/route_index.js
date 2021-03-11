@@ -10,17 +10,21 @@
 // https://www.fastify.io/docs/latest/Decorators/
 // https://www.fastify.io/docs/latest/Routes/
 // https://github.com/fastify/fastify/blob/master/docs/Routes.md
+
+const user=require('../model/user');
+//var { isEmpty }=require('../model/utilities');
 // INDEX PAGE
 function html_index(){
   return `
 <html>
   <head>
     <title>Fastify</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
     <a href="/login">Login</a>
     <a href="/signup">Sign Up</a>
-    <!--<a href="/forgot">Forgot</a>-->
+    <a href="/forgot">Forgot</a>
     <br> <label> Weclome Guest! [Fastify]</label>
   </body>
 </html>
@@ -32,6 +36,7 @@ function html_main(){
 <html>
   <head>
     <title>Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
     <a href="/logout">Logout</a>
@@ -47,7 +52,6 @@ async function routes (fastify, options, done) {
   //});
   // GET INDEX PAGE
   fastify.get('/', async function (request, reply) {
-
     reply.code(200);
     reply.header('Content-Type', 'text/html');
     let token=request.session.token;
@@ -58,12 +62,6 @@ async function routes (fastify, options, done) {
       body=html_index();
     }
     reply.send(body);
-    //console.log(request.session);
-    //request.user="tester";
-    //console.log(request.user);
-    //reply.send({ hello: 'world! fastify!' });
-    //console.log(request.session);
-    //reply.view('./src/server/templates/index.ejs', { alias: 'Guest' });
   });
 
   fastify.get('/logout', async function (request, reply) {
@@ -71,6 +69,31 @@ async function routes (fastify, options, done) {
     reply.type('text/html');
     console.log('LOGOUT');
     request.session.token=null;
+    reply.send(`<html><body>[ Logout ] <a href="/">Home</a></body></html>`);
+  });
+
+  fastify.get('/test', async function (request, reply) {
+    reply.code(200);
+    reply.type('text/html');
+
+
+    let data = await user.createAliasSync({
+      //alias:'testalias'
+      alias:'t'
+      ,passphrase:'testpass'
+    });
+    console.log(data);
+
+
+    //let data = await user.loginAliasSync({
+      //alias:'testalias'
+      //,passphrase:'testpass'
+    //});
+    //console.log('data:',data);
+
+    //let isExist = await user.checkAliasExistSync('testalias');
+    //console.log('isExist:',isExist);
+    
     reply.send(`<html><body>[ Logout ] <a href="/">Home</a></body></html>`);
   });
 
@@ -96,6 +119,7 @@ async function routes (fastify, options, done) {
   fastify.register(require('./route_login')); // works
   fastify.register(require('./route_signup')); // 
   fastify.register(require('./route_forgot')); // 
+  fastify.register(require('./route_account')); // 
   // FINISH
   done();
 }

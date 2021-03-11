@@ -2,13 +2,17 @@
  * Frameworks design are either beginner to know how to base on user experience. 
  * Pass/store variable are some time lock down leaks.
 
+# Notes:
+  * There are default package limiter to prevent post inject.
+  * 
+
 # Restify:
  * Not design for web browser. (opinion)
  * Design like feeds or data sheet. (opinion)
  * Out date more months of add on packages.
  * No session. Cookie is tricky to set up bit. But the package restify-cookies work ease.
  * It can be chain array for respond.
- * Chain pass variable, but can't store variable pass
+ * Chain pass variable, but can't store variable pass.
  * Has build in plugins
  * Has module design
 
@@ -47,7 +51,9 @@ polka()
  
 # Express:
  * Easy to used.
+ * Most post/blog has some basic tutorial.
  * Has a lot of dependency packages.
+ * Easy to read docs.
 
 ```javascript
 const express = require('express')

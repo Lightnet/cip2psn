@@ -20,9 +20,6 @@ function isMobile(){
   }
 }
 console.log("isMobile:",isMobile);
-
-
-
 //===============================================
 // LOGIN PANEL
 //===============================================
@@ -102,9 +99,6 @@ var DivNavBarTop =el("div",{
   }
 });
 mount(document.body, DivNavBarTop);
-
-
-
 
 //var access_panel =el("div");
 //const hello = el("h1", "Hello world!");
