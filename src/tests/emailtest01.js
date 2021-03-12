@@ -1,3 +1,12 @@
+/**
+  Project Name: cip2psn
+
+  LICENSE: MIT
+
+  Created By: Lightnet
+
+ */
+
 // https://github.com/nodemailer/nodemailer/issues/504
 // https://www.reddit.com/r/node/comments/cypwb0/nodemailer_isnt_sending_mail_but_saying_that_it/
 

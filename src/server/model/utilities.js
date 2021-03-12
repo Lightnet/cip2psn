@@ -6,6 +6,7 @@
   Created By: Lightnet
 
  */
+
 //===============================================
 // CHECK POST STRING IF EMPTY
 function isEmpty(str) {

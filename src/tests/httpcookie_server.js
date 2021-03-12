@@ -1,3 +1,12 @@
+/**
+  Project Name: cip2psn
+
+  LICENSE: MIT
+
+  Created By: Lightnet
+
+ */
+
 // https://nodejs.org/api/http.html
 // https://flaviocopes.com/cookies/
 // https://stackoverflow.com/questions/3393854/get-and-set-a-single-cookie-with-node-js-http-server
@@ -78,15 +87,10 @@ server.on('request', function(req, res) {
     ,maxAge:3000
   });
   //res.setHeader('Set-Cookie', newCookie);
-
-
-
   console.log(cookies);
   // do something with the request
   res.end('Hello World\n');
 });
-
-
 
 /*
 http.createServer(function ( request, response ) {
@@ -105,16 +109,13 @@ http.createServer(function ( request, response ) {
   //response.setHeader('Set-Cookie', newCookie);
   //response.setHeader('set-cookie', newCookie);
 
-
   //response.headers['Set-Cookie'].push(newCookie);//does not work
   //setCookie.push(newCookie);
   //console.log(setCookie);
   
-
   const setCookie = response.getHeader('set-cookie');
   console.log('setCookie',setCookie);
 
-  
   //let cookies = parseCookies( request.headers.cookie );
   //console.log( 'Input cookies: ', cookies );
   //cookies.search = 'google';

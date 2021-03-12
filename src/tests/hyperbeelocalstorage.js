@@ -1,3 +1,12 @@
+/**
+  Project Name: cip2psn
+
+  LICENSE: MIT
+
+  Created By: Lightnet
+
+ */
+
 // https://npm.io/package/pouchdb-adapter-hyperbee
 
 const chalk = require('chalk');

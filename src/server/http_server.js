@@ -1,5 +1,11 @@
+/**
+  Project Name: cip2psn
 
+  LICENSE: MIT
 
+  Created By: Lightnet
+
+ */
 
 // https://www.w3schools.com/nodejs/nodejs_http.asp
 // https://stackoverflow.com/questions/3393854/get-and-set-a-single-cookie-with-node-js-http-server

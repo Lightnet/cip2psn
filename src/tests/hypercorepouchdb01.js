@@ -1,3 +1,12 @@
+/**
+  Project Name: cip2psn
+
+  LICENSE: MIT
+
+  Created By: Lightnet
+
+ */
+
 const chalk = require('chalk')
 const hypercore = require('hypercore')
 const ram = require('random-access-memory')

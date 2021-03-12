@@ -7,7 +7,7 @@
 
  */
 
-  // https://www.npmjs.com/package/assert
+// https://www.npmjs.com/package/assert
 // https://www.javatpoint.com/nodejs-assertion-testing
 "use strict";
 

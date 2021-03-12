@@ -1,5 +1,29 @@
 # CHEAT SHEETS
 
+
+
+
+Links:
+ * https://www.npmjs.com/package/pouchdb-adapter-hyperbee
+
+
+# pouchdb
+```javascript
+const PouchDB = require('pouchdb');
+const db = new PouchDB('my-database');//file name
+doc = {
+    name: 'Peter',
+    age: 23,
+    occupation: 'designer'
+};
+db.post(doc).then((res) => {
+    console.log("Document inserted OK");
+}).catch((err) => {
+    console.error(err);
+});
+```
+
+# nodejs sub module package
 ```javascript
 //creating sub module need default file name.
 /testfolder
@@ -129,3 +153,111 @@ gun.get('data1')
 });
 
 ```
+# Promise
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await
+
+```javascript
+let myPromise = new Promise(function(myResolve, myReject) {
+  // "Producing Code" (May take some time)
+  
+    myResolve("OK"); // when successful
+    myReject("Error");  // when error
+});
+// "Consuming Code" (Must wait for a fulfilled Promise)
+myPromise.then(
+  function(value) {  //code if successful 
+    console.log('value:',value);
+  },
+  function(error) { // code if some error 
+    console.log('error:',error);
+  }
+);
+function resolveAfter2Seconds(x) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(x);
+    }, 2000);
+  });
+}
+async function f1() {
+  var x = await resolveAfter2Seconds(10);
+  console.log(x); // 10
+}
+f1();
+
+```
+# crypto
+
+```javascript
+// https://cryptojs.gitbook.io/docs/
+const crypto = require('crypto');
+const assert = require('assert');
+// Generate Alice's keys...
+const alice = crypto.createECDH('secp521r1');
+const aliceKey = alice.generateKeys();
+// Generate Bob's keys...
+const bob = crypto.createECDH('secp521r1');
+console.log(bob);
+const bobKey = bob.generateKeys();
+console.log(bobKey);
+// Exchange and generate the secret...
+const aliceSecret = alice.computeSecret(bobKey);
+const bobSecret = bob.computeSecret(aliceKey);
+assert.strictEqual(aliceSecret.toString('hex'), bobSecret.toString('hex'));
+// OK
+
+var prime_length = 60;
+var diffHell = crypto.createDiffieHellman(prime_length);
+diffHell.generateKeys('base64');
+console.log("Public Key : " ,diffHell.getPublicKey('base64'));
+console.log("Private Key : " ,diffHell.getPrivateKey('base64'));
+console.log("Public Key : " ,diffHell.getPublicKey('hex'));
+console.log("Private Key : " ,diffHell.getPrivateKey('hex'));
+const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
+  modulusLength: 2048,
+  publicKeyEncoding: {
+    type: 'spki',
+    format: 'pem'
+  },
+  privateKeyEncoding: {
+    type: 'pkcs8',
+    format: 'pem'
+  }
+}); 
+console.log('publicKey:', publicKey)
+console.log('privateKey:', privateKey)
+```
+# SEA
+```javascript
+// https://gun.eco/docs/SEA#quickstart
+// https://github.com/amark/gun/blob/master/sea.js
+
+const Gun =require('gun');
+const SEA =require('gun/sea');
+var pair = await SEA.pair();
+let pass = 'test';
+let salt = Gun.text.random(64);
+let saltkey1 = await SEA.work(pass, salt);
+let saltkey2 = await SEA.work(pass);
+
+
+
+```
+
+```javascript
+```
+
+```javascript
+```
+
+```javascript
+```
+
+```javascript
+```
+
+```javascript
+```
+
+
+

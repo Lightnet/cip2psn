@@ -1,3 +1,11 @@
+/**
+  Project Name: cip2psn
+
+  LICENSE: MIT
+
+  Created By: Lightnet
+
+ */
 
 // https://medium.com/sean3z/json-web-tokens-jwt-with-restify-bfe5c4907e3c
 "use strict";

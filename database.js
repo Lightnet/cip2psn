@@ -1,3 +1,12 @@
+/**
+  Project Name: cip2psn
+
+  LICENSE: MIT
+
+  Created By: Lightnet
+
+ */
+
 /*
   To test the stand alone database or peer to peer network.
 */

@@ -8,11 +8,11 @@
  */
 const router = require('@koa/router')();
 const user=require('../model/user');
-
+//
 function isEmpty(str) {
   return (typeof str === 'string' && 0 === str.length);
 }
-
+//
 function html_signup(){
   return '<!doctype html><html lang="en">' +
     '<head><title>Sign Up</title></head>' +
@@ -44,38 +44,12 @@ function html_signup(){
     '</body>' +
     '</html>';
 }
-
+//
 async function get_signup(ctx) {
   //ctx.body = 'GET Login';
   ctx.body = html_signup();
 }
-
-function signUpSync(alias, passphrase1, passphrase2) {
-  return new Promise((resolve) => {
-    user.create(alias, passphrase1, passphrase2, (error, data) => {
-      //res.send(data);
-      //console.log(error);
-      //console.log(data);
-      if(error){
-        //res.send('signup error!');
-        console.log('ERROR SIGN UP');
-        return resolve(error);
-        //return next(false);
-      }
-      console.log(data);
-      return resolve(data);
-      //console.log(data);
-      //let payload;
-      //payload = jwt.verify(data, jwtKey);
-      //console.log(payload);
-      //res.send('POST SIGNUP! [' + data.message + ']');
-      //res.end(`<html><body>POST SIGNUP [${data.message}] <a href='/'>Home</a></body></html>`);
-      //return next(false);
-    })
-
-  });
-}
-
+//
 // https://github.com/koajs/koa/issues/719
 // https://www.npmjs.com/package/koa-body
 async function post_signup(ctx) {

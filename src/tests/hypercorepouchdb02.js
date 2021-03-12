@@ -1,5 +1,13 @@
-// https://npm.io/package/pouchdb-adapter-hyperbee
+/**
+  Project Name: cip2psn
 
+  LICENSE: MIT
+
+  Created By: Lightnet
+
+ */
+
+// https://npm.io/package/pouchdb-adapter-hyperbee
 // NOTE:
 // RAM DOES NOT STORE LOCAL FILE
 
