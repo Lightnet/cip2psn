@@ -5,9 +5,8 @@
 
   Created By: Lightnet
 
- */
+*/
 
-const e = require('express');
 const user=require('../model/user');
 var { isEmpty }=require('../model/utilities');
 
@@ -63,7 +62,7 @@ module.exports = function (fastify, opts, done) {
     //reply.send("POST SIGN UP");
     const { alias, passphrase1, passphrase2} = request.body;
     if(isEmpty(alias)==true || isEmpty(passphrase1)==true || isEmpty(passphrase2)==true || passphrase1!=passphrase2){
-      reply.send('Not the Alias || passphrase');
+      reply.send('Either Empty Field Alias || passphrase');
       return;
     }
 

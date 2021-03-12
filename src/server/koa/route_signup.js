@@ -87,19 +87,25 @@ async function post_signup(ctx) {
   //ctx.body = 'POST Signup';
 
   let {alias, passphrase1, passphrase2 } = ctx.request.body;
-  if(!alias || !passphrase1 || !passphrase2 || passphrase1!=passphrase2){
+  if(isEmpty(alias)==true || isEmpty(passphrase1)==true || isEmpty(passphrase2)==true || passphrase1!=passphrase2){
     //res.send({error:'Not the Alias || passphrase'});
     ctx.body='Not the Alias || passphrase';
     return;
   }
-
-  let data = await signUpSync(alias, passphrase1, passphrase2);
-  if(data){ 
-    console.log(data);
+  let message='FAIL';
+  let isExist = await user.checkAliasExistSync(alias);
+  if(isExist){
+    //reply.send('Alias Exist!');
+    ctx.body=`<html><body> SIGNUP [ Alias Exist! ] <a href='/'>Home</a></body></html>`;
+    return;
   }
-  //res.end(`<html><body>POST SIGNUP [${data.message}] <a href='/'>Home</a></body></html>`);
-  ctx.body=`<html><body>POST SIGNUP [${data.message}] <a href='/'>Home</a></body></html>`;
 
+  let isDone = await user.createAliasSync({alias:alias,passphrase:passphrase1 });
+  if(isDone){
+    ctx.body=`<html><body>POST SIGNUP [${isDone}] <a href='/'>Home</a></body></html>`;
+  }else{
+    ctx.body='Alias Error!';
+  }
 }
 
 // route definitions

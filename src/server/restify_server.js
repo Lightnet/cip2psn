@@ -36,9 +36,14 @@ const user = require('./model/user');
 const jwt = require("jsonwebtoken");
 const config=require('../../config');
 //const jwtKey = "my_secret_key";
-
+//===============================================
+// INIT DATABASE
 db.init();
-
+//===============================================
+// HELPER FUNCTIONS
+function isEmpty(str) {
+  return (typeof str === 'string' && 0 === str.length);
+}
 //===============================================
 // CREATE SERVER
 var server = restify.createServer({
@@ -71,7 +76,8 @@ server.use(restify.plugins.bodyParser());
 //server.use(restify.plugins.context()); //not working
 server.use(restify.plugins.pre.context()); //
 // https://github.com/restify/errors
-
+//===============================================
+// AUTH CHECKS
 function authenticate(req, res, next){
   console.log(req.url);
   console.log('req.method',req.method);
@@ -81,9 +87,12 @@ function authenticate(req, res, next){
   if(req.url=='/signup'){
     return next();
   }
-  //if(req.url=='/forgot'){
-    //return next();
-  //}
+  if(req.url=='/logout'){
+    return next();
+  }
+  if(req.url=='/forgot'){
+    return next();
+  }
   if(req.url=='/' && req.method=='GET'){
     res.status(200);
     return next();
@@ -121,7 +130,6 @@ function authenticate(req, res, next){
   return next();
 }
 server.use(authenticate);
-
 //================================================
 //server.use(restify.plugins.authorizationParser());
 //req.set('foo', 'bar');
@@ -192,6 +200,7 @@ function html_access(){
 }
 //===============================================
 // https://stackoverflow.com/questions/10973479/how-do-you-send-html-with-restify
+//===============================================
 // GET INDEX PAGE
 server.get('/', async function(req, res, next) {
   //res.header('content-type', 'text/html');
@@ -207,7 +216,6 @@ server.get('/', async function(req, res, next) {
     }catch(err){
       console.log('TOKEN ERROR');
     }
-    
   }
   console.log('token: ',token);
   let body;
@@ -224,7 +232,8 @@ server.get('/', async function(req, res, next) {
   res.end();
   return next();
 });
-
+//===============================================
+// TESTS
 server.get('/a', function(req, res, next) {
   //res.header('content-type', 'text/html');
   console.log(req.cookies['my-new-cookie']);
@@ -251,6 +260,7 @@ server.get('/c', function(req, res, next) {
   //return next();
 //});
 //===============================================
+// HTML LOGIN PAGE
 function loginPage() {
   return '<html>' +
     '<head><title>Login</title></head>' +
@@ -278,7 +288,7 @@ function loginPage() {
     '</html>'
 }
 //===============================================
-// LOGIN
+// LOGIN GET
 server.get('/login', function(req, res, next) {
   //res.send('hello world!');
   var body = loginPage();
@@ -290,15 +300,11 @@ server.get('/login', function(req, res, next) {
   res.end();
   return next();
 });
-
-function isEmpty(str) {
-  return (typeof str === 'string' && 0 === str.length);
-}
-server.post('/login', function(req, res, next) {
+//===============================================
+// LOGIN POST
+server.post('/login',async function(req, res, next) {
   //console.log("req login:");
   //console.log(req.body);
-  //console.log(req.username);
-  //console.log(req.authorization);
   let {alias, passphrase} = req.body;
 
   if(isEmpty(alias)==true || isEmpty(passphrase)==true){
@@ -306,29 +312,26 @@ server.post('/login', function(req, res, next) {
     return;
   }
 
-  user.authenticate(alias, passphrase, (error,data) => {
-    if(error){
-      console.log('error >> ');
-      console.log(error);
-    }
-    console.log(data);
-    if(data){
-      if(data.message=='FOUND'){
-        console.log('SET COOOKIE');
-        res.setCookie('token', data.token );
-      }
-    }
-    //res.send(data);
-    //res.send(`POST LOGIN [${data.message}]`);
-    res.end(`<html><body>POST LOGIN [${data.message}] <a href='/'>Home</a></body></html>`);
-    return next(false);
+  let data = await user.loginAliasSync({
+    alias:alias
+    ,passphrase:passphrase
   });
+
+  if(data){
+    res.setCookie('token', data );
+    //request.session.token=data;
+    //reply.redirect('/');
+    res.end(`<html><body>POST LOGIN [ PASS ] <a href='/'>Home</a></body></html>`);
+  }else{
+    res.end(`<html><body> LOGIN [ FAIL ] <a href='/'>Home</a></body></html>`);
+    return next(false);
+  }
+
   //res.send('POST LOGIN!');
   //return next();
 });
 //===============================================
-// SIGNUP
-
+// HTML SIGNUP PAGE
 function signUpPage() {
   return '<!doctype html><html lang="en">' +
     '<head><title>Sign Up</title></head>' +
@@ -360,6 +363,8 @@ function signUpPage() {
     '</body>' +
     '</html>';
 }
+//===============================================
+// SIGNUP GET
 server.get('/signup', function(req, res, next) {
   //res.send('hello world!');
   var body = signUpPage();
@@ -371,42 +376,43 @@ server.get('/signup', function(req, res, next) {
   res.end('test');
   return next();
 });
-
-server.post('/signup', function(req, res, next) {
+//===============================================
+// SIGNUP POST
+server.post('/signup',async function(req, res, next) {
   //console.log("req login:");
   //console.log(req.body);
   let {alias, passphrase1, passphrase2 } = req.body;
 
-  if(!alias || !passphrase1 || !passphrase2 || passphrase1!=passphrase2){
-    res.send({error:'Not the Alias || passphrase'});
+  if(isEmpty(alias)==true || isEmpty(passphrase1)==true || isEmpty(passphrase2)==true || passphrase1!=passphrase2){
+    res.send({error:'Either Empty Field Alias || passphrase'});
     return next(false);
   }
-  user.create(alias, passphrase1, passphrase2, (error, data) => {
-    //res.send(data);
-    //console.log(error);
-    //console.log(data);
-    if(error){
-      res.send('signup error!');
-      return next(false);
-    }
-    console.log(data);
-    //console.log(data);
-    //let payload;
-    //payload = jwt.verify(data, jwtKey);
-    //console.log(payload);
-    //res.send('POST SIGNUP! [' + data.message + ']');
-    res.end(`<html><body>POST SIGNUP [${data.message}] <a href='/'>Home</a></body></html>`);
+  let isExist = await user.checkAliasExistSync(alias);
+  if(isExist){
+    //res.writeHead(200, {
+      //'Content-Length': Buffer.byteLength(body),
+      //'Content-Type': 'text/html'
+    //});
+
+    res.end(`<html><body>POST SIGNUP [ Alias Exist! ] <a href='/'>Home</a></body></html>`);
     return next(false);
-  })
+  }
+  let isDone = await user.createAliasSync({alias:alias,passphrase:passphrase1 });
+  if(isDone){
+    res.end(`<html><body>SIGNUP [${isDone}] <a href='/'>Home</a></body></html>`);
+  }else{
+    res.end('Alias Error!');
+  }
+  return next(false);
+  
   //res.send('POST LOGIN!');
   //return next();
 });
 //===============================================
-// LOGOUT
+// LOGOUT GET
 server.get('/logout',async function(req, res, next) {
   //res.send('hello world!');
   res.clearCookie('token');
-  //user.test();
   //var body = 'LOGOUT';
   //res.writeHead(200, {
     //'Content-Length': Buffer.byteLength(body),
@@ -417,21 +423,6 @@ server.get('/logout',async function(req, res, next) {
   res.end(`<html><body>GET LOGOUT <a href='/'>Home</a></body></html>`);
   return next();
 });
-server.get('/logout2',async function(req, res, next) {
-  //res.send('hello world!');
-  user.test2();
-  var body = 'LOGOUT2';
-  res.send(body);
-  return next();
-});
-
-server.get('/logout3',async function(req, res, next) {
-  //res.send('hello world!');
-  user.test3();
-  var body = 'LOGOUT3';
-  res.send(body);
-  return next();
-});
 //===============================================
 // SERVER PORT
 const PORT = process.env.PORT || 3000;
@@ -440,7 +431,6 @@ server.listen(PORT, function() {
   var {address, port} = server.address();
   if(address=='::'){address="localhost";}
   console.log(`>Restify Server running on http://${address}:${port}`);
-
   //let hostname = server.name;
   //if(server.name=='::'){hostname='localhost';}
   //console.log(hostname);

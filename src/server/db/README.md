@@ -6,9 +6,11 @@
   Created By: Lightnet
 
  */
+# Information:
+  Trying to simplify some code builds.
 
-# hypercore
+# Databases:
  * https://hypercore-protocol.org/
-
-
  * https://pouchdb.com/download.html
+ * https://gun.eco/
+  * https://github.com/amark/gun

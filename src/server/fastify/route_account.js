@@ -11,6 +11,7 @@ const jwt = require("jsonwebtoken");
 const user=require('../model/user');
 const { isEmpty }=require('../model/utilities');
 const config = require('../../../config');
+const SEA = require('gun/sea');
 
 // HTML PAGE
 function accountPage () {
@@ -54,13 +55,54 @@ module.exports = function (fastify, opts, done) {
     console.log('question1',question1);
     console.log('question2',question2);
     console.log('hint',hint);
-    let chceckhint = await user.AliasSetHintSync({alias:alias,question1:question1,question2:question2,hint:hint});
+    let chceckhint = await user.aliasSetHintSync({alias:alias,question1:question1,question2:question2,hint:hint});
     if(chceckhint){
+      console.log('FOUND');
       reply.send({message:'FOUND',hint:chceckhint});
     }else{
+      console.log('NOTFOUND');
       reply.send({message:'NOTFOUND'});
     }
   });
+
+  fastify.post('/changepassphrase', async function (request, reply) {
+    const { oldpassphrase, newpassphrase } = JSON.parse(request.body);
+    console.log('oldpassphrase',oldpassphrase);
+    console.log('newpassphrase',newpassphrase);
+    reply.send({message:'TEST'});
+
+    let token = request.session.token;
+    if(!token){//401
+      reply.code( 401 ).send();
+      return;
+    }
+
+    try{
+      let data = jwt.verify(token, config.tokenKey);
+      //let saltkey = await SEA.work(data.key, data.alias);
+      //let sea = await SEA.decrypt(data.sea, saltkey);
+      //console.log('aliasId:',data.aliasId);
+      //console.log('sea');
+      //console.log(sea);
+      //console.log(data);
+
+      let isPassphraseChange = await user.aliasChangePassphraseSync({
+          alias:data.alias,
+          oldpassphrase:oldpassphrase,
+          newpassphrase:newpassphrase
+        });
+      console.log('isPassphraseChange:',isPassphraseChange);
+      reply.send({isPassphraseChange:isPassphraseChange});
+
+    }catch(e){
+      console.log('No Token //////////////!');
+      console.log(e);
+      reply.code( 401 ).send();
+    }
+    //let chceckhint = await user.aliasSetHintSync({alias:alias,question1:question1,question2:question2,hint:hint});
+
+  });
+
   
   // FINISH
   done();

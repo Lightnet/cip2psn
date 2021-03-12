@@ -14,8 +14,10 @@
 
 const jwt = require("jsonwebtoken");
 const bcrypt=require('bcrypt');
-var db=require('../db/hcv1/index');
-var config=require('../../../config');
+const db=require('../db/hcv1/index');
+const config=require('../../../config');
+const SEA = require('gun/sea');
+const {create32Key} =require('./utilities');
 //const jwtKey = "my_secret_key";
 //console.log('user init db?');
 //const jwtExpirySeconds = 300;
@@ -72,6 +74,13 @@ exports.createAliasSync = createAliasSync;
 //===============================================
 // LOGIN ALIAS
 //===============================================
+// https://stackoverflow.com/questions/45207104/how-to-set-jwt-token-expiry-time-to-maximum-in-nodejs
+// https://www.npmjs.com/package/jsonwebtoken
+// Backdate a jwt 30 seconds
+// iat: Math.floor(Date.now() / 1000) - 30
+// Signing a token with 1 hour of expiration:
+// exp: Math.floor(Date.now() / 1000) + (60 * 60),
+//  
 function loginAliasSync(data){
   return new Promise(resolve => {
     db.getAliasPassphrase(data,async function(error,data2){
@@ -88,9 +97,25 @@ function loginAliasSync(data){
           if(decoded){
             //TODOLIST need to work encoding safe data
             let saltkey = await SEA.work(data.passphrase, data.alias);
-            let sea = await SEA.encrypt(data2.sea, saltkey);
+            let sea = await SEA.decrypt(data2.sea, saltkey);
+            let key = await create32Key();
 
-            let token = jwt.sign({ alias: data.alias, sea:sea }, config.tokenKey);
+            saltkey = await SEA.work(key, data.alias);
+
+            //need to be encrypt that token can be read
+            sea = await SEA.encrypt(sea, saltkey); 
+            //console.log('///////////////////////////////////////////');
+            //console.log(data2)
+            //console.log('///////////////////////////////////////////');
+
+            let token = jwt.sign({ 
+              alias: data.alias
+              , aliasId:data2.aliasId
+              , key:key
+              , sea:sea
+              //set expiry  date
+              , exp: Math.floor(Date.now() / 1000) + (60 * 60)
+            }, config.tokenKey);
             //console.log(token);
             //return callback(null,{message:'FOUND',token:token});
             resolve(token);
@@ -127,14 +152,30 @@ function aliasGetHintSync(data){
   return new Promise(resolve => {
     db.aliasGetHint(data,(ack)=>{
       resolve(ack);
-    })
+    });
   });
 }
 exports.aliasGetHintSync = aliasGetHintSync;
 //===============================================
+// CHANGE PASSPHRASE
+//===============================================
+function aliasChangePassphraseSync(data){
+  return new Promise(async (resolve) => {
+    //TODOLIST
+    let isPassCheck = await db.aliasCheckPassphraseSync(data);
+    console.log('isPassCheck:',isPassCheck);
+    if(isPassCheck){
+      resolve(true);
+    }else{
+      resolve(false);
+    }
+  });
+}
+exports.aliasChangePassphraseSync = aliasChangePassphraseSync;
+//===============================================
 // TMP SET UP
 //===============================================
-//function createAliasSync(alias){
+//function createAliasSync(data){
   //return new Promise(resolve => {
     //resolve(null);
   //});
@@ -249,45 +290,6 @@ async function authenticate(alias,passphrase,callback){
   //return callback(token);
 }
 exports.authenticate = authenticate;
-
-async function test(){
-  console.log('test...');
-  try{
-    db.test1();
-    //let user = db.get().sub('user');
-    //let db = await db.get();
-    //console.log(db);
-    //let user = await db.sub('user');
-    //console.log(user)
-    //let node = await user.get('test');
-    //console.log('node');
-    //console.log(node);
-  }catch(e){
-    console.log('DATABASE ERROR GET');
-  }
-  
-};
-exports.test=test;
-
-async function test2(){
-  console.log('test2...');
-  try{
-    db.test2();
-  }catch(e){
-    console.log('DATABASE ERROR GET');
-  }
-};
-exports.test2=test2;
-
-async function test3(){
-  console.log('test3...');
-  try{
-    db.test3();
-  }catch(e){
-    console.log('DATABASE ERROR GET');
-  }
-};
-exports.test3=test3;
 
 // NEEDED? DB clear token, cookie, session?
 function logout(alias,token,callback){

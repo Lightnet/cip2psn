@@ -53,7 +53,7 @@ app.get('/', (req, res) => {
   res.end(signUpPage());
 });
 
-app.post('/', urlencodedParser, (req, res) => {
+app.post('/', urlencodedParser, async (req, res) => {
   //res.writeHead(200, { 'Content-Type': 'application/json' });
   res.writeHead(200, { 'Content-Type': 'text/html' });
   //console.log(req.body);
@@ -66,17 +66,19 @@ app.post('/', urlencodedParser, (req, res) => {
     res.end('Not the Alias || passphrase');
     return;
   }
-
-  //CHECK USER EXIST AND IF CREATE
-  user.create(alias, passphrase1, passphrase2, (error, data) => {
-    if(error){
-      res.end('signup error!');
-      return;
-    }
-    console.log(data);
-    res.end(`<html><body>POST SIGNUP [${data.message}] <a href='/'>Home</a></body></html>`);
+  let isExist = await user.checkAliasExistSync(alias);
+  if(isExist){
+    //reply.send('Alias Exist!');
+    res.end(`<html><body>POST SIGNUP [ Alias Exist! ] <a href='/'>Home</a></body></html>`);
     return;
-  });
+  }
+
+  let isDone = await user.createAliasSync({alias:alias,passphrase:passphrase1 });
+  if(isDone){
+    res.end(`<html><body>POST SIGNUP [${isDone}] <a href='/'>Home</a></body></html>`);
+  }else{
+    res.end('Alias Error!');
+  }
   //res.end('POST SIGN UP');
 });
 

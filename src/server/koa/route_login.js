@@ -56,38 +56,6 @@ async function get_login(ctx) {
 // https://www.npmjs.com/package/koa-body
 // https://nicedoc.io/koajs/csrf
 
-function AuthSync(alias,passphrase) {
-  return new Promise((resolve) => {
-    user.authenticate(alias, passphrase, (error,data) => {
-      if(error){
-        console.log('error >> ');
-        console.log(error);
-        return resolve(null);
-      }
-      //CHECK DATA
-      console.log(data);
-      if(data){
-        if(data.message=='FOUND'){
-          //console.log('SET COOOKIE');
-          //res.setCookie('token', data.token );
-          //ctx.cookies.set('token',data.token,{
-            //signed:true
-            //,maxAge:Date.now()
-          //});
-          //return ctx.body=`<html><body>POST LOGIN [${data.message}] <a href='/'>Home</a></body></html>`;
-          return resolve(data);
-        }else{
-          //return ctx.body=`<html><body>POST LOGIN [ FAIL ] <a href='/'>Home</a></body></html>`;
-          return resolve(data);
-        }
-      }else{
-        //return ctx.body=`<html><body>POST LOGIN [ FAIL ] <a href='/'>Home</a></body></html>`;
-        return resolve(data);
-      }
-    });
-  });
-}
-
 async function post_login(ctx) {
   console.log("POST!");
   //console.log("ctx.csrf:",ctx.csrf);
@@ -102,21 +70,23 @@ async function post_login(ctx) {
     ctx.body='Not the Alias || passphrase';
     return;
   }
-  // the used of Promise
-  let data = await AuthSync(alias,passphrase);
-  if(data){
-    console.log(data);
-    console.log('data.token');
-    console.log(data.token);
-    if(data.token){
-      ctx.cookies.set('token',data.token,{
-        signed:true
-        //,maxAge:Date.now()
-      });
-    }
-  }
 
-  ctx.body=`<html><body>POST LOGIN [===] <a href='/'>Home</a></body></html>`;
+  let data = await user.loginAliasSync({
+    alias:alias
+    ,passphrase:passphrase
+  });
+
+  if(data){
+    //request.session.token=data;
+    ctx.cookies.set('token',data,{
+      signed:true
+      //,maxAge:Date.now()
+    });
+    //reply.redirect('/');
+    ctx.body=`<html><body> LOGIN [ Pass ] <a href='/'>Home</a></body></html>`;
+  }else{
+    ctx.body=`<html><body> LOGIN [ Fail ] <a href='/'>Home</a></body></html>`;
+  }
 }
 // route definitions
 //router.get('/', index)

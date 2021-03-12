@@ -1,9 +1,9 @@
 // https://npm.io/package/pouchdb-adapter-hyperbee
 
-const chalk = require('chalk')
-const hypercore = require('hypercore')
+const chalk = require('chalk');
+const hypercore = require('hypercore');
 //const ram = require('random-access-memory')
-const Hyperbee = require('hyperbee')
+const Hyperbee = require('hyperbee');
 //const HyperbeeDown = require('hyperbeedown')
 //const PouchDB = require('pouchdb')
 

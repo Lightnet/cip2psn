@@ -9,7 +9,6 @@
 
 // https://hapi.dev/tutorials/auth/?lang=en_US
 const user=require('../model/user');
-
 // 
 function isEmpty(str) {
   return (typeof str === 'string' && 0 === str.length);
@@ -47,31 +46,6 @@ function signUpPage() {
     '</html>';
 }
 //
-function signUpSync(alias, passphrase1, passphrase2) {
-  return new Promise((resolve) => {
-    user.create(alias, passphrase1, passphrase2, (error, data) => {
-      //res.send(data);
-      //console.log(error);
-      //console.log(data);
-      if(error){
-        //res.send('signup error!');
-        console.log('ERROR SIGN UP');
-        return resolve(error);
-        //return next(false);
-      }
-      console.log(data);
-      return resolve(data);
-      //console.log(data);
-      //let payload;
-      //payload = jwt.verify(data, jwtKey);
-      //console.log(payload);
-      //res.send('POST SIGNUP! [' + data.message + ']');
-      //res.end(`<html><body>POST SIGNUP [${data.message}] <a href='/'>Home</a></body></html>`);
-      //return next(false);
-    })
-  });
-}
-//
 module.exports = [
   {
     method: 'GET',
@@ -96,19 +70,12 @@ module.exports = [
       if(isEmpty(alias)==true || isEmpty(passphrase1)==true || isEmpty(passphrase2)==true || passphrase1!=passphrase2){
         return 'Not the Alias || passphrase';
       }
-
-      let data = await signUpSync(alias, passphrase1, passphrase2);
       let message='FAIL';
-      if(data){ 
-        console.log(data);
-        if(data.message){
-          message=data.message;
-        }
-
+      let isDone = await user.createAliasSync({alias:alias,passphrase:passphrase1 });
+      if(isDone){
+        message=isDone;
       }
       return `<html><body>POST SIGNUP [${message}] <a href='/'>Home</a></body></html>`;
-      //ctx.body=`<html><body>POST SIGNUP [${data.message}] <a href='/'>Home</a></body></html>`;
-      //return 'POST SIGN UP!';
     }
   }
 ];

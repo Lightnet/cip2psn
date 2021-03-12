@@ -6,31 +6,15 @@
   Created By: Lightnet
 
  */
-// https://hypercore-protocol.org/guides/modules/hyperbee/
-// https://hypercore-protocol.org/guides/walkthroughs/p2p-indexing-with-hyperbee/
-// https://hypercore-protocol.org/guides/getting-started/standalone-modules/
-// https://hypercore-protocol.org/guides/examples/hyperbee-app/
-// https://github.com/hypercore-protocol/walkthroughs/blob/main/hyperspace/1-start-servers.js
 // GUNJS
 // https://gun.eco/docs/Installation#node
 
 console.log("DATABASE INIT...");
-//console.log("HYPERCORE DB HYPERBEE");
-//const Hypercore = require('hypercore');
-//const Hyperbee = require('hyperbee');
 //const jwt = require('jsonwebtoken');
 const bcrypt=require('bcrypt');
-const config=require('../../../../config');
-const { isEmpty, timeStamp, createUserId } =require('../../model/utilities');
-//const hypercore = require('hypercore')
-//const Hyperbee = require('hyperbee')
-
+var config=require('../../../../config');
+const { isEmpty, timeStamp } =require('../../model/utilities');
 //===============================================
-// https://www.npmjs.com/package/bcrypt
-const saltRounds = config.saltRounds || 10;
-
-var core;
-var db;
 const Gun = require('gun');
 const SEA = require('gun/sea');
 var gun;
@@ -59,32 +43,13 @@ async function init(){
     //console.log(data);
     //console.log(key);
   //});
-
-  //core = hypercore('./my-dataset', {valueEncoding: 'utf-8'} );
-  //db = new Hyperbee(core, {
-    //keyEncoding: 'utf-8', // can be set to undefined (binary), utf-8, ascii or and abstract-encoding
-    //valueEncoding: 'json' // same options as above
-  //})
-  //await db.put('key', {value:'test'});
-  //await db.put('key', 'test');
-  //const node = await db.get('key'); // null or { key, value }
-  //console.log(node);
-
 }
 exports.init = init;
-//===============================================
 // GET DATABASE
 async function get(){
   return gun;
 }
 exports.get = get;
-//===============================================
-// GET DB USER
-async function getuser(){
-  //return user;
-  return gun;
-}
-exports.getuser=getuser;
 //===============================================
 // CHECK ALIAS ID
 //===============================================
@@ -118,7 +83,7 @@ function createAliasId(data, callback){
     if(isEmpty(data.alias)==false){
       gun.get(data.alias).once(async function(data2, key){
         if(data2){
-          //console.log(data2);
+          console.log(data2);
           return callback(null,{message:"EXIST"});
         }else{
           let pass = bcrypt.hashSync(data.passphrase, saltRounds);
@@ -129,12 +94,9 @@ function createAliasId(data, callback){
           let pub = sea.pub;
           let saltkey = await SEA.work(data.passphrase, data.alias);
           sea = await SEA.encrypt(sea, saltkey);
-          let userId = await createUserId();
-          //console.log('userId:',userId)
 
           gun.get(data.alias).put({
             alias:data.alias
-            ,aliasId:userId
             ,passphrase: pass
             ,role:'user'
             ,token:''
@@ -168,16 +130,8 @@ function getAliasPassphrase(data, callback){
     }
     gun.get(data.alias).once(function(datasub, key){
       if(datasub){
-        //console.log('user data');
-        //console.log(datasub);
         //console.log('FOUND ALIAS!');
-
-        return callback(null,{
-          message:'FOUND'
-          , passphrase: datasub.passphrase
-          , sea:datasub.sea
-          , aliasId:datasub.aliasId
-        });
+        return callback(null,{message:'FOUND',passphrase: datasub.passphrase, sea:datasub.sea});
       }else{
         //console.log('NOT FOUND ALIAS!');
         return callback(null,{message:'NOTFOUND',alias:data.alias});
@@ -237,48 +191,52 @@ function aliasGetHint(data,callback){
 }
 exports.aliasGetHint = aliasGetHint;
 //===============================================
-// ALIAS CHANGE PASSPHRASE
-//===============================================
-function aliasCheckPassphrase(data,callback){
-  gun.get(data.alias).once(function(datasub, key){
-    if(datasub){
-      if(datasub.passphrase){
-        let decoded = bcrypt.compareSync(data.oldpassphrase, datasub.passphrase);
-        console.log('decoded:',decoded);
-        if(decoded){
-          
-          callback('PASS');
-        }else{
-          callback('FAIL');
-        }
-      }else{
-        callback('FAIL');
-      }
-    }else{
-      callback('FAIL');
-    }
-  });
+// GET DB USER
+async function getuser(){
+  //return user;
+  return gun;
 }
-exports.aliasCheckPassphrase = aliasCheckPassphrase;
-//===============================================
-function aliasCheckPassphraseSync(data){
-  return new Promise(resolve => {
-    aliasCheckPassphrase(data,(ack)=>{
-      if(ack=='PASS'){
-        resolve(true);
-      }else{
-        resolve(false);
-      }
-    });
-  });
-}
-exports.aliasCheckPassphraseSync = aliasCheckPassphraseSync;
-//===============================================
-// ALIAS
-//===============================================
-//function alias(data,callback){
-//}
-//exports.alias = alias;
+exports.getuser=getuser;
 //===============================================
 // TESTING AREA
 //===============================================
+// CHECK CREATE USER 
+async function checkcreateuser(alias,passphrase,callback){
+  //check if alias exist
+  gun.get(alias).once(function(data, key){
+    // {property: 'value'}, 'key'
+    //console.log('data');
+    //console.log(data);
+    //console.log(key);
+    if(data){
+      //console.log('FOUND ALIAS!');
+      return callback(null,{message:"FOUND"});
+    }else{
+      //console.log('NOT FOUND ALIAS!');
+      //let pass = jwt.sign({ passphrase: passphrase }, 'shhhhh');
+      let pass = bcrypt.hashSync(passphrase, saltRounds);
+      gun.get(alias).put({
+        alias:alias,
+        passphrase: pass
+      });
+      return callback(null,{message:"CREATED",alias:alias});
+    }
+  });
+  //return callback();
+}
+exports.checkcreateuser = checkcreateuser;
+//===============================================
+// CHECK ALIAS PASSPHRASE
+function checkaliaspassphrase(alias, callback){
+  //console.log(gun);
+  gun.get(alias).once(function(data, key){
+    if(data){
+      //console.log('FOUND ALIAS!');
+      return callback(null,{message:'FOUND',passphrase: data.passphrase});
+    }else{
+      //console.log('NOT FOUND ALIAS!');
+      return callback(null,{message:'NOTFOUND',alias:alias});
+    }
+  });
+}
+exports.checkaliaspassphrase = checkaliaspassphrase;

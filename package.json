@@ -1,7 +1,7 @@
 {
   "name": "cip2psn",
   "version": "1.0.0",
-  "description": "Peer to peert prototype test db feeds.",
+  "description": "Web server and peer to peer prototype database feeds.",
   "main": "app.js",
   "scripts": {
     "test": "node app.js",
@@ -41,6 +41,7 @@
     "hyperbeedown": "^2.0.1",
     "hypercore": "^9.9.1",
     "is-mobile": "^3.0.0",
+    "jsdom": "^16.5.0",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.1",
     "koa-body": "^4.2.0",
@@ -57,6 +58,7 @@
     "pouchdb-adapter-hyperbee": "^1.0.3",
     "querystring": "^0.2.1",
     "random-access-memory": "^3.1.2",
+    "redom": "^3.27.1",
     "restify": "^8.5.1",
     "restify-cookies": "^0.2.6"
   },

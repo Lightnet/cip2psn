@@ -42,40 +42,29 @@ f1();
 */
 
 // https://cryptojs.gitbook.io/docs/
-
 //const crypto = require('crypto');
 //const assert = require('assert');
-
 // Generate Alice's keys...
 //const alice = crypto.createECDH('secp521r1');
 //const aliceKey = alice.generateKeys();
-
 // Generate Bob's keys...
 //const bob = crypto.createECDH('secp521r1');
 //console.log(bob);
 //const bobKey = bob.generateKeys();
 //console.log(bobKey);
-
 // Exchange and generate the secret...
 //const aliceSecret = alice.computeSecret(bobKey);
 //const bobSecret = bob.computeSecret(aliceKey);
-
 //assert.strictEqual(aliceSecret.toString('hex'), bobSecret.toString('hex'));
 // OK
-
-
 //var crypto = require('crypto');
-
 //var prime_length = 60;
 //var diffHell = crypto.createDiffieHellman(prime_length);
-
 //diffHell.generateKeys('base64');
 //console.log("Public Key : " ,diffHell.getPublicKey('base64'));
 //console.log("Private Key : " ,diffHell.getPrivateKey('base64'));
-
 //console.log("Public Key : " ,diffHell.getPublicKey('hex'));
 //console.log("Private Key : " ,diffHell.getPrivateKey('hex'));
-
 //const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
   //modulusLength: 2048,
   //publicKeyEncoding: {
@@ -96,18 +85,22 @@ f1();
 ;(async () => {
   //var pair = await SEA.pair();
   //console.log(pair);
-
   // https://github.com/amark/gun/blob/master/sea.js
   //var pass='test';
   //var act={}
   //act.salt = Gun.text.random(64); // pseudo-randomly create a salt, then use PBKDF2 function to extend the password with it.
-
   //let saltkey = await SEA.work(pass, act.salt); // this will take some short amount of time to produce a proof, which slows brute force attacks.
   //console.log(saltkey);
-
   //act.salt = Gun.text.random(64);
 })();
 
+//;(async () => {
+//})();
+//const db = require('./src/server/db/gv1');
+//const db = require('./src/server/db/hcv1/index');
+
+//const db = require('./src/server/db');
+//console.log(db);
 
 console.log('init web server...');
 //const port = process.env.PORT;
@@ -117,13 +110,14 @@ console.log('init web server...');
 //var config = require('./config');
 //console.log(config);
 
-//require('./src/server/fastifty_server'); // ok // out date session package
-//require('./src/server/polka_server'); // ok
-//require('./src/server/koa_server'); // ok
-//require('./src/server/hapi_server'); // ok
 //require('./src/server/express_server'); // ok
+require('./src/server/fastifty_server'); // ok // out date session package
+//require('./src/server/hapi_server'); // ok
+//require('./src/server/http_server'); // ok
+//require('./src/server/koa_server'); // ok
+//require('./src/server/polka_server'); // ok
 //require('./src/server/restify_server'); // ok // no session. cookie to able to store user token
-//require('./src/server/http_server');
+
 
 
 //require('./src/tests/http_server01');
@@ -147,7 +141,7 @@ console.log('init web server...');
 //require('./src/tests/emailtest01');
 //require('./src/tests/hypercorepouchdb01');
 //require('./src/tests/hypercorepouchdb02');
-require('./src/tests/hyperbeelocalstorage');
+//require('./src/tests/hyperbeelocalstorage');
 
 // https://www.npmjs.com/package/pouchdb-adapter-hyperbee
 /*

@@ -46,7 +46,7 @@ app.get('/', (req, res) => {
   res.end(loginPage());
 });
 
-app.post('/', urlencodedParser, (req, res) => {
+app.post('/', urlencodedParser,async (req, res) => {
   //res.writeHead(200, { 'Content-Type': 'application/json' });
   res.writeHead(200, { 'Content-Type': 'text/html' });
   //console.log(req.body);
@@ -59,26 +59,19 @@ app.post('/', urlencodedParser, (req, res) => {
     return;
   }
 
-  user.authenticate(alias, passphrase, (error,data) => {
-    if(error){
-      console.log('error >> ');
-      console.log(error);
-    }
-    //console.log(data);
-    if(data){
-      if(data.message=='FOUND'){
-        console.log('SET COOOKIE');
-        //res.setCookie('token', data.token );
-        //let cookies = new Cookies(req, res, { keys: keys });
-        //cookies.set('token', data.token, { signed: true });
-        req.session.token=data.token;
-      }
-    }
-    //res.send(data);
-    //res.send(`POST LOGIN [${data.message}]`);
-    res.end(`<html><body>POST LOGIN [${data.message}] <a href='/'>Home</a></body></html>`);
+  let data = await user.loginAliasSync({
+    alias:alias
+    ,passphrase:passphrase
   });
-  //res.end('POST LOGIN');
+
+  if(data){
+    req.session.token=data;
+    //reply.redirect('/');
+    res.end(`<html><body> LOGIN [ Pass ] <a href='/'>Home</a></body></html>`);
+  }else{
+    res.end(`<html><body> LOGIN [ Fail ] <a href='/'>Home</a></body></html>`);
+  }
+  
 });
 
 module.exports=app;

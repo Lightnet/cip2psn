@@ -43,7 +43,7 @@ router.get('/', function (req, res) {
 
 // POST /login gets urlencoded bodies
 //LOGIN POST PAGE
-router.post('/', urlencodedParser, function (req, res) {
+router.post('/', urlencodedParser,async function (req, res) {
   //res.send('welcome, ' + req.body.alias);
 
   let {alias, passphrase} = req.body;
@@ -53,26 +53,17 @@ router.post('/', urlencodedParser, function (req, res) {
     return;
   }
 
-  user.authenticate(alias, passphrase, (error,data) => {
-    if(error){
-      console.log('error >> ');
-      console.log(error);
-    }
-    //console.log(data);
-    if(data){
-      if(data.message=='FOUND'){
-        console.log('SET COOOKIE');
-        //res.setCookie('token', data.token );
-        //let cookies = new Cookies(req, res, { keys: keys });
-        //cookies.set('token', data.token, { signed: true });
-        console.log('data.token:',data.token);
-        req.session.token=data.token;
-      }
-    }
-    //res.send(data);
-    //res.send(`POST LOGIN [${data.message}]`);
-    res.end(`<html><body>POST LOGIN [${data.message}] <a href='/'>Home</a></body></html>`);
+  let data = await user.loginAliasSync({
+    alias:alias
+    ,passphrase:passphrase
   });
+
+  if(data){
+    req.session.token=data;
+    res.end(`<html><body>POST LOGIN [ PASS ] <a href='/'>Home</a></body></html>`);
+  }else{
+    res.end(`<html><body>POST LOGIN [ FAIL ] <a href='/'>Home</a></body></html>`);
+  }
 });
 //EXPORT
 module.exports = router

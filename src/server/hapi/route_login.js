@@ -41,39 +41,7 @@ function loginPage() {
     '</body>' +
     '</html>'
 }
-
-function AuthSync(alias,passphrase) {
-  return new Promise((resolve) => {
-    user.authenticate(alias, passphrase, (error,data) => {
-      if(error){
-        console.log('error >> ');
-        console.log(error);
-        return resolve(null);
-      }
-      //CHECK DATA
-      console.log(data);
-      if(data){
-        if(data.message=='FOUND'){
-          //console.log('SET COOOKIE');
-          //res.setCookie('token', data.token );
-          //ctx.cookies.set('token',data.token,{
-            //signed:true
-            //,maxAge:Date.now()
-          //});
-          //return ctx.body=`<html><body>POST LOGIN [${data.message}] <a href='/'>Home</a></body></html>`;
-          return resolve(data);
-        }else{
-          //return ctx.body=`<html><body>POST LOGIN [ FAIL ] <a href='/'>Home</a></body></html>`;
-          return resolve(data);
-        }
-      }else{
-        //return ctx.body=`<html><body>POST LOGIN [ FAIL ] <a href='/'>Home</a></body></html>`;
-        return resolve(data);
-      }
-    });
-  });
-}
-
+// 
 module.exports = [
   {
     method: 'GET',
@@ -98,25 +66,17 @@ module.exports = [
       if(isEmpty(alias)==true || isEmpty(passphrase)==true){
         return 'Not the Alias || passphrase';
       }
-
-      let data = await AuthSync(alias,passphrase);
       let message='FAIL';
+      let data = await user.loginAliasSync({
+        alias:alias
+        ,passphrase:passphrase
+      });
       if(data){
-        console.log(data);
-        console.log('data.token');
-        console.log(data.token);
-        if(data.token){
-          //ctx.cookies.set('token',data.token,{
-            //signed:true
-            //,maxAge:Date.now()
-          //});
-          h.state('token', data.token);
-          message=data.message;
-        }
+        h.state('token', data);
+        message='PASS';
+      }else{
+        message='FAIL';
       }
-      
-
-      //return 'POST LOGIN !';
       return `<html><body>POST LOGIN [${message}] <a href='/'>Home</a></body></html>`;
     }
   }

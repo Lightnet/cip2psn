@@ -46,7 +46,7 @@ router.get('/', function (req, res) {
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 // POST /login gets urlencoded bodies
 //LOGIN POST PAGE
-router.post('/', urlencodedParser, function (req, res) {
+router.post('/', urlencodedParser,async function (req, res) {
   //res.send('welcome, ' + req.body.alias);
   let {alias, passphrase1, passphrase2} = req.body;
 
@@ -54,17 +54,19 @@ router.post('/', urlencodedParser, function (req, res) {
     res.end('Not the Alias || passphrase');
     return;
   }
-
-  user.create(alias, passphrase1, passphrase2, (error, data) => {
-    if(error){
-      res.end('signup error!');
-      return;
-    }
-    console.log(data);
-    res.end(`<html><body>POST SIGNUP [${data.message}] <a href='/'>Home</a></body></html>`);
+  let isExist = await user.checkAliasExistSync(alias);
+  if(isExist){
+    //reply.send('Alias Exist!');
+    res.end(`<html><body>SIGNUP [ EXIST ] <a href='/'>Home</a></body></html>`);
     return;
-  });
+  }
 
+  let isDone = await user.createAliasSync({alias:alias,passphrase:passphrase1 });
+  if(isDone){
+    res.end(`<html><body>POST SIGNUP [ CREATE ] <a href='/'>Home</a></body></html>`);
+  }else{
+    res.end('Alias Error!');
+  }
 });
 //EXPORT
 module.exports = router

@@ -16,6 +16,9 @@ const src_client_file=[
   ,'./src/client/client_theme.js'
   ,'./src/client/client_gethint.js'
   ,'./src/client/client_account.js'
+  ,'./src/client/client_blank.js'
+  ,'./src/client/client_alias.js'
+  ,'./src/client/client_login.js'
 ];
 
 const src_html_file=[

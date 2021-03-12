@@ -1,5 +1,28 @@
 # CHEAT SHEETS
 
+```javascript
+//creating sub module need default file name.
+/testfolder
+    -index.js
+
+//creating sub module need no default file name.
+/testfolder
+    -app.js
+    -package.json
+{
+  "name": "testfolder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js", <- entry point for module
+  "scripts": {
+    "test": "node app.js"
+  },
+  "keywords": [
+  ],
+  "author": "",
+  "license": "ISC"
+}
+```
 
 ```javascript
 const Gun =require('gun');
@@ -33,10 +56,6 @@ console.log('dec1: ',dec); //fail
 //note there are other package to compare password
 //sea.js has but not look into how it check password salt
 ```
-
-
-
-
 
 # bcrypt
 ```javascript
@@ -84,4 +103,29 @@ process.on('SIGUSR2', exitHandler.bind(null, {exit:true}));
 
 //catches uncaught exceptions
 process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
+```
+
+```javascript
+https://jsbin.com/lusobipini/edit?js,console
+
+//gun.get('data1').set({name:'test',id:'000 '})
+//gun.get('data1').set({name:'23',id:'002 '})
+
+gun.get('data1')
+  .once(function(data){
+  //console.log(key);
+   //console.log(data);
+  //console.log(Gun.list.is(data))
+  //console.log(Gun.obj.is(data))
+  
+  for(let key in data){
+   //console.log(key);
+    if(key != '_'){
+      gun.get('data1').get(key).once((v1)=>{
+        console.log(v1);
+      })
+    }
+  }
+});
+
 ```

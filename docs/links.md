@@ -6,8 +6,6 @@
  * https://stackoverflow.com/questions/11381673/detecting-a-mobile-browser
 
 
-
-
 # Tools:
  * https://stackoverflow.com/questions/14043926/node-js-connect-only-works-on-localhost
  * https://www.npmjs.com/package/ngrok
@@ -25,7 +23,6 @@
  
  * https://cloud.google.com/nodejs/getting-started/authenticate-users
  * https://github.com/tizzo/auth-proxy 
- * 
 
  * https://mailtrap.io/
  * https://temp-mail.org/en/
@@ -34,33 +31,24 @@
  * https://mailpoof.com/
  * https://www.emailjs.com/
  * https://github.com/veliovgroup/Mail-Time#how-it-works
- * 
- * 
- * 
+
  * https://developer.mozilla.org/en-US/docs/Web/API/Window/crypto
  * https://cryptojs.gitbook.io/docs/
  * https://blog.logrocket.com/node-js-crypto-module-a-tutorial/
  * https://stackoverflow.com/questions/8750780/encrypting-data-with-a-public-key-in-node-js
  * https://stackoverflow.com/questions/8520973/how-to-create-a-pair-private-public-keys-using-node-js-crypto/20877180
  * https://www.npmjs.com/package/keypair
- * 
-
-
-
 
  * https://dev.to/rahmanfadhil/how-to-generate-unique-id-in-javascript-1b13
  * https://www.reddit.com/r/discordapp/comments/4vmg2w/unique_user_id/
  * https://github.com/ai/nanoid/
+
+
+# html
+ * https://github.com/jsdom/jsdom
+ * https://github.com/cheeriojs/cheerio
  * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
+
+# Name Generator:
+ * https://zetcode.com/javascript/fakerjs/
+ * https://www.npmjs.com/package/fakerator

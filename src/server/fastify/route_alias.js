@@ -30,13 +30,29 @@ function blankPage () {
 }
 // ROUTES
 module.exports = function (fastify, opts, done) {
-  // GET LOGIN
-  fastify.get('/blank', function (request, reply) {
+  // GET ALIAS
+  fastify.get('/alias', function (request, reply) {
+    console.log("ALIAS?");
     reply.type('text/html');
+    console.log(request.params);
     reply.send(blankPage());
   });
 
-  fastify.post('/blank', async function (request, reply) {
+  fastify.get('/alias/:id', function (request, reply) {
+    console.log("ALIAS ID?");
+    reply.type('text/html');
+    console.log(request.params);
+    reply.send(blankPage());
+  });
+
+  fastify.get('/alias/:id/:page', function (request, reply) {
+    console.log("ALIAS ID d?");
+    reply.type('text/html');
+    console.log(request.params);
+    reply.send(blankPage());
+  });
+
+  fastify.post('/alias', async function (request, reply) {
     //reply.type('text/html');
     //const { question1, question2, hint } = JSON.parse(request.body);
     //reply.send('data');

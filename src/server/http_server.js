@@ -113,7 +113,7 @@ function loginPage() {
 //===============================================
 //
 //===============================================
-function url_login(req,res){
+async function url_login(req,res){
   if(req.method=='GET'){
     res.writeHead(200);
     res.end(loginPage());
@@ -127,7 +127,7 @@ function url_login(req,res){
       res.end(err);
     }).on('data', (chunk) => {
       body.push(chunk);
-    }).on('end', () => {
+    }).on('end',async () => {
       body = Buffer.concat(body).toString();
       let post = qs.parse(body);
       //console.log(body);
@@ -138,24 +138,17 @@ function url_login(req,res){
         return;
       }
       //CHECK USER AND TOKEN KEY
-      user.authenticate(alias, passphrase, (error,data) => {
-        if(error){
-          console.log('error >> ');
-          console.log(error);
-        }
-        //console.log(data);
-        if(data){
-          if(data.message=='FOUND'){
-            console.log('SET COOOKIE');
-            //res.setCookie('token', data.token );
-            let cookies = new Cookies(req, res, { keys: keys });
-            cookies.set('token', data.token, { signed: true });
-          }
-        }
-        //res.send(data);
-        //res.send(`POST LOGIN [${data.message}]`);
-        res.end(`<html><body>POST LOGIN [${data.message}] <a href='/'>Home</a></body></html>`);
+      let data = await user.loginAliasSync({
+        alias:alias
+        ,passphrase:passphrase
       });
+      if(data){
+        let cookies = new Cookies(req, res, { keys: keys });
+        cookies.set('token', data, { signed: true });
+        res.end(`<html><body> LOGIN [ PASS ] <a href='/'>Home</a></body></html>`);
+      }else{
+        res.end(`<html><body> LOGIN [ FAIL ] <a href='/'>Home</a></body></html>`);
+      }
       // At this point, we have the headers, method, url and body, and can now
       // do whatever we need to in order to respond to this request.
       //res.end(`login`);
@@ -210,7 +203,7 @@ function url_signup(req,res){
       res.end(err);
     }).on('data', (chunk) => {
       body.push(chunk);
-    }).on('end', () => {
+    }).on('end', async () => {
       body = Buffer.concat(body).toString();
       let post = qs.parse(body);
       console.log(body);
@@ -223,15 +216,20 @@ function url_signup(req,res){
         return;
       }
       //CHECK USER EXIST AND IF CREATE
-      user.create(alias, passphrase1, passphrase2, (error, data) => {
-        if(error){
-          res.end('signup error!');
-          return;
-        }
-        console.log(data);
-        res.end(`<html><body>POST SIGNUP [${data.message}] <a href='/'>Home</a></body></html>`);
+      let isExist = await user.checkAliasExistSync(alias);
+      if(isExist){
+        //reply.send('Alias Exist!');
+        res.end(`<html><body>POST SIGNUP [ Alias Exist! ] <a href='/'>Home</a></body></html>`);
         return;
-      });
+      }
+
+      let isDone = await user.createAliasSync({alias:alias,passphrase:passphrase1 });
+      if(isDone){
+        res.end(`<html><body>POST SIGNUP [${isDone}] <a href='/'>Home</a></body></html>`);
+      }else{
+        res.end('Alias Error!');
+      }
+      
       // At this point, we have the headers, method, url and body, and can now
       // do whatever we need to in order to respond to this request.
       //res.end(`url_signup`);
