@@ -41,7 +41,6 @@ Network
 ```
 npm i autocannon -g
 autocannon localhost:3000
-
 ```
 
 ```
@@ -55,7 +54,7 @@ http            0.53 ms        8607.21
 ```
 # Notes:
   * Base on hello world print page
-  * After some testing that packages slow down request there many middle ware add ons.
+  * After some testing that packages slow down request there many middlewares/plugins add ons.
   * Tested some added on for session, post, logs and other things that slow down result.
   * Result vary in render html and hello world text that add more latency.
 ```
@@ -71,7 +70,8 @@ sails                             168
 derby                              17
 
 Notes:
- * Some packages are not include for add on like session, cookies, body and others.
+ * Some frameworks are not include for add on like session, cookies, body and others.
+ * Some frameworks has built in sesson, cookies, body for post and others.
 ```
 
 # Packages / Frameworks:
