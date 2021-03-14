@@ -12,7 +12,7 @@
 // GUNJS
 // https://gun.eco/docs/Installation#node
 
-console.log("DATABASE INIT...");
+console.log("GUN JS INIT...");
 const jwt = require('jsonwebtoken');
 const bcrypt=require('bcrypt');
 const config=require('../../../../config');

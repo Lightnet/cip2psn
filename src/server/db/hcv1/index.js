@@ -17,13 +17,11 @@
 // https://hypercore-protocol.org/guides/getting-started/standalone-modules/
 // https://hypercore-protocol.org/guides/examples/hyperbee-app/
 // https://github.com/hypercore-protocol/walkthroughs/blob/main/hyperspace/1-start-servers.js
-// GUNJS
-// https://gun.eco/docs/Installation#node
 
-console.log("DATABASE INIT...");
+console.log("HYPERCORE INIT...");
 //console.log("HYPERCORE DB HYPERBEE");
-//const Hypercore = require('hypercore');
-//const Hyperbee = require('hyperbee');
+const Hypercore = require('hypercore');
+const Hyperbee = require('hyperbee');
 const jwt = require('jsonwebtoken');
 const bcrypt=require('bcrypt');
 const config=require('../../../../config');
@@ -47,33 +45,16 @@ var gunoptions={
 function init(){
   //Gun Config
   gun = Gun(gunoptions);
-  //gun.get('key11').put({property: 'value'});
-  //gun.get('key11').once(function(data, key){
-    // {property: 'value'}, 'key'
-    //console.log('data');
-    //console.log(data);
-    //console.log(key);
-  //});
-  //gun.get('key').get('property',function(ack){
-    //console.log(ack);
-  //});
-  //gun.get('key0').once(function(data, key){
-    // {property: 'value'}, 'key'
-    //console.log('data');
-    //console.log(data);
-    //console.log(key);
-  //});
 
-  //core = hypercore('./my-dataset', {valueEncoding: 'utf-8'} );
-  //db = new Hyperbee(core, {
-    //keyEncoding: 'utf-8', // can be set to undefined (binary), utf-8, ascii or and abstract-encoding
-    //valueEncoding: 'json' // same options as above
-  //})
+  core = Hypercore('./my-dataset', {valueEncoding: 'utf-8'} );
+  db = new Hyperbee(core, {
+    keyEncoding: 'utf-8', // can be set to undefined (binary), utf-8, ascii or and abstract-encoding
+    valueEncoding: 'json' // same options as above
+  })
   //await db.put('key', {value:'test'});
   //await db.put('key', 'test');
   //const node = await db.get('key'); // null or { key, value }
   //console.log(node);
-
 }
 exports.init = init;
 //===============================================
@@ -92,68 +73,50 @@ exports.getuser=getuser;
 //===============================================
 // CHECK ALIAS ID
 //===============================================
-function checkAliasId(alias,callback){
-  if(!gun){
+async function checkAliasId(alias,callback){
+  if(!db){
     console.log("Database is not setup!");
     return callback("Database not init.",null);
   }
-  gun.get(alias).once(function(data, key){
-    // {property: 'value'}, 'key'
-    //console.log('data');
-    //console.log(data);
-    //console.log(key);
-    if(data){
-      //console.log('FOUND ALIAS!');
-      return callback(null,{message:'FOUND'});
-    }else{
-      return callback(null,{message:'NOTFOUND'});
-    }
-  });
+  let node = await db.get(alias); // null or { key, value }
+  if(node){
+    return callback(null,{message:'FOUND'});
+  }else{
+    return callback(null,{message:'NOTFOUND'});
+  }
 }
 exports.checkAliasId = checkAliasId;
 //===============================================
 // CREATE ALIAS ACCOUNT
 //===============================================
-function createAliasId(data, callback){
-  if(!gun){
+async function createAliasId(data, callback){
+  if(!db){
     return callback('Database not init!',null);
   }
+
   if(data){
-    if(isEmpty(data.alias)==false){
-      gun.get(data.alias).once(async function(data2, key){
-        if(data2){
-          //console.log(data2);
-          return callback(null,{message:"EXIST"});
-        }else{
-          let pass = bcrypt.hashSync(data.passphrase, saltRounds);
-
-          //TODOLIST
-          //need to work on encrypt data...
-          let sea = await SEA.pair();
-          let pub = sea.pub;
-
-
-          
-          let saltkey = await SEA.work(data.passphrase, data.alias);
-          sea = await SEA.encrypt(sea, saltkey);
-          let userId = await createUserId();
-          //console.log('userId:',userId)
-
-          gun.get(data.alias).put({
-            alias:data.alias
-            ,aliasId:userId
-            ,passphrase: pass
-            ,role:'user'
-            ,token:''
-            ,pub:pub
-            ,sea:sea
-            ,date:timeStamp()
-          });
-          return callback(null,{message:"CREATED",alias:data.alias});
-        }
-      });
+    let node = await db.get(data.alias); // null or { key, value }
+    if(node){
+      return callback('Exist!',null);
     }else{
-      return callback('Empty Alias!',null);
+      //CREATE USER ALIAS DATA
+      //TODOLIST
+      let pass = bcrypt.hashSync(data.passphrase, saltRounds);
+      let sea = await SEA.pair();
+      let pub = sea.pub;
+      let userId = await createUserId();
+
+      await db.put(data.alias,{
+        alias:data.alias
+        ,aliasId:userId
+        ,passphrase: pass
+        ,role:'user'
+        ,token:''
+        ,pub:pub
+        ,sea:sea
+        ,date:timeStamp()
+      });
+      return callback(null,{message:"CREATED",alias:data.alias});
     }
   }else{
     return callback('No args!',null);
@@ -163,40 +126,36 @@ exports.createAliasId = createAliasId;
 //===============================================
 // GET ALIAS PASSPHRASE (password)
 //===============================================
-function getAliasPassphrase(data, callback){
-  if(!gun){
+async function getAliasPassphrase(data, callback){
+  if(!db){
     return callback('Database not init!',null);
   }
   if(data){
-    //if(isEmpty(data.alias)==true || isEmpty(data.passphrase)==true){
-    if(isEmpty(data.alias)==true){
-      //return callback('Empty alias || passphrase!');
-      return callback('Empty alias',null);
+    if(isEmpty(data.alias)==true || isEmpty(data.passphrase)==true){
+      return callback('Empty alias || passphrase',null);
     }
-    gun.get(data.alias).once(function(datasub, key){
-      if(datasub){
-        //console.log('user data');
-        //console.log(datasub);
-        //console.log('FOUND ALIAS!');
+    let datasub = await db.get(data.alias); // null or { key, value }
+    //console.log('datasub:',datasub);
+    datasub = datasub.value; //reassign value
+    console.log(datasub);
+    if(datasub){
+      return callback(null,{
+        message:'FOUND'
+        , passphrase: datasub.passphrase
+        , sea:datasub.sea
+        , aliasId:datasub.aliasId
+      });
 
-        return callback(null,{
-          message:'FOUND'
-          , passphrase: datasub.passphrase
-          , sea:datasub.sea
-          , aliasId:datasub.aliasId
-        });
-      }else{
-        //console.log('NOT FOUND ALIAS!');
-        return callback(null,{message:'NOTFOUND',alias:data.alias});
-      }
-    });
+    }else{
+      return callback(null,{message:'NOTFOUND',alias:data.alias});
+    }
   }else{
     return callback('No args!',null);
   }
 }
 exports.getAliasPassphrase = getAliasPassphrase;
 //===============================================
-// ALIAS SET HINT
+// ALIAS SET HINT 
 //===============================================
 function aliasSetHint(data,callback){
   console.log('SET HINT GUN...');
@@ -243,7 +202,7 @@ function aliasGetHint(data,callback){
 }
 exports.aliasGetHint = aliasGetHint;
 //===============================================
-// ALIAS CHANGE PASSPHRASE
+// ALIAS CHECK PASSPHRASE
 //===============================================
 function aliasCheckPassphrase(data,callback){
   gun.get(data.alias).once(function(datasub, key){
@@ -280,7 +239,7 @@ function aliasCheckPassphraseSync(data){
 }
 exports.aliasCheckPassphraseSync = aliasCheckPassphraseSync;
 //===============================================
-// ALIAS
+// ALIAS LOGOUT
 //===============================================
 //TODOLIST need work on two checks
 // if user logout

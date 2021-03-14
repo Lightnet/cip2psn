@@ -43,8 +43,8 @@ password:<user password>
   There are two different in text font size.
 
 # Database
- * gun.js
- * hypercore
- * pouchdb
+ * gun.js [work in progress]
+ * hypercore [test build for login/sign up]
+ * pouchdb [test build for login/sign up]
 
   Testing and learning some in and out of the database format. It has it own pros and cons of the setup.
