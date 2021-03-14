@@ -33,6 +33,10 @@
   - [x] Signup (need rework)
   - [x] Logout (need rework) 
   - [ ] Forgot (need rework)
+  - [ ] email
+  - [ ] set and get hint
+  - [ ] change password
+  - [ ] 
   - [ ] Recovery Account
   - [ ] Email
     - [ ] Proxy Email

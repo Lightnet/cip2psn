@@ -176,18 +176,55 @@ exports.aliasChangePassphraseSync = aliasChangePassphraseSync;
 // LOGOUT
 //===============================================
 // NEEDED? DB clear token, cookie, session?
-function logout(data,callback){
-  
-  if(data){
-
-
-
-  }else{
-    console.log('ERROR! NULL DATA!');
-    callback(null);
-  }
+function aliasLogoutSync(data){
+  return new Promise(async (resolve) => {
+    if(data){
+      db.aliasLogout(data,(ack)=>{
+        //console.log('alias logout ack',ack);
+        if(ack=='PASS'){
+          resolve(true);
+        }else{
+          resolve(false);
+        }
+      });
+    }else{
+      //console.log('ERROR! NULL DATA!');
+      resolve(false);
+    }
+  });
 }
-exports.logout = logout;
+exports.aliasLogoutSync = aliasLogoutSync;
+//===============================================
+// CHECK PUB EXIST FOR BLOG
+//===============================================
+function aliasCheckPubIdSync(data){
+  return new Promise(resolve => {
+    db.aliasCheckPubId(data,(ack)=>{
+      if(ack){
+        resolve(true);
+      }else{
+        resolve(false);
+      }
+    })
+  });
+}
+exports.aliasCheckPubIdSync = aliasCheckPubIdSync;
+//===============================================
+// CHECK PUB EXIST FOR BLOG
+//===============================================
+function aliasCreatePubIdSync(data){
+  return new Promise(resolve => {
+    db.aliasCreatePubId(data,(ack)=>{
+      if(ack){
+        resolve(true);
+      }else{
+        resolve(false);
+      }
+    });
+  });
+}
+exports.aliasCreatePubIdSync = aliasCreatePubIdSync;
+
 //===============================================
 // TMP SET UP
 //===============================================

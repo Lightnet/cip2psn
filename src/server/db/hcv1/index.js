@@ -18,12 +18,10 @@ console.log("DATABASE INIT...");
 //console.log("HYPERCORE DB HYPERBEE");
 //const Hypercore = require('hypercore');
 //const Hyperbee = require('hyperbee');
-//const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const bcrypt=require('bcrypt');
 const config=require('../../../../config');
 const { isEmpty, timeStamp, createUserId } =require('../../model/utilities');
-//const hypercore = require('hypercore')
-//const Hyperbee = require('hyperbee')
 
 //===============================================
 // https://www.npmjs.com/package/bcrypt
@@ -40,7 +38,7 @@ var gunoptions={
   //file: 'radatagun',// folder default > radata
 }
 //INIT DATABASE
-async function init(){
+function init(){
   //Gun Config
   gun = Gun(gunoptions);
   //gun.get('key11').put({property: 'value'});
@@ -127,6 +125,9 @@ function createAliasId(data, callback){
           //need to work on encrypt data...
           let sea = await SEA.pair();
           let pub = sea.pub;
+
+
+          
           let saltkey = await SEA.work(data.passphrase, data.alias);
           sea = await SEA.encrypt(sea, saltkey);
           let userId = await createUserId();
@@ -194,7 +195,7 @@ exports.getAliasPassphrase = getAliasPassphrase;
 function aliasSetHint(data,callback){
   console.log('SET HINT GUN...');
 
-  //TODOLIST 
+  //TODOLIST work on ecoding
   let question1;
   question1 =data.question1;
   let question2;
@@ -232,7 +233,6 @@ function aliasGetHint(data,callback){
     }else{
       callback('FAIL');
     }
-    //callback('TEST');
   });
 }
 exports.aliasGetHint = aliasGetHint;
@@ -246,7 +246,7 @@ function aliasCheckPassphrase(data,callback){
         let decoded = bcrypt.compareSync(data.oldpassphrase, datasub.passphrase);
         console.log('decoded:',decoded);
         if(decoded){
-          
+          // passphrase is verify
           callback('PASS');
         }else{
           callback('FAIL');
@@ -273,6 +273,85 @@ function aliasCheckPassphraseSync(data){
   });
 }
 exports.aliasCheckPassphraseSync = aliasCheckPassphraseSync;
+//===============================================
+// ALIAS
+//===============================================
+//TODOLIST need work on two checks
+// if user logout
+// if fake user logout
+// check for expire date
+function aliasLogout(data,callback){
+  if(data){
+    let datatoken = jwt.verify(data, config.tokenKey);
+    if(datatoken){
+      //console.log(datatoken);
+      try{
+        gun.get(datatoken.alias).put({token:''},(ack)=>{
+          //console.log(ack);
+          if (ack.err){
+            return callback('FAIL');
+          }
+          if(ack.ok){
+            return callback('PASS');
+          }
+        });
+      }catch(e){
+        console.log('LOGOUT ERROR:',e);
+        return callback('FAIL');
+      }
+    }else{
+      callback('FAIL');
+    }
+    //console.log('nothing yet...');
+  }else{
+    console.log('Alias Logout NULL field!');
+    callback('FAIL');
+  }
+}
+exports.aliasLogout = aliasLogout;
+//===============================================
+// ALIAS CHECK PUB ID
+//===============================================
+function aliasCheckPubId(data,callback){
+  gun.get(data.pub).once((data,key)=>{
+    console.log(data);
+    if(data){
+      return callback('EXIST');
+    }else{
+      return callback(null);
+    }
+  });
+  //return callback(null);
+}
+exports.aliasCheckPubId = aliasCheckPubId;
+//===============================================
+// ALIAS CREATE PUB
+//===============================================
+function aliasCreatePubId(data,callback){
+  console.log(data);
+  console.log('CHecking...');
+  var userinfo={
+    alias:data.user.alias
+    ,aliasId:data.user.aliasId
+  };
+  console.log(userinfo);
+
+  gun.get(data.pub).put(userinfo,(ack)=>{
+    if(ack.err){
+      console.log('PUB ID ERROR!');
+      return callback(null);
+    }
+    if(ack.ok){
+      console.log('PUB CREATED!');
+      return callback('PASS');
+    }else{
+      console.log('PUB FAIL!');
+      return callback(null);
+    }
+  });
+  //return callback(null);
+}
+exports.aliasCreatePubId = aliasCreatePubId;
 //===============================================
 // ALIAS
 //===============================================

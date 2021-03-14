@@ -100,10 +100,7 @@ module.exports = function (fastify, opts, done) {
       reply.code( 401 ).send();
     }
     //let chceckhint = await user.aliasSetHintSync({alias:alias,question1:question1,question2:question2,hint:hint});
-
   });
-
-  
   // FINISH
   done();
 }

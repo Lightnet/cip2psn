@@ -116,9 +116,25 @@ async function routes (fastify, options, done) {
   fastify.get('/logout', async function (request, reply) {
     reply.code(200);
     reply.type('text/html');
-    console.log('LOGOUT');
-    request.session.token=null;
-    reply.send(`<html><body>[ Logout ] <a href="/">Home</a></body></html>`);
+    //console.log('LOGOUT');
+    let token=request.session.token;
+    //console.log('token:',token);
+    if(token){
+      //let data = jwt.verify(token, config.tokenKey);
+      //console.log(data);
+      let islogout = await user.aliasLogoutSync(token);
+      console.log('islogout:',islogout);
+      request.session.token=null;
+      reply.redirect(302,'/');
+      //reply.send(`<html><body>[ Logout ] <a href="/">Home</a></body></html>`);
+    }else{
+      console.log('FAIL TOKEN');
+      //reply.redirect('/');
+      reply.redirect(302,'/');
+      return;
+    }
+    //request.session.token=null;
+    //reply.send(`<html><body>[ Logout ] <a href="/">Home</a></body></html>`);
   });
 
   fastify.get('/test', async function (request, reply) {

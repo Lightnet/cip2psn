@@ -67,3 +67,7 @@ require('./src/server/fastifty_server'); // ok // out date session package
 //require('./src/tests/hypercorepouchdb01');
 //require('./src/tests/hypercorepouchdb02');
 //require('./src/tests/hyperbeelocalstorage');
+
+
+//const db= require('./src/server/db/pv1');
+//db.init();

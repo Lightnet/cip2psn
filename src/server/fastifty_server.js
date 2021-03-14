@@ -33,10 +33,10 @@ const fastifyFormbody = require('fastify-formbody');
 //const mobile = require('is-mobile');
 //const SESSION_SECRET = 'a secret with minimum length of 32 characters';
 //var SESSION_TTL = 864e3; // 1 day in seconds
-var db = require('./db/hcv1/index');
+var db = require('./db/');
 // DATABASE
 //console.log(db);
-console.log('Init Database...');
+//console.log('Init Database...');
 db.init();
 //console.log(db.get());
 // Require the framework and instantiate it
