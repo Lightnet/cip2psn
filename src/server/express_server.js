@@ -5,15 +5,8 @@
 
   Created By: Lightnet
 
- */
-
-/*
-const express = require('express');
-const app = express();
-const port = 3000;
-app.get('/', (req, res) => res.send('Hello World!'));
-app.listen(port, () => console.log(`Port on which the app is listening ${port}!`));
 */
+
 // http://expressjs.com/en/resources/middleware/body-parser.html
 const bodyParser = require('body-parser');
 // http://expressjs.com/en/resources/middleware/session.html
@@ -21,7 +14,7 @@ const session = require('express-session');
 const auth = require('./express/auth');
 const jwt = require("jsonwebtoken");
 const express = require('express');
-const db = require('./db/hcv1/index');
+const db = require('./db');
 const config=require('../../config');
 
 //INIT DATABASE

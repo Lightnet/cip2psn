@@ -1,3 +1,20 @@
+/**
+  Project Name: cip2psn
+
+  LICENSE: MIT
+
+  Created By: Lightnet
+
+  Information:
+  
+  This is pouchdb. Work in progress tests.
+
+   After some researching database that has replicate.
+   
+   https://pouchdb.com/guides/replication.html#couchdb-sync
+
+*/
+
 // https://www.tutorialspoint.com/pouchdb/pouchdb_database_info.htm
 // https://pouchdb.com/guides/documents.html
 
@@ -11,16 +28,23 @@ var PouchDB = require('PouchDB');
 var db;
 
 function init(){
-  db = new PouchDB('my_pouchdb');
-  db.info(function(err, info) {
-    if (err) {
-       return console.log(err);
-    } else {
-       console.log(info);
-    }
-  });
+   //file name
+   db = new PouchDB('my_pouchdb');
+   db.info(function(err, info) {
+      if (err) {
+         return console.log(err);
+      } else {
+         console.log(info);
+      }
+   });
 }
 exports.init = init;
+
+
+
+
+
+
 
 //Database information
 /*

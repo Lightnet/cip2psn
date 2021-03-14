@@ -1,7 +1,7 @@
 # Information:
   Just thinking. It is base on https://github.com/pfrazee/ctzn and youtuber https://www.youtube.com/channel/UCSkcL4my2wgDRFvjQOJzrlg 
 
-  Trying to understand the designa and logic of coding.
+  Trying to understand the design and logic of coding.
 
 # Design:
   Current build for server and p2p in developement.
@@ -41,3 +41,10 @@ password:<user password>
 
 # Moblie and Browser:
   There are two different in text font size.
+
+# Database
+ * gun.js
+ * hypercore
+ * pouchdb
+
+  Testing and learning some in and out of the database format. It has it own pros and cons of the setup.

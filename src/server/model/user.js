@@ -14,7 +14,7 @@
 
 const jwt = require("jsonwebtoken");
 const bcrypt=require('bcrypt');
-const db=require('../db/hcv1/index');
+const db=require('../db');
 const config=require('../../../config');
 const SEA = require('gun/sea');
 const {create32Key} =require('./utilities');
@@ -60,9 +60,11 @@ function createAliasSync(data){
         }else if(data2.message){
           resolve('EXIST');
         }else{
+          resolve('ERROR');
           resolve(null);
         }
       }else{
+        resolve('NULL ARGS ERROR');
         resolve(null);
       }
       console.log('END createAliasSync');
@@ -224,6 +226,22 @@ function aliasCreatePubIdSync(data){
   });
 }
 exports.aliasCreatePubIdSync = aliasCreatePubIdSync;
+
+//===============================================
+// CHECK PUB CREATE POST
+//===============================================
+function aliasCreatePubIdPostSync(data){
+  return new Promise(resolve => {
+    db.aliasCreatePubIdPost(data,(ack)=>{
+      if(ack){
+        resolve(true);
+      }else{
+        resolve(false);
+      }
+    });
+  });
+}
+exports.aliasCreatePubIdPostSync = aliasCreatePubIdPostSync;
 
 //===============================================
 // TMP SET UP

@@ -5,16 +5,23 @@
 
   Created By: Lightnet
 
+  Information:
+  This used gun.js. It used graph node and timestamp.
+
  */
 // GUNJS
 // https://gun.eco/docs/Installation#node
 
 console.log("DATABASE INIT...");
-//const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const bcrypt=require('bcrypt');
-var config=require('../../../../config');
-const { isEmpty, timeStamp } =require('../../model/utilities');
+const config=require('../../../../config');
+const { isEmpty, timeStamp, createUserId } =require('../../model/utilities');
+
 //===============================================
+// https://www.npmjs.com/package/bcrypt
+const saltRounds = config.saltRounds || 10;
+
 const Gun = require('gun');
 const SEA = require('gun/sea');
 var gun;
@@ -24,7 +31,7 @@ var gunoptions={
   //file: 'radatagun',// folder default > radata
 }
 //INIT DATABASE
-async function init(){
+function init(){
   //Gun Config
   gun = Gun(gunoptions);
   //gun.get('key11').put({property: 'value'});
@@ -45,11 +52,19 @@ async function init(){
   //});
 }
 exports.init = init;
+//===============================================
 // GET DATABASE
 async function get(){
   return gun;
 }
 exports.get = get;
+//===============================================
+// GET DB USER
+async function getuser(){
+  //return user;
+  return gun;
+}
+exports.getuser=getuser;
 //===============================================
 // CHECK ALIAS ID
 //===============================================
@@ -64,9 +79,10 @@ function checkAliasId(alias,callback){
     //console.log(data);
     //console.log(key);
     if(data){
-      //console.log('FOUND ALIAS!');
+      console.log('FOUND ALIAS!');
       return callback(null,{message:'FOUND'});
     }else{
+      console.log('NOT FOUND ALIAS!');
       return callback(null,{message:'NOTFOUND'});
     }
   });
@@ -83,7 +99,7 @@ function createAliasId(data, callback){
     if(isEmpty(data.alias)==false){
       gun.get(data.alias).once(async function(data2, key){
         if(data2){
-          console.log(data2);
+          //console.log(data2);
           return callback(null,{message:"EXIST"});
         }else{
           let pass = bcrypt.hashSync(data.passphrase, saltRounds);
@@ -92,11 +108,17 @@ function createAliasId(data, callback){
           //need to work on encrypt data...
           let sea = await SEA.pair();
           let pub = sea.pub;
+
+
+          
           let saltkey = await SEA.work(data.passphrase, data.alias);
           sea = await SEA.encrypt(sea, saltkey);
+          let userId = await createUserId();
+          //console.log('userId:',userId)
 
           gun.get(data.alias).put({
             alias:data.alias
+            ,aliasId:userId
             ,passphrase: pass
             ,role:'user'
             ,token:''
@@ -130,8 +152,16 @@ function getAliasPassphrase(data, callback){
     }
     gun.get(data.alias).once(function(datasub, key){
       if(datasub){
+        //console.log('user data');
+        //console.log(datasub);
         //console.log('FOUND ALIAS!');
-        return callback(null,{message:'FOUND',passphrase: datasub.passphrase, sea:datasub.sea});
+
+        return callback(null,{
+          message:'FOUND'
+          , passphrase: datasub.passphrase
+          , sea:datasub.sea
+          , aliasId:datasub.aliasId
+        });
       }else{
         //console.log('NOT FOUND ALIAS!');
         return callback(null,{message:'NOTFOUND',alias:data.alias});
@@ -148,7 +178,7 @@ exports.getAliasPassphrase = getAliasPassphrase;
 function aliasSetHint(data,callback){
   console.log('SET HINT GUN...');
 
-  //TODOLIST 
+  //TODOLIST work on ecoding
   let question1;
   question1 =data.question1;
   let question2;
@@ -186,57 +216,147 @@ function aliasGetHint(data,callback){
     }else{
       callback('FAIL');
     }
-    //callback('TEST');
   });
 }
 exports.aliasGetHint = aliasGetHint;
 //===============================================
-// GET DB USER
-async function getuser(){
-  //return user;
-  return gun;
+// ALIAS CHANGE PASSPHRASE
+//===============================================
+function aliasCheckPassphrase(data,callback){
+  gun.get(data.alias).once(function(datasub, key){
+    if(datasub){
+      if(datasub.passphrase){
+        let decoded = bcrypt.compareSync(data.oldpassphrase, datasub.passphrase);
+        console.log('decoded:',decoded);
+        if(decoded){
+          // passphrase is verify
+          callback('PASS');
+        }else{
+          callback('FAIL');
+        }
+      }else{
+        callback('FAIL');
+      }
+    }else{
+      callback('FAIL');
+    }
+  });
 }
-exports.getuser=getuser;
+exports.aliasCheckPassphrase = aliasCheckPassphrase;
+//===============================================
+function aliasCheckPassphraseSync(data){
+  return new Promise(resolve => {
+    aliasCheckPassphrase(data,(ack)=>{
+      if(ack=='PASS'){
+        resolve(true);
+      }else{
+        resolve(false);
+      }
+    });
+  });
+}
+exports.aliasCheckPassphraseSync = aliasCheckPassphraseSync;
+//===============================================
+// ALIAS
+//===============================================
+//TODOLIST need work on two checks
+// if user logout
+// if fake user logout
+// check for expire date
+function aliasLogout(data,callback){
+  if(data){
+    let datatoken = jwt.verify(data, config.tokenKey);
+    if(datatoken){
+      //console.log(datatoken);
+      try{
+        gun.get(datatoken.alias).put({token:''},(ack)=>{
+          //console.log(ack);
+          if (ack.err){
+            return callback('FAIL');
+          }
+          if(ack.ok){
+            return callback('PASS');
+          }
+        });
+      }catch(e){
+        console.log('LOGOUT ERROR:',e);
+        return callback('FAIL');
+      }
+    }else{
+      callback('FAIL');
+    }
+    //console.log('nothing yet...');
+  }else{
+    console.log('Alias Logout NULL field!');
+    callback('FAIL');
+  }
+}
+exports.aliasLogout = aliasLogout;
+//===============================================
+// ALIAS CHECK PUB ID
+//===============================================
+function aliasCheckPubId(data,callback){
+  gun.get(data.pub).once((data,key)=>{
+    console.log(data);
+    if(data){
+      return callback('EXIST');
+    }else{
+      return callback(null);
+    }
+  });
+  //return callback(null);
+}
+exports.aliasCheckPubId = aliasCheckPubId;
+//===============================================
+// ALIAS CREATE PUB
+//===============================================
+function aliasCreatePubId(data,callback){
+  console.log(data);
+  console.log('CHecking...');
+  var userinfo={
+    alias:data.user.alias
+    ,aliasId:data.user.aliasId
+  };
+  console.log(userinfo);
+
+  gun.get(data.pub).put(userinfo,(ack)=>{
+    if(ack.err){
+      console.log('PUB ID ERROR!');
+      return callback(null);
+    }
+    if(ack.ok){
+      console.log('PUB CREATED!');
+      return callback('PASS');
+    }else{
+      console.log('PUB FAIL!');
+      return callback(null);
+    }
+  });
+  //return callback(null);
+}
+exports.aliasCreatePubId = aliasCreatePubId;
+//===============================================
+// 
+//===============================================
+function aliasCreatePubIdPost(data,callback){
+  if(data){
+    let time = timeStamp();
+    console.log(time);
+
+    //gun.get(data.pub).get('post').get().
+    callback(null);
+  }else{
+    callback(null);
+  }
+}
+exports.aliasCreatePubIdPost = aliasCreatePubIdPost;
+//===============================================
+// ALIAS
+//===============================================
+//function alias(data,callback){
+  //callback(null);
+//}
+//exports.alias = alias;
 //===============================================
 // TESTING AREA
 //===============================================
-// CHECK CREATE USER 
-async function checkcreateuser(alias,passphrase,callback){
-  //check if alias exist
-  gun.get(alias).once(function(data, key){
-    // {property: 'value'}, 'key'
-    //console.log('data');
-    //console.log(data);
-    //console.log(key);
-    if(data){
-      //console.log('FOUND ALIAS!');
-      return callback(null,{message:"FOUND"});
-    }else{
-      //console.log('NOT FOUND ALIAS!');
-      //let pass = jwt.sign({ passphrase: passphrase }, 'shhhhh');
-      let pass = bcrypt.hashSync(passphrase, saltRounds);
-      gun.get(alias).put({
-        alias:alias,
-        passphrase: pass
-      });
-      return callback(null,{message:"CREATED",alias:alias});
-    }
-  });
-  //return callback();
-}
-exports.checkcreateuser = checkcreateuser;
-//===============================================
-// CHECK ALIAS PASSPHRASE
-function checkaliaspassphrase(alias, callback){
-  //console.log(gun);
-  gun.get(alias).once(function(data, key){
-    if(data){
-      //console.log('FOUND ALIAS!');
-      return callback(null,{message:'FOUND',passphrase: data.passphrase});
-    }else{
-      //console.log('NOT FOUND ALIAS!');
-      return callback(null,{message:'NOTFOUND',alias:alias});
-    }
-  });
-}
-exports.checkaliaspassphrase = checkaliaspassphrase;

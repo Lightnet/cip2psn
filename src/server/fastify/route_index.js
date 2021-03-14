@@ -58,10 +58,6 @@ async function routes (fastify, options, done) {
     if(request.url == '/about'){
       return;
     }
-    //{
-      //throw new Error('Unauthorized Access!');
-      //return;
-    //}
 
     //let token = request.session.token;
     console.log('checking token...');
@@ -138,28 +134,10 @@ async function routes (fastify, options, done) {
   });
 
   fastify.get('/test', async function (request, reply) {
-
+    
     reply.code(200);
     reply.type('text/html');
     reply.send(`<html><body>[ Logout ] <a href="/">Home</a></body></html>`);
-  });
-
-  // GET TEST ASSIGN
-  fastify.get('/tester', async function (request, reply) {
-    reply.code(200);
-    //console.log(request.session);
-    //request.user.set("tester");
-    //console.log(request.user);
-    //reply.header('Content-Type', 'text/html');
-    reply.send({ hello: 'world! fastify!' });
-  });
-  // GET TEST ASSIGN
-  fastify.get('/guest', async function (request, reply) {
-    reply.code(200);
-    //request.user = "guest";
-    //console.log(request.user);
-    //reply.header('Content-Type', 'text/html');
-    reply.send({ hello: 'world! fastify!' });
   });
 
   //ROUTES

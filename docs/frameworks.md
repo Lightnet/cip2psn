@@ -4,7 +4,7 @@
 
 # Notes:
   * There are default package limiter to prevent post inject.
-  * 
+  * nodejs http has no limit check on post
 
 # Restify:
  * Not design for web browser. (opinion)

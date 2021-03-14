@@ -11,7 +11,7 @@ const polka = require('polka');
 const { json } = require('body-parser');
 const session = require('express-session');
 const jwt = require("jsonwebtoken");
-const db = require('./db/hcv1/index');
+const db = require('./db');
 const config=require('../../config');
 // INIT DATABASE
 db.init();
@@ -37,7 +37,8 @@ async function authenticate(req, res, next) {
   next(); // done, woot!
 }
 //app.use(authenticate);
-
+//===============================================
+// INDEX HTML
 function html_index(){
   return `
 <html>
@@ -53,6 +54,8 @@ function html_index(){
 </html>
 `;
 }
+//===============================================
+// MAIN HTML
 function html_access(){
   return `
 <html>
@@ -66,6 +69,7 @@ function html_access(){
 </html>
 `;
 }
+//===============================================
 // INDEX PAGE
 app.get('/', (req, res) => {
   let token=req.session.token;
@@ -80,7 +84,6 @@ app.get('/', (req, res) => {
       console.log('TOKEN ERROR');
     }
   }
-
   let body;
   if(token){
     body=html_access();
@@ -90,6 +93,7 @@ app.get('/', (req, res) => {
   //res.end('Hello there !');
   res.end(body);
 });
+//===============================================
 // ROUTES
 const login = require('./polka/route_login');
 app.use('/login', login);
@@ -102,6 +106,7 @@ app.get('/logout', (req, res) => {
   req.session.token=null;
   res.end(`<html><body>[ Logout ] <a href="/">Home</a></body></html>`);
 });
+//===============================================
 // SET PORT
 const PORT = process.env.PORT || 3000;
 // SERVER LISTEN

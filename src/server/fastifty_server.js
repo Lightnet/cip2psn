@@ -33,12 +33,10 @@ const fastifyFormbody = require('fastify-formbody');
 //const mobile = require('is-mobile');
 //const SESSION_SECRET = 'a secret with minimum length of 32 characters';
 //var SESSION_TTL = 864e3; // 1 day in seconds
-var db = require('./db/');
+var db = require('./db');
 // DATABASE
 //console.log(db);
-//console.log('Init Database...');
 db.init();
-//console.log(db.get());
 // Require the framework and instantiate it
 console.log('Init Fastify Web Server Modules...')
 const fastify = require('fastify')({ 
@@ -116,13 +114,6 @@ fastify.addHook('preHandler', (request, reply, next) => {
   let views = request.session.views || 0;
   request.session.views = ++views;
   console.log("views",request.session.views);
-  request.session.isAuth = request.session.isAuth || false;
-  request.session.alias = request.session.alias || "Guest";
-  //request.user="GUEST";
-  //console.log(request.user);
-  //let count=request.count || 0;
-  //request.count=++count;
-  //console.log(request.count);
   next();
 });
 */

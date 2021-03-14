@@ -162,9 +162,43 @@ module.exports = function (fastify, opts, done) {
   fastify.post('/aliaspost',async function (request, reply) {
     const { aliascontent } = JSON.parse(request.body);
     console.log(aliascontent);
-
-
-    reply.send({message:'CHECKING...'});
+    let token = request.session.token;
+    console.log('checking token...');
+    if(!token){//401
+      return reply.code( 401 ).send();
+    }
+    let sea;
+    let data;
+    let bfound=false;
+    
+    try{
+      data = jwt.verify(token, config.tokenKey);
+      let saltkey = await SEA.work(data.key, data.alias);
+      sea = await SEA.decrypt(data.sea, saltkey);
+      //console.log('data:',data);
+      //console.log('sea:',sea);
+      bfound=true;
+    }catch(e){
+      console.log('No Token //////////////!');
+      console.log(e);
+    }
+    if(bfound){
+      let isExistPost = await user.aliasCreatePubIdPostSync({
+        user:data
+        , pub:sea.pub
+        , content:aliascontent
+      });
+      console.log('isExistPost:',isExistPost);
+      if(isExistPost){
+        reply.send({message:'CREATE'});
+      }else{
+        reply.send({message:'NONEXIST'});
+      }
+    }else{
+      reply.send({message:'FAIL'});
+    }
+    
+    //reply.send({message:'CHECKING...'});
   });
 
   fastify.get('/alias/:id', function (request, reply) {

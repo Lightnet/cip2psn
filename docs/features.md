@@ -5,7 +5,7 @@
 
   Created By: Lightnet
 
- */
+*/
 
 # Features:
   Work in progress build and tests.
@@ -20,12 +20,13 @@
 - [ ] http [simple tested login, signup, logout]
 
 ## Database:
- - [ ] set up
+ - [ ] set up [ work in progress ]
  - [ ] Gun [main / working / testing...]
- - [ ] HyperCore 
- - [ ] HyperDrive [tested]
- - [ ] HyperBee [not working]
- * [ ] Network work sharing database permission
+ - [ ] HyperCore [ not build yet]
+ - [ ] HyperDrive [ tested ]
+ - [ ] HyperBee [ tested ]
+ - [ ] Pouchdb [ tested ]
+ - [ ] Network work sharing database permission
 
 ## Account System:
  - [ ] create account
@@ -36,7 +37,7 @@
   - [ ] email
   - [ ] set and get hint
   - [ ] change password
-  - [ ] 
+  - [ ] secret keys
   - [ ] Recovery Account
   - [ ] Email
     - [ ] Proxy Email

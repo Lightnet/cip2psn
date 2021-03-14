@@ -15,7 +15,7 @@
 // 
 
 'use strict';
-const db = require('./db/hcv1/index');
+const db = require('./db');
 const Hapi = require('@hapi/hapi');
 
 const PORT = process.env.PORT || 3000;

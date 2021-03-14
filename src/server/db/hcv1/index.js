@@ -5,6 +5,12 @@
 
   Created By: Lightnet
 
+  Information: This is not hypercore stuff yet.
+
+  Hypercore: design for basic set get key value data.
+  Hyperdrive: deal with emulate data drive format in different way to handle network write and read.
+  Hyperbee: deal with set and get key value as well sub key.
+
  */
 // https://hypercore-protocol.org/guides/modules/hyperbee/
 // https://hypercore-protocol.org/guides/walkthroughs/p2p-indexing-with-hyperbee/

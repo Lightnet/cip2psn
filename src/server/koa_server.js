@@ -19,7 +19,7 @@ const Koa = require('koa');
 const router = require('@koa/router')();
 const koaBody = require('koa-body');
 //const CSRF = require('koa-csrf');
-const db = require('./db/hcv1/index');
+const db = require('./db');
 // INIT DATABASE
 console.log('Init database...');
 db.init();
@@ -82,6 +82,7 @@ app.use(async (ctx, next) => {
   //console.log("ctx.keys:",ctx.keys);
   return next(); // next progress
 });
+//===============================================
 // INDEX PAGE
 function html_index(){
   return`
@@ -104,7 +105,8 @@ function html_index(){
   </html>
   `;
 }
-
+//===============================================
+// MAIN PAGE
 function html_access(){
   return `
 <html>
@@ -113,13 +115,12 @@ function html_access(){
   </head>
   <body>
     <a href="/logout">Logout</a>
-    <br> <label> Weclome Guest! [Restify]</label>
+    <br> <label> Weclome Guest! [Koa]</label>
   </body>
 </html>
 `;
 }
-//===
-
+//===============================================
 // INDEX URL
 async function url_index(ctx) {
   //ctx.body = 'Hello World! koa!';
@@ -131,17 +132,17 @@ async function url_index(ctx) {
     ctx.body = html_index({});
   }
 }
+//===============================================
 // route definitions
 router.get('/', url_index);
-
 router.get('/logout', function(ctx){
   ctx.cookies.set('token','',{
     maxAge:Date.now()
     ,signed:true
   });
-  ctx.body = `<html><body>GET LOGOUT <a href='/'>Home</a></body></html>`;
+  ctx.body = `<html><body> LOGOUT <a href='/'>Home</a></body></html>`;
 });
-
+// URL INDEX and LOGOUT
 app.use(router.routes());
 // LOGIN
 var route_login=require('./koa/route_login.js');

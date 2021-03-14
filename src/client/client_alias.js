@@ -1,7 +1,7 @@
 /**
   Blank template
  */
-const { el, mount } = redom;
+const { el, mount,unmount } = redom;
 
 // SUBMIT
 var tr_btn_submit=el("tr",[
@@ -54,13 +54,13 @@ function aliasCreatePubId(){
   .then(response => response.json())
   .then((respone) => {
     console.log(respone);
-    if(respone.message=='NONEXIST'){
-      //console.log(label_post);
-      console.log('');
+    if(respone.message=='CREATE'){
+      unmount(document.body, div_panel);
+      mount(document.body, divPost);
     }
   });
 }
-
+// POST CONTENT
 function aliasPostContent(){
   let post = {
     aliascontent: document.getElementById('aliascontent').value || '',
