@@ -30,6 +30,8 @@ var divPost=el('div',[
   ])
 ]);
 
+var divFeeds=el('div',{id:'feeds'});
+
 function checkAliasExist(){
   fetch('/checkAliasBlog',{
 
@@ -42,6 +44,10 @@ function checkAliasExist(){
     }
     if(respone.message=='EXIST'){
       mount(document.body, divPost);
+      mount(document.body, divFeeds);
+
+      //get current alias public posts
+      aliasGetPubIdPosts();
     }
   });
 }
@@ -75,6 +81,28 @@ function aliasPostContent(){
     if(respone.message=='OK'){
       //console.log(label_post);
       console.log('PASS POST');
+    }
+  });
+}
+//GET PUBLIC POSTS
+function aliasGetPubIdPosts(){
+  let post = {
+    //aliascontent: document.getElementById('aliascontent').value || '',
+  };
+  fetch('/aliasgetposts',{
+    method: "post"
+    //, body: JSON.stringify(post)
+  })
+  .then(response => response.json())
+  .then((respone) => {
+    console.log(respone);
+    if(respone.message=='FOUND'){
+      for(let k in respone.feeds){
+        console.log(respone.feeds[k]);
+        let divfeed =el('div',{id:respone.feeds[k].id,textContent:respone.feeds[k].content})
+
+        mount(divFeeds, divfeed);
+      }
     }
   });
 }

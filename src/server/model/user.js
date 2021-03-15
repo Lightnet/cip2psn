@@ -226,7 +226,6 @@ function aliasCreatePubIdSync(data){
   });
 }
 exports.aliasCreatePubIdSync = aliasCreatePubIdSync;
-
 //===============================================
 // CHECK PUB CREATE POST
 //===============================================
@@ -242,7 +241,21 @@ function aliasCreatePubIdPostSync(data){
   });
 }
 exports.aliasCreatePubIdPostSync = aliasCreatePubIdPostSync;
-
+//===============================================
+// CHECK PUB GET POSTS
+//===============================================
+function aliasGetPubIdPostsSync(data){
+  return new Promise(resolve => {
+    db.aliasGetPubIdPosts(data,(ack)=>{
+      if(ack){
+        resolve(ack);
+      }else{
+        resolve(false);
+      }
+    });
+  });
+}
+exports.aliasGetPubIdPostsSync = aliasGetPubIdPostsSync;
 //===============================================
 // TMP SET UP
 //===============================================

@@ -244,7 +244,16 @@ let saltkey2 = await SEA.work(pass);
 
 ```
 
+ * https://stackoverflow.com/questions/38552003/how-to-decode-jwt-token-in-javascript-without-using-a-library
 ```javascript
+// https://jsbin.com/medosilefe/edit?js,console
+const parseJwt = (token) => {
+  try {
+    return JSON.parse(atob(token.split('.')[1]));
+  } catch (e) {
+    return null;
+  }
+};
 ```
 
 ```javascript

@@ -34,6 +34,12 @@ var gunoptions={
 function init(){
   //Gun Config
   gun = Gun(gunoptions);
+
+  //gun.get('Zqi-l-jHqcZebC55--2DZww-oavRAJaGm7d9Qmw5rPI.v8_5eLTi3j4wNPzjrVVgi2SK0jw8GRAT0LVc-rTN7ts/post/1615772784446').once((ack)=>{
+    //console.log(ack);
+  //})
+
+
   //gun.get('key11').put({property: 'value'});
   //gun.get('key11').once(function(data, key){
     // {property: 'value'}, 'key'
@@ -297,7 +303,7 @@ exports.aliasLogout = aliasLogout;
 //===============================================
 function aliasCheckPubId(data,callback){
   gun.get(data.pub).once((data,key)=>{
-    console.log(data);
+    //console.log(data);
     if(data){
       return callback('EXIST');
     }else{
@@ -317,18 +323,17 @@ function aliasCreatePubId(data,callback){
     alias:data.user.alias
     ,aliasId:data.user.aliasId
   };
-  console.log(userinfo);
-
+  //console.log(userinfo);
   gun.get(data.pub).put(userinfo,(ack)=>{
     if(ack.err){
-      console.log('PUB ID ERROR!');
+      //console.log('PUB ID ERROR!');
       return callback(null);
     }
     if(ack.ok){
-      console.log('PUB CREATED!');
+      //console.log('PUB CREATED!');
       return callback('PASS');
     }else{
-      console.log('PUB FAIL!');
+      //console.log('PUB FAIL!');
       return callback(null);
     }
   });
@@ -339,17 +344,97 @@ exports.aliasCreatePubId = aliasCreatePubId;
 // 
 //===============================================
 function aliasCreatePubIdPost(data,callback){
-  if(data){
-    let time = timeStamp();
-    console.log(time);
+  if(!gun){
+    return callback('Database not init!',null);
+  }
+  //TODOLIST encode text
+  //public
+  //private
 
-    //gun.get(data.pub).get('post').get().
-    callback(null);
+  if(data){
+    //console.log(data);
+    let time = timeStamp();
+    //console.log(time);
+
+    gun.get(data.pub).get('post').get(time).put({
+        content:data.content
+        , date:time
+        , isDraft:false
+        , isDelete:false
+        , isPublic:true
+      },(ack)=>{
+        //console.log(ack);
+        if(ack.err){
+          return callback('FAIL');
+        }
+        if(ack.ok){
+          callback('PASS');
+        }
+      });
   }else{
     callback(null);
   }
 }
 exports.aliasCreatePubIdPost = aliasCreatePubIdPost;
+//===============================================
+// 
+//===============================================
+
+function getPubPostId(pub,id){
+  return new Promise(resolve => {
+    gun.get(pub).get('post').get(id).once((data)=>{
+      //console.log('data');
+      //console.log(data);
+      let d={
+        id:id
+        , content:data.content
+      }
+      resolve(d);
+    });
+  });
+}
+
+// https://gun.eco/docs/RAD#lex
+function aliasGetPubIdPosts(data,callback){
+  if(!gun){
+    return callback('Database not init!',null);
+  }
+  //TODOLIST encode text
+  //public
+  //private
+
+  if(data){
+    //console.log(data);
+    let time = timeStamp();
+    //console.log(time);
+    // 50KB == 50000
+    gun.get(data.pub).get('post').get({
+      '.':{'<':time},'%': 50000
+    //}).map().once((data,key)=>{
+    }).once(async (feeddata,key)=>{
+      //console.log("DATA FEEDS:");
+      //console.log('data:',feeddata);
+      //console.log('key:',key);
+      let d=[];
+      for(let k in feeddata){
+        //console.log('K:',k)
+        if(k == '_'){
+          //TDOLIST Need to fixed this
+        }else{
+          //console.log('K:',k)
+          let pd = await getPubPostId(data.pub,k);
+          d.push(pd);
+        }
+      }
+      callback(d);  
+    });
+
+    //callback('PASS');
+  }else{
+    callback(null);
+  }
+}
+exports.aliasGetPubIdPosts = aliasGetPubIdPosts;
 //===============================================
 // ALIAS
 //===============================================

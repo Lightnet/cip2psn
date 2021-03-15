@@ -43,6 +43,7 @@
  * https://www.reddit.com/r/discordapp/comments/4vmg2w/unique_user_id/
  * https://github.com/ai/nanoid/
 
+ * https://stackoverflow.com/questions/38552003/how-to-decode-jwt-token-in-javascript-without-using-a-library
 
 # html
  * https://github.com/jsdom/jsdom

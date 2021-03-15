@@ -37,9 +37,9 @@ function blankPage(){
 module.exports = function (fastify, opts, done) {
   // GET ALIAS
   fastify.get('/alias',async function (request, reply) {
-    console.log("/ALIAS");
+    //console.log("/ALIAS");
     let token = request.session.token;
-    console.log('checking token...');
+    //console.log('checking token...');
     if(!token){//401
       reply.code( 401 ).send();
       //throw new Error('Unauthorized Access!');
@@ -80,7 +80,7 @@ module.exports = function (fastify, opts, done) {
     //console.log(request.params);
     let token = request.session.token;
     let bfound=false;
-    console.log('checking token...');
+    //console.log('checking token...');
     if(!token){//401
       reply.code( 401 ).send();
       //throw new Error('Unauthorized Access!');
@@ -93,7 +93,7 @@ module.exports = function (fastify, opts, done) {
       sea = await SEA.decrypt(data.sea, saltkey);
       //console.log('aliasId:',data.aliasId);
       //console.log('sea');
-      console.log(sea);
+      //console.log(sea);
       //console.log(data);
       bfound=true;
     }catch(e){
@@ -146,7 +146,7 @@ module.exports = function (fastify, opts, done) {
         user:data,
         pub:sea.pub
       });
-      console.log('isExistPub:',isExistPub);
+      //console.log('isExistPub:',isExistPub);
       if(isExistPub){
         reply.send({message:'CREATE'});
       }else{
@@ -155,8 +155,7 @@ module.exports = function (fastify, opts, done) {
     }else{
       reply.send({message:'FAIL'});
     }
-
-    reply.send({message:'CHECKING...'});
+    //reply.send({message:'CHECKING...'});
   });
 
   fastify.post('/aliaspost',async function (request, reply) {
@@ -192,14 +191,56 @@ module.exports = function (fastify, opts, done) {
       if(isExistPost){
         reply.send({message:'CREATE'});
       }else{
-        reply.send({message:'NONEXIST'});
+        reply.send({message:'FAIL'});
       }
     }else{
       reply.send({message:'FAIL'});
     }
-    
     //reply.send({message:'CHECKING...'});
   });
+
+  fastify.post('/aliasgetposts',async function (request, reply) {
+    //const { aliascontent } = JSON.parse(request.body);
+    //console.log(aliascontent);
+    let token = request.session.token;
+    console.log('checking token...');
+    if(!token){//401
+      return reply.code( 401 ).send();
+    }
+    let sea;
+    let data;
+    let bfound=false;
+    
+    try{
+      data = jwt.verify(token, config.tokenKey);
+      let saltkey = await SEA.work(data.key, data.alias);
+      sea = await SEA.decrypt(data.sea, saltkey);
+      //console.log('data:',data);
+      //console.log('sea:',sea);
+      bfound=true;
+    }catch(e){
+      console.log('No Token //////////////!');
+      console.log(e);
+    }
+    if(bfound){
+      let feeds = await user.aliasGetPubIdPostsSync({
+        user:data
+        , pub:sea.pub
+      });
+      console.log('feeds:',feeds);
+      if(feeds){
+        //console.log(feeds);
+
+        reply.send({message:'FOUND',feeds:feeds});
+      }else{
+        reply.send({message:'FAIL'});
+      }
+    }else{
+      reply.send({message:'FAIL'});
+    }
+    //reply.send({message:'CHECKING...'});
+  });
+
 
   fastify.get('/alias/:id', function (request, reply) {
     console.log("ALIAS ID?");
