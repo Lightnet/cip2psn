@@ -1,11 +1,12 @@
 # CHEAT SHEETS
 
+```javascript
+```
 
 
 
 Links:
  * https://www.npmjs.com/package/pouchdb-adapter-hyperbee
-
 
 # pouchdb
 ```javascript
@@ -22,7 +23,6 @@ db.post(doc).then((res) => {
     console.error(err);
 });
 ```
-
 # nodejs sub module package
 ```javascript
 //creating sub module need default file name.
@@ -98,10 +98,6 @@ let token = jwt.sign({ name: 'guest'}, 'tokenkey');
 
 let body = jwt.verify(token, 'tokenkey');
 console.log(body);
-```
-
-```javascript
-
 ```
 
 ```javascript
@@ -239,9 +235,6 @@ let pass = 'test';
 let salt = Gun.text.random(64);
 let saltkey1 = await SEA.work(pass, salt);
 let saltkey2 = await SEA.work(pass);
-
-
-
 ```
 
  * https://stackoverflow.com/questions/38552003/how-to-decode-jwt-token-in-javascript-without-using-a-library
@@ -265,8 +258,6 @@ const parseJwt = (token) => {
 ```javascript
 ```
 
-```javascript
-```
 
 
 

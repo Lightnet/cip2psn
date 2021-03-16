@@ -53,17 +53,17 @@ module.exports = [
   method: 'GET',
   path: '/',
   handler: (request, h) => {
-    //request.session.views = request.session.views + 1 || 1;
+    request.session.views = request.session.views + 1 || 1;
     //console.log("views:",request.session.views);
     //return 'Hello World! hapi!';
 
     let token = request.state.token;
     let body='';
-    console.log('Token:',token);
+    //console.log('Token:',token);
 
     try{
       let data = jwt.verify(token, config.tokenKey);
-      console.log('[ data ]: ', data);
+      //console.log('[ data ]: ', data);
     }catch(err){
       console.log('TOKEN ERROR');
     }

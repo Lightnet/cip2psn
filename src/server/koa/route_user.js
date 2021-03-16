@@ -24,8 +24,8 @@ function text_html(data){
 async function get_user(ctx) {
   //ctx.body = 'GET Login';
   //ctx.params // URL params, like :id
-  console.log(ctx.params);
-  console.log("USER:",ctx.params.user);
+  //console.log(ctx.params);
+  //console.log("USER:",ctx.params.user);
   ctx.body = text_html({alias:"test"});
 }
 

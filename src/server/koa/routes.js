@@ -61,8 +61,8 @@ module.exports = (app)=>{
     }
     let n = ctx.session.views || 0;
     ctx.session.views = ++n;
-    console.log(ctx.session.views);
-    console.log("ctx.keys:",ctx.keys);
+    console.log("views:",ctx.session.views);
+    //console.log("ctx.keys:",ctx.keys);
     return next(); // next progress
   });
   //===============================================
@@ -97,10 +97,10 @@ module.exports = (app)=>{
   var route_signup=require('./route_signup.js');
   app.use(route_signup.routes());
   // ADMIN
-  var route_admin=require('./route_admin.js');
-  app.use(route_admin.routes());
+  //var route_admin=require('./route_admin.js');
+  //app.use(route_admin.routes());
   //last for url for user name /:user
   // filter by order added
-  var route_user=require('./route_user.js');
-  app.use(route_user.routes());
+  //var route_user=require('./route_user.js');
+  //app.use(route_user.routes());
 };

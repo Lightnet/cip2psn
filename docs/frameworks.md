@@ -6,6 +6,22 @@
   * There are default package limiter to prevent post inject.
   * nodejs http has no limit check on post
 
+|---      |---            |---        |---      |
+| Name    | required sync |session    | cookie  |
+|Restify  | 0             | n/a       | x       |
+|Polka    | 0             | x         | x       |
+|Express  | 0             | x         | x       |
+|Fastify  | 0             | 0, n/a    | x       |
+|Hapi     | x             | x         | x       |
+|Koa      | x             | x         | x       |
+|http     | 0             | 0, n/a    | x       |
+```
+0 = no
+1 = yes
+n/a = not applicable
+Note: few packages are outdate for session.
+```
+
 # Restify:
  * Not design for web browser. (opinion)
  * Design like feeds or data sheet. (opinion)
