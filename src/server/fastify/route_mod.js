@@ -16,25 +16,25 @@ const { isEmpty }=require('../model/utilities');
 function blankPage () {
   return '<html>' +
     `<head>
-      <title>blank</title>
+      <title>Mod</title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <script src="https://redom.js.org/redom.min.js"></script>
     </head>
     ` +
     '<body>' +
-    '<script src="/client_blank.js"></script>' +
+    '<script src="/client_mod.js"></script>' +
     '</body>' +
     '</html>'
 }
 // ROUTES
 module.exports = function (fastify, opts, done) {
   // GET LOGIN
-  fastify.get('/blank', function (request, reply) {
+  fastify.get('/mod', function (request, reply) {
     reply.type('text/html');
     reply.send(blankPage());
   });
 
-  fastify.post('/blank', async function (request, reply) {
+  fastify.post('/mod', async function (request, reply) {
     //reply.type('text/html');
     //const { content } = JSON.parse(request.body); //fetch
     const { content } = request.body;

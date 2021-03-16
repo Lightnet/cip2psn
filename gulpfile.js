@@ -21,6 +21,9 @@ const src_client_files=[
   ,'./src/client/client_alias.js'
   ,'./src/client/client_login.js'
   ,'./src/client/client_community.js'
+  ,'./src/client/client_mod.js'
+  ,'./src/client/client_admin.js'
+  ,'./src/client/client_ticket.js'
 ];
 const src_html_files=[
   './src/html/access_page.html'

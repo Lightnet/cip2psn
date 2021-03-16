@@ -12,18 +12,30 @@ Network
 
 # Created by: Lightnet
 
-# Status:
+# Status ( DEVELOPMENT ):
  * Work in progress
  * Idea and testing codes
- * ...
+ * Not recommend for production.
+
+# Status ( PRODUCTION ):
+ * NOT CONFIG YET
+ * NOT SAFE BUILD
 
 # Information:
-  Prototype idea to develop community p2p server by using the Hypercore Protocol and nodejs web server. To create peer to peer server data sharing. To develop simple 3D or 2D world sandbox in game mode logic code.
+  Prototype idea to develop community peer to peer, server, web server, torrent and other networking types of coding. By using the different type of databases that used network to replicate, peer to peer, torrent, and other type of format to access data.
+
+  There are Hypercore Protocol(peer to peer), gun.js (graph data mod­el ) and pouchdb (replicate). Working on a Separate or both.
+
+  By creating javascript from nodejs web server, database, and network to run browser with javascript code.
+  
+  To create peer to peer server data sharing by using Id and tag system coding logic.
+
+  Reason is to develop hub system management network node like those torrent site and file but with web hosting for local. Scaling is not yet test as code layer has not be refine yet.
 
 # Goals:
- * game building world
- * community share server
- 
+ * Game Building World Text / Simple 2D world logic not real time with physics
+ * Community Share Database Server 
+
 # Information peer to peer:
   Peer to peer prototype idea for database on local not in local. But depend on the code.
 
@@ -34,6 +46,10 @@ Network
 
 # Links:
  * https://www.youtube.com/watch?v=RymFCytTWz8  Building on Hypercore
+
+
+# Frameworks:
+  After some testing and learning. It is base on research and challange on the development of code understand. As well ease of used and what type of framework design best work on the coder mind set. There is no right and no wrong answer to development. It should be the same as other programing languages that does take time to adapt and understand.
 
 # Nodejs web server Comparison:
  * https://www.fastify.io/docs/latest/Benchmarking/

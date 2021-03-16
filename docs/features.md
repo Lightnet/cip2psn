@@ -41,24 +41,31 @@
   - [ ] Recovery Account
   - [ ] Email
     - [ ] Proxy Email
-    - [ ] 
- - [ ] access level
- - [ ] group
- - [ ] roles
- - [ ] permissions
- - [ ] mod
- - [ ] admin
- - [ ] user
- - [ ] 
+    - [ ]
+ - [ ] admin / mod
+    - [ ] access level
+    - [ ] group
+    - [ ] roles
+    - [ ] permissions
+    - [ ] users
+    - [ ] apps
 
 ## Pages:
+ - [ ] media / news / feeds (for admins /  mods show status of site report)
+ - [ ] account
  - [x] login
  - [x] sign up
  - [x] forgot
  - [x] index
  - [x] main
  - [ ] mod
+  - [ ] user access
  - [ ] admin
+  - [ ] web host access
+ - [ ] ticket
+  - [ ] status
+  - [ ] report
+  - [ ] 
  - [ ] database
  - [ ] dashboard
  - [ ] user / alias / public / post

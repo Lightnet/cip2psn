@@ -231,6 +231,12 @@ async function routes (fastify, options, done) {
   fastify.register(require('./route_account')); // 
   fastify.register(require('./route_alias')); // 
   fastify.register(require('./route_community')); // 
+   
+  fastify.register(require('./route_blank')); // 
+  
+  fastify.register(require('./route_mod')); // 
+  fastify.register(require('./route_admin')); // 
+  fastify.register(require('./route_ticket')); //
   // FINISH
   done();
 }

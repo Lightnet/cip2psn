@@ -22,21 +22,21 @@ function blankPage () {
     </head>
     ` +
     '<body>' +
-    '<script src="/client_blank.js"></script>' +
+    '<script src="/client_ticket.js"></script>' +
     '</body>' +
     '</html>'
 }
 // ROUTES
 module.exports = function (fastify, opts, done) {
   // GET LOGIN
-  fastify.get('/novel', function (request, reply) {
+  fastify.get('/ticket', function (request, reply) {
     reply.type('text/html');
     reply.send(blankPage());
   });
 
-  fastify.post('/novel', async function (request, reply) {
+  fastify.post('/ticket', async function (request, reply) {
     //reply.type('text/html');
-    //const { question1, question2, hint } = JSON.parse(request.body);
+    //const { aliasid, content, hint } = JSON.parse(request.body);
     //reply.send('data');
     //if(isEmpty(question1)==true || isEmpty(question2)==true || isEmpty(hint)==true){
       //reply.send({message:'Empty question1 || question2 || hint'});
@@ -49,6 +49,7 @@ module.exports = function (fastify, opts, done) {
     //}
     //console.log(data);
     //let alias = data.alias;
+    reply.send({message:'ticket'});
   });
   // FINISH
   done();

@@ -54,6 +54,10 @@ function html_main(){
     <a href="/account">Account</a>
     <a href="/alias">Alias</a>
     <a href="/community">Community</a>
+    <a href="/ticket">Ticket</a>
+    <a href="/blank">Blank</a>
+    <a href="/mod">Mod</a>
+    <a href="/admin">Admin</a>
     <a href="/logout">Logout</a>
     <br> <label> Weclome Guest! </label>
   </body>

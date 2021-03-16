@@ -1,3 +1,15 @@
+# Database:
+  The database is tricky to setup and hard to secure an open database for users to access.
+
+  Encryption and Decryption will slow down the processing the data and database. But it better be safe in some ways.
+
+```
+  Reasons follows:
+  * Database protection from other nation or country.
+  * User has full control in some degree.
+  *
+
+```
 
 
 ```
