@@ -109,15 +109,19 @@ function loginAliasSync(data){
             //console.log('///////////////////////////////////////////');
             //console.log(data2)
             //console.log('///////////////////////////////////////////');
+            console.log('config.tokenKey:',config.tokenKey);
 
             let token = jwt.sign({ 
               alias: data.alias
               , aliasId:data2.aliasId
               , key:key
               , sea:sea
-              //set expiry  date
-              , exp: Math.floor(Date.now() / 1000) + (60 * 60)
+              , expiresIn: '24h'
+              //set expiry date
+              //, exp: Math.floor(Date.now() / 1000) + (60 * 60)
             }, config.tokenKey);
+            console.log('typeof token');
+            console.log(typeof token);
             //console.log(token);
             //return callback(null,{message:'FOUND',token:token});
             resolve(token);

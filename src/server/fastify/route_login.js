@@ -60,7 +60,6 @@ module.exports = function (fastify, opts, done) {
   fastify.post('/login', async function (request, reply) {
     reply.type('text/html');
     const { alias, passphrase } = request.body;
-    //console.log(request.session);
     //console.log("alias:",alias);
     //console.log("passphrase:",passphrase);
     //reply.send("POST LOGIN");
@@ -68,17 +67,19 @@ module.exports = function (fastify, opts, done) {
       reply.send('Empty Alias || passphrase');
       return;
     }
+    //CHECK IF HAS TOKEN OR NULL
     let data = await user.loginAliasSync({
       alias:alias
       ,passphrase:passphrase
     });
     //console.log(data);
     if(data){
-      //let sea;
-      //let saltkey = await SEA.work(passphrase, alias);
-      //data.sea = await SEA.decrypt(data.sea, saltkey);
-
-      request.session.token=data;
+      reply.setCookie('token',data,{
+        domain: 'localhost'
+        , path: '/'
+        , httpOnly: true //client browser document.cookie
+        , signed: true
+      });
       reply.redirect('/');
       //reply.send(`<html><body> LOGIN [ Pass ] <a href='/'>Home</a></body></html>`);
     }else{

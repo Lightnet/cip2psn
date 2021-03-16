@@ -38,47 +38,24 @@ module.exports = function (fastify, opts, done) {
   // GET ALIAS
   fastify.get('/alias',async function (request, reply) {
     //console.log("/ALIAS");
-    let token = request.session.token;
+    let token = request.cookies.token;
+    let bCookie;
     //console.log('checking token...');
     if(!token){//401
       reply.code( 401 ).send();
       //throw new Error('Unauthorized Access!');
       return;
     }
-    /*
-    let bfound=false;
-    let sea;
-    try{
-      //console.log(token);
-      let data = jwt.verify(token, config.tokenKey);
-      //console.log(data.key)
-      //console.log(data.sea)
-      //console.log(data)
-      let saltkey = await SEA.work(data.key, data.alias);
-      sea = await SEA.decrypt(data.sea, saltkey);
-      //console.log('aliasId:',data.aliasId);
-      //console.log('sea');
-      console.log(sea);
-      //console.log(data);
-      bfound=true;
-    }catch(e){
-      console.log('No Token //////////////!');
-      console.log(e);
-    }
-    if(bfound){
-      let isExistPub = await user.aliasCheckPubId({pub:sea.pub});
-      console.log('isExistPub:',isExistPub);
-    }else{
-    }
-    */
+
     reply.type('text/html');
     reply.send(blankPage());
   });
 
-  fastify.get('/checkAliasBlog',async function (request, reply) {
+  fastify.get('/alias/checkPubIdExist',async function (request, reply) {
     //reply.type('text/html');
     //console.log(request.params);
-    let token = request.session.token;
+    let token = request.cookies.token;
+    let bCookie;
     let bfound=false;
     //console.log('checking token...');
     if(!token){//401
@@ -88,7 +65,10 @@ module.exports = function (fastify, opts, done) {
     }
     let sea;
     try{
-      let data = jwt.verify(token, config.tokenKey);
+      bCookie = request.unsignCookie(request.cookies.token);
+
+
+      let data = jwt.verify(bCookie.value, config.tokenKey);
       let saltkey = await SEA.work(data.key, data.alias);
       sea = await SEA.decrypt(data.sea, saltkey);
       //console.log('aliasId:',data.aliasId);
@@ -115,11 +95,12 @@ module.exports = function (fastify, opts, done) {
     //reply.send({message:'data'});
   });
 
-  fastify.get('/createAliasBlog',async function (request, reply) {
+  fastify.get('/alias/createPublicId',async function (request, reply) {
     //reply.type('text/html');
     //console.log(request.params);
-    let token = request.session.token;
+    let token = request.cookies.token;
     let bfound=false;
+    let bCookie;
     console.log('checking token...');
     if(!token){//401
       reply.code( 401 ).send();
@@ -129,7 +110,8 @@ module.exports = function (fastify, opts, done) {
     let sea;
     let data;
     try{
-      data = jwt.verify(token, config.tokenKey);
+      bCookie = request.unsignCookie(request.cookies.token);
+      data = jwt.verify(bCookie.value, config.tokenKey);
       let saltkey = await SEA.work(data.key, data.alias);
       sea = await SEA.decrypt(data.sea, saltkey);
       //console.log('aliasId:',data.aliasId);
@@ -158,10 +140,11 @@ module.exports = function (fastify, opts, done) {
     //reply.send({message:'CHECKING...'});
   });
 
-  fastify.post('/aliaspost',async function (request, reply) {
+  fastify.post('/alias/post',async function (request, reply) {
     const { aliascontent } = JSON.parse(request.body);
     console.log(aliascontent);
-    let token = request.session.token;
+    let token = request.cookies.token;
+    let bCookie;
     console.log('checking token...');
     if(!token){//401
       return reply.code( 401 ).send();
@@ -171,7 +154,8 @@ module.exports = function (fastify, opts, done) {
     let bfound=false;
     
     try{
-      data = jwt.verify(token, config.tokenKey);
+      bCookie = request.unsignCookie(request.cookies.token);
+      data = jwt.verify(bCookie.value, config.tokenKey);
       let saltkey = await SEA.work(data.key, data.alias);
       sea = await SEA.decrypt(data.sea, saltkey);
       //console.log('data:',data);
@@ -199,10 +183,11 @@ module.exports = function (fastify, opts, done) {
     //reply.send({message:'CHECKING...'});
   });
 
-  fastify.post('/aliasgetposts',async function (request, reply) {
+  fastify.post('/alias/getPubIdPosts',async function (request, reply) {
     //const { aliascontent } = JSON.parse(request.body);
     //console.log(aliascontent);
-    let token = request.session.token;
+    let token = request.cookies.token;
+    let bCookie;
     console.log('checking token...');
     if(!token){//401
       return reply.code( 401 ).send();
@@ -212,7 +197,8 @@ module.exports = function (fastify, opts, done) {
     let bfound=false;
     
     try{
-      data = jwt.verify(token, config.tokenKey);
+      bCookie = request.unsignCookie(request.cookies.token);
+      data = jwt.verify(bCookie.value, config.tokenKey);
       let saltkey = await SEA.work(data.key, data.alias);
       sea = await SEA.decrypt(data.sea, saltkey);
       //console.log('data:',data);
@@ -242,6 +228,7 @@ module.exports = function (fastify, opts, done) {
   });
 
 
+  //=============================================
   fastify.get('/alias/:id', function (request, reply) {
     console.log("ALIAS ID?");
     reply.type('text/html');

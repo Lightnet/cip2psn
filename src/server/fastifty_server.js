@@ -28,7 +28,7 @@
 //console.log(localIpUrl());
 const path = require('path');
 const fastifyCookie = require('fastify-cookie');
-const fastifyCaching = require('fastify-caching');
+//const fastifyCaching = require('fastify-caching');
 const fastifyFormbody = require('fastify-formbody');
 //const mobile = require('is-mobile');
 //const SESSION_SECRET = 'a secret with minimum length of 32 characters';
@@ -37,22 +37,21 @@ var db = require('./db');
 // DATABASE
 //console.log(db);
 db.init();
+//===============================================
 // Require the framework and instantiate it
 console.log('Init Fastify Web Server Modules...')
 const fastify = require('fastify')({ 
   //logger: true 
   logger: false
 });
-// https://stackoverflow.com/questions/35408729/express-js-prevent-get-favicon-ico/35408810
-//fastify.register(require('fastify-favicon'))
-fastify.get('/favicon.ico', function (request, reply) {
-  console.log("No Favicon!");
-  reply.code(204); // 204 No Content
-});
+//===============================================
 // BODY PRASE
 fastify.register(fastifyFormbody);
-fastify.register(fastifyCookie);
-fastify.register(fastifyCaching);
+fastify.register(fastifyCookie,{
+  secret: "my-secret", // for cookies signature
+  parseOptions: {}     // options for parsing cookies
+});
+//fastify.register(fastifyCaching);
 //===============================================
 // START SESSION
 //===============================================
@@ -61,17 +60,17 @@ fastify.register(fastifyCaching);
 //let fastifySession = require(`fastify-session`);
 //let mySessionStore = new fastifySession.MemoryStore;
 //console.log(mySessionStore);
-fastify.register(require('fastify-session'), { //error on "Property: sessionStore"
-  secret: 'a secret with minimum length of 32 characters'
+//fastify.register(require('fastify-session'), { //error on "Property: sessionStore"
+  //secret: 'a secret with minimum length of 32 characters'
   //,cookieName: 'sessionId'
   //,expires: 1800
   //,expires: 1800000
-  ,cookie: { 
-    secure: false
-  },
+  //,cookie: { 
+    //secure: false
+  //},
   //store: new SessionStore(),
   //store: mySessionStore
-});
+//});
 //fastify.addHook('preHandler', (request, reply, next) => {
   //const session = request.session;
   //request.sessionStore.destroy(session.sessionId, next);
@@ -85,46 +84,6 @@ fastify.register(require('fastify-static'), {
   //,prefix: '/public/', // optional: default '/'
   ,prefix:'/'
 });
-// https://github.com/fastify/fastify/blob/master/docs/Middleware.md
-// https://www.fastify.io/docs/latest/Decorators/
-// Decorate request with a 'user' property
-//fastify.decorateRequest('user', '');
-//fastify.addHook('preHandler', (req, reply, done) => {
-  //req.user = 'Bob Dylan';
-  //done();
-//});
-// PLUGIN TEST
-//https://www.fastify.io/docs/latest/Plugins/
-//fastify.register(require('./fastify/myPlugin'));
-// https://www.fastify.io/docs/latest/Hooks/
-fastify.addHook('onRequest', (request, reply, next) => {
-  //console.log(request.session);
-  //console.log("sessionId: ",request.session.sessionId);
-  let views = request.session.views || 0;
-  request.session.views = ++views;
-  console.log("views",request.session.views);
-  next();
-});
-/*
-fastify.addHook('preHandler', (request, reply, next) => {
-  // Some code
-  //console.log("addhook...");
-  //console.log(request.session);
-  console.log(request.session.sessionId);
-  let views = request.session.views || 0;
-  request.session.views = ++views;
-  console.log("views",request.session.views);
-  next();
-});
-*/
-// https://github.com/fastify/help/issues/50
-//fastify.addHook('onRequest', (req, reply, done) => {
-  //req.log.info({ url: req.raw.url, id: req.id }, 'received request');
-  //console.log('isMobile?:',
-    //mobile({ ua: req })
-  //);
-  //done();
-//})
 //===============================================
 // ROUTES
 //===============================================

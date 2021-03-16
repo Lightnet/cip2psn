@@ -271,6 +271,7 @@ exports.aliasCheckPassphraseSync = aliasCheckPassphraseSync;
 // check for expire date
 function aliasLogout(data,callback){
   if(data){
+    //let datatoken = jwt.verify(data, config.tokenKey);
     let datatoken = jwt.verify(data, config.tokenKey);
     if(datatoken){
       //console.log(datatoken);

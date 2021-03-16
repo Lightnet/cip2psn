@@ -19,6 +19,19 @@ const SEA = require('gun/sea');
 
 const {html_index,html_main }=require('./views/index');
 
+//CHECK FOR URL MATCH FOR WHITELIST
+function checkUrl(value,arr){
+  let status = false;
+  for(let i=0; i<arr.length; i++){
+    let name = arr[i];
+    if(name == value){
+      status = true;
+      break;
+    }
+  }
+  return status;
+}
+
 // https://developer.okta.com/blog/2020/10/12/build-modern-api-using-fastify
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 // ROUTES
@@ -26,68 +39,119 @@ async function routes (fastify, options, done) {
   //fastify.get('/', async (request, reply) => {
     //return { hello: 'world' }
   //});
- 
-  // Request/Response validation and hooks
+  // https://stackoverflow.com/questions/35408729/express-js-prevent-get-favicon-ico/35408810
+  //fastify.register(require('fastify-favicon'))
+  fastify.get('/favicon.ico', function (request, reply) {
+    console.log("No Favicon!");
+    reply.code(204); // 204 No Content
+  });
+  // https://github.com/fastify/fastify/blob/master/docs/Middleware.md
+  // https://www.fastify.io/docs/latest/Decorators/
+  // Decorate request with a 'user' property
+  //fastify.decorateRequest('user', 'guest');
+  //fastify.addHook('preHandler', (req, reply, done) => {
+    //req.user = 'Bob Dylan';
+    //console.log(req.user );
+    //done();
+  //});
+  //=
+  //fastify.addHook('preHandler', (request, reply, next) => {
+    // Some code
+    //console.log("addhook...");
+    //console.log(request.session);
+    //console.log(request.session.sessionId);
+    //let views = request.session.views || 0;
+    //request.session.views = ++views;
+    //console.log("views",request.session.views);
+    //next();
+  //});
+  //fastify.addHook('onRequest', (request, reply, next) => {
+    //console.log(request.session);
+    //console.log("sessionId: ",request.session.sessionId);
+    //let views = request.session.views || 0;
+    //request.session.views = ++views;
+    //console.log("views",request.session.views);
+    //next();
+  //});
+  
+  // https://github.com/fastify/help/issues/50
+  //fastify.addHook('onRequest', (req, reply, done) => {
+    //req.log.info({ url: req.raw.url, id: req.id }, 'received request');
+    //console.log('isMobile?:',
+      //mobile({ ua: req })
+    //);
+    //done();
+  //})
+  // PLUGIN TEST
+  //https://www.fastify.io/docs/latest/Plugins/
+  //fastify.register(require('./myPlugin'));
   // https://www.fastify.io/docs/latest/Hooks/
+
+  // Request/Response validation and hooks
+  // https://www.fastify.io/docs/latest/Hooks/  
   fastify.addHook('preHandler', async (request, reply) => {
     //req.log.info({ url: req.raw.url, id: req.id }, 'received request');
     //console.log('isMobile?:',
       //mobile({ ua: req })
     //);
-    let token = request.session.token;
-
+    let bCookie;
+    let token = request.cookies.token;
+    if(token){
+      console.log('[ FOUND TOKEN ]');
+      bCookie = request.unsignCookie(request.cookies.token);
+    }else{
+      console.log('[ NULL TOKEN ]');
+    }
+    //console.log(token);
+    //console.log(bCookie);
+    let urllist=[
+      '/login'
+      , '/signup'
+      , '/forgot'
+      , '/logout'
+      , '/termofservice'
+      , '/about'
+    ]
     console.log('URL:',request.url);
+    //WHITELIST URL
+    // Need to check for refresh load
     if(request.url == '/' && token == null){
       return;
     }
-    if(request.url == '/login'){
-      return;
-    } 
-    if(request.url == '/signup'){
-      return;
-    }
-    if(request.url == '/forgot'){
-      return;
-    }
-    if(request.url == '/logout'){
-      return;
-    }
-    if(request.url == '/termofservice'){
-      return;
-    }
-    if(request.url == '/about'){
+    //WHITELIST URL
+    if(checkUrl(request.url, urllist) == true){
       return;
     }
 
-    //let token = request.session.token;
-    console.log('checking token...');
+    //console.log('checking token...');
+    //Check if there no token to not allow user access other urls.
     if(!token){//401
-      reply.code( 401 ).send();
       //throw new Error('Unauthorized Access!');
-      return;
+      return reply.code( 401 ).send();
     }
     //console.log(token);
     try{
-      //console.log(token);
-      let data = jwt.verify(token, config.tokenKey);
+      //console.log('[ TOKEN ACCESS AUTH CHECKS]');
+      //console.log('config.tokenKey:',config.tokenKey);
+      let data = jwt.verify(bCookie.value, config.tokenKey);
+      //console.log(data);
       //console.log(data.key)
       //console.log(data.sea)
-      //console.log(data)
-      let saltkey = await SEA.work(data.key, data.alias);
-      let sea = await SEA.decrypt(data.sea, saltkey);
+      //let saltkey = await SEA.work(data.key, data.alias);
+      //let sea = await SEA.decrypt(data.sea, saltkey);
       //console.log('aliasId:',data.aliasId);
       //console.log('sea');
       //console.log(sea);
-
-      //console.log(data);
     }catch(e){
-      console.log('No Token //////////////!');
+      console.log('[ No Token! || Invalid Token! ]');
+      //clear cookie token if not valid
+      reply.clearCookie('token',{signed: true});
       console.log(e);
+      reply.code( 401 ).send();
     }
-    //return payload;
     //done();
   });
-
+  
   fastify.addHook('onError', async (request, reply, error) => {
     console.log("ERROR!");
     reply.send('Unauthorized Access!');
@@ -99,7 +163,15 @@ async function routes (fastify, options, done) {
   fastify.get('/', async function (request, reply) {
     reply.code(200);
     reply.header('Content-Type', 'text/html');
-    let token=request.session.token;
+    //console.log(`Hello, ${request.user}!`);
+    let bCookie;
+    let token = request.cookies.token;
+    if(token){
+      //make sure the token time is valid.
+      //bCookie = request.unsignCookie(request.cookies.token);
+      //console.log(bCookie);
+    }
+    //console.log(token);
     let body='';
     if(token){
       body=html_main();
@@ -112,25 +184,36 @@ async function routes (fastify, options, done) {
   fastify.get('/logout', async function (request, reply) {
     reply.code(200);
     reply.type('text/html');
-    //console.log('LOGOUT');
-    let token=request.session.token;
+    //CHECK IF TOKEN IS NULL OR STRING
+    let token=request.cookies.token;
     //console.log('token:',token);
     if(token){
       //let data = jwt.verify(token, config.tokenKey);
       //console.log(data);
-      let islogout = await user.aliasLogoutSync(token);
+      //make sure cookie expire need to check that later.
+      let bCookie = request.unsignCookie(request.cookies.token);
+      console.log(bCookie);
+      token = bCookie.value;
+
+      let islogout = await user.aliasLogoutSync(bCookie.value);
       console.log('islogout:',islogout);
-      request.session.token=null;
+
+      reply.clearCookie('token',{
+        signed: true
+      });
       reply.redirect(302,'/');
       //reply.send(`<html><body>[ Logout ] <a href="/">Home</a></body></html>`);
     }else{
       console.log('FAIL TOKEN');
+      //reply.clearCookie('token',{
+        //signed: true
+      //});
+
       //reply.redirect('/');
-      reply.redirect(302,'/');
-      return;
+      //reply.redirect(302,'/');
+      reply.send(`<html><body>[ FAIL ] <a href="/">Home</a></body></html>`);
     }
-    //request.session.token=null;
-    //reply.send(`<html><body>[ Logout ] <a href="/">Home</a></body></html>`);
+    //reply.send(`<html><body>[ LOGOUT ] <a href="/">Home</a></body></html>`);
   });
 
   fastify.get('/test', async function (request, reply) {
