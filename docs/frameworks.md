@@ -6,12 +6,13 @@
   * There are default package limiter to prevent post inject.
   * nodejs http has no limit check on post
 
-|---      |---            |---        |---      |
+
 | Name    | required sync |session    | cookie  |
+|---      |---            |---        |---      |
 |Restify  | 0             | n/a       | x       |
 |Polka    | 0             | x         | x       |
 |Express  | 0             | x         | x       |
-|Fastify  | 0             | 0, n/a    | x       |
+|Fastify  | 0             | x, n/a    | x       |
 |Hapi     | x             | x         | x       |
 |Koa      | x             | x         | x       |
 |http     | 0             | 0, n/a    | x       |
