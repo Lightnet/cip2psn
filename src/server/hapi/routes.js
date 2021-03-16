@@ -10,8 +10,8 @@
 // https://stackoverflow.com/questions/27766623/how-to-store-routes-in-separate-files-when-using-hapi
 // https://hapi.dev/tutorials/expresstohapi/?lang=en_US
 
-const jwt = require("jsonwebtoken");
-const config=require('../../../config');
+//const jwt = require("jsonwebtoken");
+//const config=require('../../../config');
 
 var login = require('./route_login');
 var signup = require('./route_signup');
@@ -62,10 +62,16 @@ module.exports = [
     //console.log('Token:',token);
 
     try{
-      let data = jwt.verify(token, config.tokenKey);
-      //console.log('[ data ]: ', data);
+      if(token){
+        //let data = jwt.verify(token, config.tokenKey);
+        //console.log('[ data ]: ', data);
+      }else{
+        console.log('NO TOKEN');
+      }
     }catch(err){
       console.log('TOKEN ERROR');
+      //clear cookie
+      //h.state('token', '');
     }
 
     if(token){
@@ -84,6 +90,14 @@ module.exports = [
     return `<html><body>[ Logout ] <a href="/">Home</a></body></html>`;
   }
 },
+{
+  method: 'GET',
+  path:'/test',
+  handler: (request, h) => {
+    return `<html><body>[ TEST ] <a href="/">Home</a></body></html>`;
+  }
+}
+/*
 {
   method: 'GET',
   path:'/getc',
@@ -109,7 +123,7 @@ module.exports = [
     return `<html><body>[ Logout ] <a href="/">Home</a></body></html>`;
   }
 }
-
+*/
 ].concat(login,signup);
 
 //var cart = require('./cart');

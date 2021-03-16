@@ -16,6 +16,7 @@
   "author": "Lightnet",
   "license": "ISC",
   "dependencies": {
+    "@hapi/boom": "^9.1.2",
     "@hapi/hapi": "^20.1.0",
     "@koa/router": "^10.0.0",
     "bcrypt": "^5.0.1",

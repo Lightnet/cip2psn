@@ -15,8 +15,11 @@
 // 
 
 'use strict';
+const jwt = require("jsonwebtoken");
+const config=require('../../config');
 const db = require('./db');
 const Hapi = require('@hapi/hapi');
+//var Boom = require('@hapi/boom');
 
 const PORT = process.env.PORT || 3000;
 
@@ -60,11 +63,55 @@ const init = async () => {
         //name: 'auth'
       //}
     //});
-    // REQUEST
-    //server.ext('onRequest', function(request, h){
-      //console.log('inside onRequest');
-      //return h.continue;
-    //});
+    let urllist=[
+      '/'
+      ,'/login'
+      ,'/signup'
+      ,'/logout'
+    ];
+    // REQUEST AUTH CHECKS
+    server.ext('onRequest', function(request, h){
+      console.log('inside onRequest');
+      let token;
+      //console.log(request.state);
+      //if(request.state){
+      //}
+      //console.log('url:',request.url);
+      console.log('url:',request.path);
+      //request.path
+      let bfound=false;
+      for(let u in urllist){
+        if(urllist[u]==request.path){
+          bfound=true;
+          break;
+        }
+      }
+      if(bfound){
+        return h.continue;
+      }
+
+      try{
+        token=request.state.token;
+        if(token){
+          let data = jwt.verify(token, config.tokenKey);
+          console.log('[ data ]: ', data);
+        }else{
+          console.log('NO TOKEN');
+        }
+      }catch(err){
+        console.log('TOKEN ERROR');
+        //clear cookie
+        h.state('token', '');
+        //console.log(h);
+        const data = {message:'Auth Token Invalid!'};
+        //console.log(Boom.unauthorized('Auth Token Invalid!'));
+        //return Boom.unauthorized('Auth Token Invalid!'); // works
+        //return h.response(data).takeover(); // works
+        return h.response(data).code(401).takeover(); // works
+      }
+      return h.continue;
+    });
+
     // REQUEST
     //server.ext('onRequest', function (request, h) {
       //request.setUrl('/test');
