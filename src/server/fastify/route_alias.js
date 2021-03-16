@@ -143,6 +143,10 @@ module.exports = function (fastify, opts, done) {
   fastify.post('/alias/post',async function (request, reply) {
     const { aliascontent } = JSON.parse(request.body);
     console.log(aliascontent);
+    if(isEmpty(aliascontent)==true){
+      return reply.send({message:'FAIL'});
+    }
+
     let token = request.cookies.token;
     let bCookie;
     console.log('checking token...');
@@ -164,6 +168,7 @@ module.exports = function (fastify, opts, done) {
     }catch(e){
       console.log('No Token //////////////!');
       console.log(e);
+      return reply.send({message:'FAIL'});
     }
     if(bfound){
       let isExistPost = await user.aliasCreatePubIdPostSync({
@@ -173,7 +178,7 @@ module.exports = function (fastify, opts, done) {
       });
       console.log('isExistPost:',isExistPost);
       if(isExistPost){
-        reply.send({message:'CREATE'});
+        reply.send({message:'CREATE',post:isExistPost});
       }else{
         reply.send({message:'FAIL'});
       }

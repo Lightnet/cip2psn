@@ -366,10 +366,13 @@ function aliasCreatePubIdPost(data,callback){
       },(ack)=>{
         //console.log(ack);
         if(ack.err){
-          return callback('FAIL');
+          return callback(null);
         }
         if(ack.ok){
-          callback('PASS');
+          callback({
+            id:time
+            , content:data.content
+          });
         }
       });
   }else{

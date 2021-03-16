@@ -230,6 +230,7 @@ async function routes (fastify, options, done) {
   fastify.register(require('./route_forgot')); // 
   fastify.register(require('./route_account')); // 
   fastify.register(require('./route_alias')); // 
+  fastify.register(require('./route_community')); // 
   // FINISH
   done();
 }

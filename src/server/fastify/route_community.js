@@ -16,25 +16,25 @@
 function blankPage () {
   return '<html>' +
     `<head>
-      <title>blank</title>
+      <title>Community</title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <script src="https://redom.js.org/redom.min.js"></script>
     </head>
     ` +
     '<body>' +
-    '<script src="/client_blank.js"></script>' +
+    '<script src="/client_community.js"></script>' +
     '</body>' +
     '</html>'
 }
 // ROUTES
 module.exports = function (fastify, opts, done) {
   // GET LOGIN
-  fastify.get('/novel', function (request, reply) {
+  fastify.get('/community', function (request, reply) {
     reply.type('text/html');
     reply.send(blankPage());
   });
 
-  fastify.post('/novel', async function (request, reply) {
+  fastify.post('/community', async function (request, reply) {
     //reply.type('text/html');
     //const { question1, question2, hint } = JSON.parse(request.body);
     //reply.send('data');

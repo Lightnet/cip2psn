@@ -237,7 +237,7 @@ function aliasCreatePubIdPostSync(data){
   return new Promise(resolve => {
     db.aliasCreatePubIdPost(data,(ack)=>{
       if(ack){
-        resolve(true);
+        resolve(ack);
       }else{
         resolve(false);
       }

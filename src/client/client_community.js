@@ -1,51 +1,37 @@
 /**
-  
+ * 
+  Community
  */
 const { el, mount,unmount } = redom;
 //console.log(document.cookie);
-//let myStorage = window.localStorage;
 let isPostClose=false;
-//myStorage.setItem('ispostclose', false);
-//console.log(localStorage.getItem('isPostClose'))
-if(localStorage.getItem('isPostClose') ==null){
-  localStorage.setItem('isPostClose', false);
-}else{
-  isPostClose = (localStorage.getItem('isPostClose') == 'true' );
-  //isPostClose = (isPostClose == 'true')
-}
+//if(localStorage.getItem('isPostClose') ==null){
+  //localStorage.setItem('isPostClose', false);
+//}else{
+  //isPostClose = (localStorage.getItem('isPostClose') == 'true' );
+//}
 //console.log(isPostClose);
 //===============================================
-// CREATE BLOG
-var divCreateBlog=el("div",{
-  style:{
-    position:'fixed',
-    top:'32px'
-  }
-},
-el("table",[
-  el("tr",[
-    el("td", el("label","Create Blog?")),
-    el("td", el("input",{type:"submit",onclick:aliasCreatePubId})),
-  ])
-])
-);
-//mount(document.body, divCreateBlog);
-//===============================================
-// PUBLIC ID POST
+// Community ID POST
 var divPost=el('div',{
     style:{
       position:'fixed'
-    , top:'32px'
+    , top:'28px'
     }
   },
   [
+    el("label",{textContent:'Community ID:'}),
+    el('br'),
+    el("label",{id:'communityId',textContent:'ID:None'}),
+    el('br'),
     el("label",'POST CONTENT?'),
     el('table',[
-      el('tr',el('td', el('textarea',{id:'aliascontent',value:'testcontent'}))),
-      el('tr',el('td', el('button',{onclick:aliasPostContent, textContent:'Post'}))) ,
-      el('tr',el('td', el('label',{ textContent:'Close at Post' }, el('input',{type:'checkbox',checked:isPostClose ,id:'isClosePost', value:true, onclick:btnCheckPostClose})) ))
+      el('tr',el('td', el('textarea',{id:'communitycontent',value:'testcontent'}))),
+      el('tr',el('td', el('button',{onclick:CommunityPostContent, textContent:'Post'}))),
+      //el('tr',el('td', el('label',{ textContent:'Close at Post' }, el('input',{type:'checkbox',checked:isPostClose ,id:'isClosePost', value:true, onclick:btnCheckPostClose})) ))
     ])
 ]);
+mount(document.body, divPost);
 function btnCheckPostClose(){
   //console.log(document.getElementById('isClosePost').value);
   //console.log(isPostClose);
@@ -68,14 +54,34 @@ var divSearch=el('div',{
   }
 },[
   //el('label','Pub Id:'),
-  el('input',{placeholder:'public Id'}),
-  el('button',{onclick:SearchPubId,textContent:'Search'})
+  el('input',{placeholder:'Community Id'}),
+  el('button',{onclick:searchCommunityId,textContent:'Search'})
 ]);
 mount(document.body, divSearch);
 divSearch.style.display = 'none';
-function SearchPubId(){
-  
+function searchCommunityId(){
+
 }
+//===============================================
+function createCommunity(){
+  console.log('Create Community ');
+}
+//===============================================
+// create community
+var divCreateCommunity=el('div',{
+  style:{
+    //position:'fixed'
+    //, top:'32px'
+  }
+},
+  el("table",[
+    el("tr",[
+      el("td", el("label","Create Community?")),
+      el("td", el("input",{type:"submit",value:'Create',onclick:createCommunity})),
+    ])
+  ])
+);
+//mount(document.body, divCreateCommunity);
 //===============================================
 // SETTINGS
 var divSettings=el('div',{
@@ -85,7 +91,9 @@ var divSettings=el('div',{
   }
 },[
   el('label','Settings:'),
-  el('button',{onclick:toggleTheme,textContent:'Toggle Theme'})
+  el('br'),
+  el('button',{onclick:toggleTheme,textContent:'Theme [Light] || Dark'}),
+  divCreateCommunity
 ]);
 mount(document.body, divSettings);
 divSettings.style.display = 'none';
@@ -119,9 +127,9 @@ var divMenu=el('div',{
 mount(document.body, divMenu);
 
 function togglePost(){
-  console.log(divPost.style.display);
-  divSearch.style.display = 'none';
+  //console.log(divPost.style.display);
   divSettings.style.display = 'none';
+  divSearch.style.display = 'none';
   if(divPost.style.display === 'none'){
     divPost.style.display = 'block';
   }else{
@@ -129,7 +137,7 @@ function togglePost(){
   }
 }
 function toggleSearch(){
-  console.log(divSearch.style.display);
+  //console.log(divSearch.style.display);
   divPost.style.display = 'none';
   divSettings.style.display = 'none';
   if(divSearch.style.display === 'none'){
@@ -139,9 +147,9 @@ function toggleSearch(){
   }
 }
 function toggleSettings(){
-  console.log(divSettings.style.display);
-  divSearch.style.display = 'none';
+  //console.log(divSettings.style.display);
   divPost.style.display = 'none';
+  divSearch.style.display = 'none';
   if(divSettings.style.display === 'none'){
     divSettings.style.display = 'block';
   }else{
@@ -149,72 +157,39 @@ function toggleSettings(){
   }
 }
 
-function checkAliasExist(){
-  fetch('/alias/checkPubIdExist',{
-
-  })
-  .then(response => response.json())
-  .then((respone) => {
-    console.log(respone);
-    if(respone.message=='NONEXIST'){
-      mount(document.body, divCreateBlog);
-    }
-    if(respone.message=='EXIST'){
-      mount(document.body, divPost);
-      mount(document.body, divFeeds);
-      //get current alias public posts
-      aliasGetPubIdPosts();
-    }
-  });
-}
-checkAliasExist();
-
-function aliasCreatePubId(){
-  fetch('/alias/createPublicId',{
-
-  })
-  .then(response => response.json())
-  .then((respone) => {
-    console.log(respone);
-    if(respone.message=='CREATE'){
-      unmount(document.body, divCreateBlog);
-      mount(document.body, divPost);
-    }
-  });
-}
-// POST CONTENT
-function aliasPostContent(){
-  console.log('isPostClose:',isPostClose);
-  if(isPostClose){
-    if(divPost.style.display === 'none'){
-      divPost.style.display = 'block';
-    }else{
-      divPost.style.display = 'none';
-    }
-  }
+// Community POST CONTENT
+function CommunityPostContent(){
+  //console.log('isPostClose:',isPostClose);
+  //if(isPostClose){
+    //if(divPost.style.display === 'none'){
+      //divPost.style.display = 'block';
+    //}else{
+      //divPost.style.display = 'none';
+    //}
+  //}
   let post = {
-    aliascontent: document.getElementById('aliascontent').value || '',
+    aliascontent: document.getElementById('communitycontent').value || '',
   };
-  fetch('/alias/post',{
+  fetch('/community/post',{
     method: "post"
     , body: JSON.stringify(post)
   })
   .then(response => response.json())
   .then((respone) => {
     console.log(respone);
-    if(respone.message=='CREATE'){
+    if(respone.message=='OK'){
       //console.log(label_post);
       console.log('PASS POST');
-      appendFeed(respone.post)
     }
   });
 }
+
 //GET PUBLIC POSTS
-function aliasGetPubIdPosts(){
+function GetCommunityIdPosts(){
   let post = {
     //aliascontent: document.getElementById('aliascontent').value || '',
   };
-  fetch('/alias/getPubIdPosts',{
+  fetch('/community/posts',{
     method: "post"
     //, body: JSON.stringify(post)
   })

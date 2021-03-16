@@ -10,8 +10,9 @@
 const { src, dest, watch, parallel, series } = require("gulp");
 // const sync = require("browser-sync").create();
 const nodemon = require('gulp-nodemon');
+const config = require('./config');
 
-const src_client_file=[
+const src_client_files=[
   './src/client/client_access.js'
   ,'./src/client/client_theme.js'
   ,'./src/client/client_gethint.js'
@@ -19,26 +20,24 @@ const src_client_file=[
   ,'./src/client/client_blank.js'
   ,'./src/client/client_alias.js'
   ,'./src/client/client_login.js'
+  ,'./src/client/client_community.js'
 ];
-
-const src_html_file=[
+const src_html_files=[
   './src/html/access_page.html'
   ,'./src/html/theme.html'
   ,'./src/html/icons.html'
 ];
-
-const src_svg_file=[
+const src_svg_files=[
   './src/files/star.svg'
   ,'./src/files/cross.svg'
   ,'./src/files/underscore.svg'
 ];
-
 const output_dest = 'public';
 
 // CLIENT BUILD
 function client_build(callback){
   // task body
-  return src(src_client_file)
+  return src(src_client_files)
     .pipe(dest(output_dest));
   //callback();
 }
@@ -47,23 +46,20 @@ exports.client_build = client_build;
 // COPY HTML
 function copy_html(callback){
   // task body
-  return src(src_html_file)
+  return src(src_html_files)
     .pipe(dest(output_dest));
 }
 exports.copy_html = copy_html;
 // COPY SVG
 function copy_svg(callback){
-  return src(src_svg_file)
+  return src(src_svg_files)
     .pipe(dest(output_dest));
 }
 exports.copy_svg = copy_svg;
 // WATCH FILES
 function watchFiles(callback) {
-  watch(src_client_file, client_build);
-  watch(src_html_file, copy_html);
-  //watch('views/**.ejs', generateHTML);
-  //watch('sass/**.scss', generateCSS);
-  //watch([ '**/*.js', '!node_modules/**'], parallel(runLinter, runTests));
+  watch(src_client_files, client_build);
+  watch(src_html_files, copy_html);
   callback();
 }
 exports.watch = watchFiles;
@@ -76,9 +72,6 @@ function browserSync(cb) {
   });
 }
 exports.sync = browserSync;
-
-var config = require('./config');
-
 // NODEMON
 function reload_server(done) {
   nodemon({
@@ -103,7 +96,6 @@ function reload_server(done) {
 }
 exports.reload_server = reload_server;
 // GULP DEFAULT CONFIGS
-//exports.default = series(runLinter,parallel(generateCSS,generateHTML),runTests);
 exports.default = series(
   client_build
   , copy_html
