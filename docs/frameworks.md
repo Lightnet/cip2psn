@@ -9,7 +9,7 @@
 
 | Name    | required sync |session    | cookie  |
 |---      |---            |---        |---      |
-|Restify  | 0             | n/a       | x       |
+|Restify  | 0             | 0, n/a    | x       |
 |Polka    | 0             | x         | x       |
 |Express  | 0             | x         | x       |
 |Fastify  | 0             | x, n/a    | x       |
@@ -18,9 +18,13 @@
 |http     | 0             | 0, n/a    | x       |
 ```
 0 = no
-1 = yes
+x = yes
 n/a = not applicable
-Note: few packages are outdate for session.
+Note: 
+ * Few packages are outdate for session. 
+ * Restify session is outdate. Security risk.
+ * Fastify session is outdate does but give store data error.
+ * http session is outdate.
 ```
 
 # Restify:
