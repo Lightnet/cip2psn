@@ -3,6 +3,9 @@
 
   Encryption and Decryption will slow down the processing the data and database. But it better be safe in some ways.
 
+# Web Master:
+  It the person who host the web site has to manage the mods and users.
+  
 ```
   Reasons follows:
   * Database protection from other nation or country.
@@ -10,6 +13,19 @@
   *
 
 ```
+
+There are three or more type of access to allow and disallow that depend on the users and web masters.
+
+# [ user database ]
+  There are two more way to setup. One is create dabase but required user to connect online all times.
+
+# [ web master ]
+  They are not to interfere much unless they are attack again denial of service.
+  As well maintain contents. But not fully that it up to users.
+
+# [ mods ]
+  They are respoonse for transfar and maintain order.
+
 
 
 ```

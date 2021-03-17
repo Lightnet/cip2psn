@@ -8,7 +8,8 @@
   Information:
   This used gun.js. It used graph node and timestamp.
 
- */
+*/
+
 // GUNJS
 // https://gun.eco/docs/Installation#node
 
@@ -17,13 +18,11 @@ const jwt = require('jsonwebtoken');
 const bcrypt=require('bcrypt');
 const config=require('../../../../config');
 const { isEmpty, timeStamp, createUserId } =require('../../model/utilities');
-
-//===============================================
-// https://www.npmjs.com/package/bcrypt
-const saltRounds = config.saltRounds || 10;
-
 const Gun = require('gun');
 const SEA = require('gun/sea');
+
+// https://www.npmjs.com/package/bcrypt
+const saltRounds = config.saltRounds || 10;
 var gun;
 //var user; //sub database
 //https://gun.eco/docs/API
@@ -76,13 +75,13 @@ function init(){
 exports.init = init;
 //===============================================
 // GET DATABASE
-async function get(){
+function get(){
   return gun;
 }
 exports.get = get;
 //===============================================
 // GET DB USER
-async function getuser(){
+function getuser(){
   //return user;
   return gun;
 }

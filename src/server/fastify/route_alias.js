@@ -15,6 +15,7 @@
 
 const jwt = require("jsonwebtoken");
 const user=require('../model/user');
+const blog=require('../model/blog');
 const { isEmpty }=require('../model/utilities');
 const config = require('../../../config');
 const SEA = require('gun/sea');
@@ -214,7 +215,7 @@ module.exports = function (fastify, opts, done) {
       console.log(e);
     }
     if(bfound){
-      let feeds = await user.aliasGetPubIdPostsSync({
+      let feeds = await blog.aliasGetPubIdPostsSync({
         user:data
         , pub:sea.pub
       });
