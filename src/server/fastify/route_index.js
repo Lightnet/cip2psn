@@ -87,8 +87,18 @@ async function routes (fastify, options, done) {
   //fastify.register(require('./myPlugin'));
   // https://www.fastify.io/docs/latest/Hooks/
 
+  let urllist=[
+    '/'
+    , '/login'
+    , '/signup'
+    , '/forgot'
+    , '/logout'
+    , '/termofservice'
+    , '/about'
+  ]
+
   // Request/Response validation and hooks
-  // https://www.fastify.io/docs/latest/Hooks/  
+  // https://www.fastify.io/docs/latest/Hooks/ 
   fastify.addHook('preHandler', async (request, reply) => {
     //req.log.info({ url: req.raw.url, id: req.id }, 'received request');
     //console.log('isMobile?:',
@@ -104,14 +114,7 @@ async function routes (fastify, options, done) {
     }
     //console.log(token);
     //console.log(bCookie);
-    let urllist=[
-      '/login'
-      , '/signup'
-      , '/forgot'
-      , '/logout'
-      , '/termofservice'
-      , '/about'
-    ]
+    
     console.log('URL:',request.url);
     //WHITELIST URL
     // Need to check for refresh load
@@ -149,7 +152,6 @@ async function routes (fastify, options, done) {
       console.log(e);
       reply.code( 401 ).send();
     }
-    //done();
   });
   
   fastify.addHook('onError', async (request, reply, error) => {
@@ -217,10 +219,9 @@ async function routes (fastify, options, done) {
   });
 
   fastify.get('/test', async function (request, reply) {
-    
-    reply.code(200);
+    //reply.code(200);
     reply.type('text/html');
-    reply.send(`<html><body>[ Logout ] <a href="/">Home</a></body></html>`);
+    reply.send(`<html><body>[ Test ] <a href="/">Home</a></body></html>`);
   });
 
   //ROUTES

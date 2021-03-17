@@ -37,8 +37,8 @@ console.log('init web server...');
 //===============================================
 // WEB SERVER FRAMEWORK
 //require('./src/server/express_server'); // ok
-//require('./src/server/fastifty_server'); // ok // out date session package
-require('./src/server/hapi_server'); // ok
+require('./src/server/fastifty_server'); // ok // out date session package
+//require('./src/server/hapi_server'); // ok
 //require('./src/server/http_server'); // ok
 //require('./src/server/koa_server'); // ok
 //require('./src/server/polka_server'); // ok

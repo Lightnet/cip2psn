@@ -1,4 +1,3 @@
-
 /**
   Project Name: cip2psn
 
@@ -6,8 +5,7 @@
 
   Created By: Lightnet
 
- */
-
+*/
 
 const user = require('../model/user');
 const {isEmpty}=require('../model/utilities');

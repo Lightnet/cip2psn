@@ -66,7 +66,7 @@ module.exports = [
         //let data = jwt.verify(token, config.tokenKey);
         //console.log('[ data ]: ', data);
       }else{
-        console.log('NO TOKEN');
+        //console.log('NO TOKEN');
       }
     }catch(err){
       console.log('TOKEN ERROR');

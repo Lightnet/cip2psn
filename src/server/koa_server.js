@@ -74,12 +74,12 @@ app.use(session(CONFIG, app));
 //});
 //===============================================
 // METHOD AND URL TIME
-async function responseTimeLogger(ctx, next){
-  var start = new Date;
-  await next();
-  var ms = new Date - start;
-  console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
-}
+//async function responseTimeLogger(ctx, next){
+  //var start = new Date;
+  //await next();
+  //var ms = new Date - start;
+  //console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
+//}
 //app.use(responseTimeLogger);
 //===============================================
 // DEFINE ROUTES

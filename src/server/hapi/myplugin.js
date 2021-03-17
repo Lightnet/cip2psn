@@ -5,7 +5,7 @@
 
   Created By: Lightnet
 
- */
+*/
 
 // https://hapi.dev/tutorials/plugins/?lang=en_US
 // https://hapi.dev/tutorials/expresstohapi/?lang=en_US

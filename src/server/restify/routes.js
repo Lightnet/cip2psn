@@ -5,7 +5,7 @@
 
   Created By: Lightnet
 
- */
+*/
 
 // https://github.com/restify/node-restify/issues/1173
 // https://github.com/shermify/restify-example/blob/master/routes/index.js
@@ -101,7 +101,7 @@ module.exports = (server)=>{
   //===============================================
   // TEST RESTRICT
   server.get('/test', function(req, res, next) {
-    res.end(`<html><body>Test</body></html>`);
+    res.end(`<html><body>Test <a href="/">Home</a></body></html>`);
     return next();
   });
 

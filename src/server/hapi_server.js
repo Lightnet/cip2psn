@@ -24,6 +24,25 @@ const Hapi = require('@hapi/hapi');
 const PORT = process.env.PORT || 3000;
 
 var routes = require('./hapi/routes');
+
+let urllist=[
+  '/'
+  ,'/login'
+  ,'/signup'
+  ,'/logout'
+];
+
+function checkMatch(url, list){
+  let bfound;
+  for(let i in list){
+    if(url == list[i]){
+      bfound=true;
+      break;
+    }
+  }
+  return bfound;
+}
+
 const init = async () => {
     //INIT DATABASE
     console.log('Init Database...');
@@ -56,52 +75,52 @@ const init = async () => {
         //name: 'myplugin'
       //}
     //});
-    // CUSTOM PLUGIN
-    //await server.register({
-      //plugin: require('./hapi/auth'),
-      //options: {
+    // AUTH PLUGIN
+    await server.register({
+      plugin: require('./hapi/auth'),
+      options: {
         //name: 'auth'
-      //}
-    //});
-    let urllist=[
-      '/'
-      ,'/login'
-      ,'/signup'
-      ,'/logout'
-    ];
-    // REQUEST AUTH CHECKS
-    server.ext('onRequest', function(request, h){
-      console.log('inside onRequest');
-      let token;
-      //console.log(request.state);
-      //if(request.state){
-      //}
-      //console.log('url:',request.url);
-      console.log('url:',request.path);
-      //request.path
-      let bfound=false;
-      for(let u in urllist){
-        if(urllist[u]==request.path){
-          bfound=true;
-          break;
-        }
       }
-      if(bfound){
+    });
+    // AUTH CHECKED FINE
+    /*
+    server.ext('onPreHandler', function(request, h){
+      console.log('inside onPreHandler');
+      let token;
+      let bfound=false;
+      //console.log('request.state:',request.state);
+      if(request.state){
+        console.log('STATE',request.state);
+        token=request.state.token;
+      }
+      //console.log('url:',request.url);
+      //console.log('url:',request.path);
+      //request.path
+      
+      console.log('White List:',checkMatch(request.path,urllist));
+      //console.log('token:',token);
+      if(checkMatch(request.path,urllist)==true){
+        bfound=true;
+      }
+      if(bfound==true && token ==null){
         return h.continue;
       }
-
+      console.log('PASS CHECK TOKEN....');
+      //console.log(token);
       try{
-        token=request.state.token;
         if(token){
           let data = jwt.verify(token, config.tokenKey);
-          console.log('[ data ]: ', data);
+          //console.log('[ data ]: ', data);
         }else{
           console.log('NO TOKEN');
+          const data = {message:'Auth Token Invalid!'};
+          return h.response(data).code(401).takeover(); // works
         }
       }catch(err){
         console.log('TOKEN ERROR');
+        console.log(err);
         //clear cookie
-        h.state('token', '');
+        //h.state('token', '');
         //console.log(h);
         const data = {message:'Auth Token Invalid!'};
         //console.log(Boom.unauthorized('Auth Token Invalid!'));
@@ -111,7 +130,8 @@ const init = async () => {
       }
       return h.continue;
     });
-
+    */
+    
     // REQUEST
     //server.ext('onRequest', function (request, h) {
       //request.setUrl('/test');

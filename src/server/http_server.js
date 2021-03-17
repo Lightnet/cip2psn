@@ -242,17 +242,47 @@ function url_signup(req,res){
     });
   }
 }
+//===============================================
+// WHITE LIST URL
+var urllist=[
+  '/'
+  , '/login'
+  , '/signup'
+  , '/logout'
+  , '/forgot'
+];
+
+function checkMatch(url, list){
+  let bfound=false;
+  for(let i in list){
+    if(url == list[i]){
+      bfound=true;
+      break;
+    }
+  }
+  return bfound;
+}
 // REQUEST HANDLE
 const requestListener = function (req, res) {
+
+  let hasToken=false;
   // Create a cookies object
   let cookies = new Cookies(req, res, { keys: keys });
   var token = cookies.get('token', { signed: true });
-  console.log('token:',token);
+  //console.log('token:',token);
   try{
     let data = jwt.verify(token, config.tokenKey);
-    console.log('[ data ]: ', data);
+    //console.log('[ data ]: ', data);
+    hasToken=true;
   }catch(err){
-    console.log('TOKEN ERROR');
+    //console.log('TOKEN ERROR');
+    hasToken=false;
+  }
+  //console.log('WHITE LIST:',checkMatch(req.url,urllist));
+  if( checkMatch(req.url,urllist) == false && hasToken == false ){
+    console.log('NULL TOKEN ...');
+    res.statusCode=401;
+    return res.end(JSON.stringify({message:'AUTH TOKEN INVALID!'}));
   }
   // MATCH URL SWITCH
   switch (req.url) {
@@ -272,20 +302,15 @@ const requestListener = function (req, res) {
       res.end(body);
       break
     case "/login":
-      //res.writeHead(200);
       res.statusCode=200;
-      //console.log(req.method);
       url_login(req,res);
       break
     case "/signup":
-      //res.writeHead(200);
       res.statusCode=200;
       url_signup(req,res);
-      //res.end(`signup`);
       break
     case "/logout":
       // https://www.npmjs.com/package/cookies
-      //res.writeHead(200);
       // Set the cookie to a value
       cookies.set('token', '', { 
         signed: true
@@ -294,6 +319,10 @@ const requestListener = function (req, res) {
       res.statusCode=200;
       res.end(`<html><body>[ Logout ] <a href="/">Home</a></body></html>`);
       break
+    case "/test":
+        res.statusCode=200;
+        res.end(`<html><body>[ TEST ] <a href="/">Home</a></body></html>`);
+        break
     default:
       //res.writeHead(404);
       res.statusCode=404;

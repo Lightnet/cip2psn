@@ -8,6 +8,9 @@
 */
 
 const router = require('@koa/router')();
+const jwt = require("jsonwebtoken");
+//const db = require('./db');
+const config=require('../../../config');
 
 //===============================================
 // INDEX PAGE
@@ -47,11 +50,30 @@ function html_access(){
 </html>
 `;
 }
+
+var urllist=[
+  '/'
+  , '/login'
+  , '/logout'
+  , '/signup'
+  , '/forgot'
+];
+
+function checkMatch(url, list){
+  let bfound=false;
+  for(let i in list){
+    if(url == list[i]){
+      bfound=true;
+      break;
+    }
+  }
+  return bfound;
+}
 //===============================================
 // EXPORT
 module.exports = (app)=>{
   //===============================================
-  // FAVICON / COUNT VIEWS
+  // FAVICON
   app.use(async (ctx, next) => {
     //ctx.body = 'Hello World';
     //console.log(ctx.keys);
@@ -59,11 +81,48 @@ module.exports = (app)=>{
       console.log('favicon');
       return next(); // next progress
     }
+    return next();
+  });
+  //===============================================
+  // VIEWS COUNT
+  app.use(async (ctx, next) => {
     let n = ctx.session.views || 0;
     ctx.session.views = ++n;
     console.log("views:",ctx.session.views);
     //console.log("ctx.keys:",ctx.keys);
     return next(); // next progress
+  });
+  //===============================================
+  // AUTH TOKEN
+  app.use(async (ctx, next) => {
+    console.log('ctx.request.method:', ctx.request.method);
+    console.log('ctx.request.url:', ctx.request.url);
+
+    //console.log(ctx);
+    //WHITE LIST URL
+    if(checkMatch(ctx.request.url,urllist)){
+      return next();
+    }
+    
+    let token = ctx.cookies.get('token',{signed:true});
+    if(token){
+      try{
+        let data = jwt.verify( token, config.tokenKey);
+        console.log('[ data ]: ',data);
+      }catch(err){
+        console.log('TOKEN ERROR');
+        ctx.statusCode=401;
+        ctx.throw(401,{ message:'AUTH TOKEN INVALID!'});
+        return next(false);
+      }
+    }else{
+      //console.log('AUTH TOKEN INVALID!');
+      ctx.statusCode=401;
+      ctx.throw(401,{ message:'AUTH TOKEN INVALID!'});
+      return next(false);
+    }
+    
+    return next();
   });
   //===============================================
   // INDEX URL
@@ -86,6 +145,9 @@ module.exports = (app)=>{
       ,signed:true
     });
     ctx.body = `<html><body> LOGOUT <a href='/'>Home</a></body></html>`;
+  });
+  router.get('/test', function(ctx){
+    ctx.body = `<html><body> TEST <a href='/'>Home</a></body></html>`;
   });
   //===============================================
   // URL INDEX and LOGOUT
