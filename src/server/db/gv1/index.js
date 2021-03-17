@@ -39,6 +39,22 @@ function init(){
     //console.log(ack);
   //})
 
+  //nope
+  //gun.get({'.':{'>':'a'}}).once().map().once((ack)=>{
+    //console.log('ack');
+    //console.log(ack);
+  //});
+
+  //nope
+  //gun.get({'.':{'>':'a','<':'z'}}).once().map().once((data, key)=>{
+    //console.log('data');
+    //console.log(data);
+    //console.log('key');
+    //console.log(key);
+  //});
+
+  //console.log(gun);
+
 
   //gun.get('key11').put({property: 'value'});
   //gun.get('key11').once(function(data, key){
@@ -115,8 +131,6 @@ function createAliasId(data, callback){
           let sea = await SEA.pair();
           let pub = sea.pub;
 
-
-          
           let saltkey = await SEA.work(data.passphrase, data.alias);
           sea = await SEA.encrypt(sea, saltkey);
           let userId = await createUserId();
@@ -181,22 +195,24 @@ exports.getAliasPassphrase = getAliasPassphrase;
 //===============================================
 // ALIAS SET HINT
 //===============================================
-function aliasSetHint(data,callback){
+async function aliasSetHint(data,callback){
   console.log('SET HINT GUN...');
+  console.log(data);
 
   //TODOLIST work on ecoding
-  let question1;
-  question1 =data.question1;
-  let question2;
-  question2 =data.question2;
-  let hint;
-  hint =data.hint;
+  //let sec = await Gun.SEA.secret(user.is.epub, user._.sea);
+  let sec = await SEA.secret(data.sea.epub, data.sea);
+  let enc_question1 = await SEA.encrypt(data.question1, sec);
+  //console.log(enc_question1);
+  let enc_question2 = await SEA.encrypt(data.question2, sec);
 
+  let enc = await SEA.work(data.question1, data.question2);
+  let enc_hint = await SEA.encrypt(data.hint,enc);
   
   gun.get(data.alias).put({
-    question1:question1
-    ,question2:question2
-    ,hint:hint
+    question1:enc_question1
+    ,question2:enc_question2
+    ,hint:enc_hint
   },
   (ack)=>{
     //console.log('ack');
@@ -214,7 +230,11 @@ function aliasGetHint(data,callback){
     if(data){
       if(data.hint){
         console.log('FOUND HINT');
-        callback(data.hint);
+        callback({
+          hint:data.hint
+          , question1:data.question1
+          , question2:data.question2
+        });
       }else{
         console.log('FAIL HINT');
         callback('FAIL');
@@ -226,7 +246,7 @@ function aliasGetHint(data,callback){
 }
 exports.aliasGetHint = aliasGetHint;
 //===============================================
-// ALIAS CHANGE PASSPHRASE
+// ALIAS CHECK PASSPHRASE
 //===============================================
 function aliasCheckPassphrase(data,callback){
   gun.get(data.alias).once(function(datasub, key){
@@ -263,7 +283,56 @@ function aliasCheckPassphraseSync(data){
 }
 exports.aliasCheckPassphraseSync = aliasCheckPassphraseSync;
 //===============================================
-// ALIAS
+// ALIAS CHANGE PASSPHRASE
+//===============================================
+function aliasChangePassphrase(data,callback){
+  gun.get(data.alias).once(async function(datasub, key){
+    if(datasub){
+      if(datasub.passphrase){
+        let decoded = bcrypt.compareSync(data.oldpassphrase, datasub.passphrase);
+        console.log('decoded:',decoded);
+        if(decoded){
+          // passphrase is verify
+          //callback('PASS');
+          //console.log(datasub);
+          let sea =datasub.sea;
+          //console.log(sea);
+          let oldSaltKey = await SEA.work(data.oldpassphrase, data.alias);
+          sea = await SEA.decrypt(sea, oldSaltKey);
+          //console.log(sea);
+          let newSaltKey = await SEA.work(data.newpassphrase, data.alias);
+          sea = await SEA.encrypt(sea, newSaltKey);
+          //console.log(sea);
+          let pass = bcrypt.hashSync(data.newpassphrase, saltRounds);
+
+          gun.get(data.alias).put({
+            sea:sea,
+            passphrase:pass
+          },(ack)=>{
+            if(ack.err){
+              console.log('GUN PUT FAIL CHANGE PASSPRASE');
+              return callback('FAIL');
+            }
+            if(ack.ok){
+              return callback('PASS');
+            }
+          });
+          //console.log('PASS/////////////////////');
+          //callback('PASS');
+        }else{
+          callback('FAIL');
+        }
+      }else{
+        callback('FAIL');
+      }
+    }else{
+      callback('FAIL');
+    }
+  });
+}
+exports.aliasChangePassphrase = aliasChangePassphrase;
+//===============================================
+// ALIAS LOGOUT
 //===============================================
 //TODOLIST need work on two checks
 // if user logout
@@ -299,6 +368,21 @@ function aliasLogout(data,callback){
   }
 }
 exports.aliasLogout = aliasLogout;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //===============================================
 // ALIAS CHECK PUB ID
 //===============================================
@@ -383,7 +467,6 @@ exports.aliasCreatePubIdPost = aliasCreatePubIdPost;
 //===============================================
 // 
 //===============================================
-
 function getPubPostId(pub,id){
   return new Promise(resolve => {
     gun.get(pub).get('post').get(id).once((data)=>{

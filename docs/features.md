@@ -11,13 +11,16 @@
   Work in progress build and tests.
 
 ## Frameworks:
-- [ ] Polka [simple tested login, signup, logout]
-- [ ] Koa [simple tested login, signup, logout]
-- [ ] Fastify [simple tested login, signup, logout]
-- [ ] Restify [simple tested login, signup, logout]
-- [ ] Hapi [simple tested login, signup, logout]
-- [ ] Express [simple tested login, signup, logout]
-- [ ] http [simple tested login, signup, logout]
+- [ ] Polka [simple tested login, signup, logout, auth]
+- [ ] Koa [simple tested login, signup, logout, auth]
+- [ ] Fastify [simple tested login, signup, logout, auth]
+- [ ] Restify [simple tested login, signup, logout, auth]
+- [ ] Hapi [simple tested login, signup, logout, auth]
+- [ ] Express [simple tested login, signup, logout, auth]
+- [ ] http [simple tested login, signup, logout, auth]
+
+Note:
+* Auth is simple url white list and access url check for valid token or sign in account id for accessing the web pages.
 
 ## Database:
  - [ ] set up [ work in progress ]

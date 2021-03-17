@@ -33,7 +33,6 @@ var PouchDB = require('PouchDB');
 //Creating the database object
 //var db = new PouchDB('http://localhost:5984/my_pouchdb'); //remote
 
-
 const saltRounds = config.saltRounds || 10;
 var db;
 
@@ -78,7 +77,6 @@ async function createAliasId(data, callback){
    }
  
    if(data){
-
       let pass = bcrypt.hashSync(data.passphrase, saltRounds);
       let sea = await SEA.pair();
       let pub = sea.pub;
@@ -181,10 +179,7 @@ function aliasLogout(data,callback){
    }
    
  }
- exports.aliasLogout = aliasLogout;
-
-
-
+exports.aliasLogout = aliasLogout;
 
 //===============================================
 // BASIC OF POUCHDB

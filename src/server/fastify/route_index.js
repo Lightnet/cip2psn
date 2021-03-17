@@ -137,7 +137,7 @@ async function routes (fastify, options, done) {
       //console.log('[ TOKEN ACCESS AUTH CHECKS]');
       //console.log('config.tokenKey:',config.tokenKey);
       let data = jwt.verify(bCookie.value, config.tokenKey);
-      //console.log(data);
+      console.log(data);
       //console.log(data.key)
       //console.log(data.sea)
       //let saltkey = await SEA.work(data.key, data.alias);

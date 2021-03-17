@@ -30,12 +30,12 @@ function forgotPage () {
     '<tr><td>'+
     '<label>Passphrase Question1:</label>' +
     '</td><td>'+
-    '<input id="question1" type="text" name="question1" value="testpass">' +
+    '<input id="question1" type="text" name="question1" value="testa">' +
     '<td></tr>'+
     '<tr><td>'+
     '<label>Passphrase Question2:</label>' +
     '</td><td>'+
-    '<input id="question2" type="text" name="question2" value="testpass">' +
+    '<input id="question2" type="text" name="question2" value="testb">' +
     '<td></tr>'+
 
     '<tr><td>'+
@@ -77,11 +77,11 @@ module.exports = function (fastify, opts, done) {
       return reply.send({error:"Empty!"});
     }
 
-    let checkhint = await user.aliasGetHintSync({alias:alias,question1:question1,question2:question2});
+    let checkhint = await user.aliasForgotGetHintSync({alias:alias,question1:question1,question2:question2});
     console.log('checkhint:',checkhint);
     if(checkhint){
       if(checkhint=='FAIL'){
-        reply.send({message:'NOTFOUND'});
+        reply.send({message:'FAIL'});
       }else{
         reply.send({message:'FOUND',hint:checkhint});
       }

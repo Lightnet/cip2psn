@@ -28,12 +28,15 @@ function gethint(e){
       if(data.error){
         console.log("ERROR!!!");
       }
-      if(data.message=='POST FORGOT'){
-        console.log('FINISH');
+      if(data.message=='FAIL'){
+        document.getElementById('hint').value='Invalid';
       }
       if(data.message=='FOUND'){
         console.log('FINISH');
         document.getElementById('hint').value=data.hint;
+      }
+      if(data.message=='NOTFOUND'){
+        document.getElementById('hint').value='Invalid';
       }
       //console.log('DATA...',data);
     }

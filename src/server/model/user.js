@@ -154,10 +154,68 @@ exports.aliasSetHintSync = aliasSetHintSync;
 //===============================================
 // ALIAS GET HINT
 //===============================================
+function aliasForgotGetHintSync(data){
+  return new Promise(resolve => {
+    db.aliasGetHint(data,async (ack)=>{
+      if(ack){
+        if(ack=='FAIL'){
+          resolve(null);
+        }else{
+          let sec = await SEA.work(data.question1,data.question2);
+          let hint = await SEA.decrypt(ack.hint, sec);
+          console.log(hint);
+          if(!hint){//incase of wrong password / passphrase
+            hint='FAIL';
+          }
+          resolve(hint);
+          //resolve(ack);
+        }
+      }else{
+        resolve(null);
+      }
+    });
+  });
+}
+exports.aliasForgotGetHintSync = aliasForgotGetHintSync;
+
+
 function aliasGetHintSync(data){
   return new Promise(resolve => {
-    db.aliasGetHint(data,(ack)=>{
-      resolve(ack);
+    db.aliasGetHint(data,async (ack)=>{
+      if(ack){
+        if(ack=='FAIL'){
+          resolve(null);
+        }else{
+          let question1 = ack.question1;
+          let question2 = ack.question2;
+          let hint = ack.hint;
+          //console.log('question1:',question1);
+          //console.log('question2:',question2);
+          //console.log('hint:',hint);
+          //let sec = await Gun.SEA.secret(user.is.epub, user._.sea);
+          //console.log(data);
+
+          console.log(data.sea);
+          let sec = await SEA.secret(data.sea.epub, data.sea);
+          question1 = await SEA.decrypt(question1, sec);
+          question2 = await SEA.decrypt(question2, sec);
+          sec = await SEA.work(question1,question2);
+          hint = await SEA.decrypt(hint, sec);
+          //console.log('question1:',question1);
+          //console.log('question2:',question2);
+          //console.log('hint:',hint);
+
+          resolve({
+            question1:question1,
+            question2:question2,
+            hint:hint
+          });
+          
+          //resolve(ack);
+        }
+      }else{
+        resolve(null);
+      }
     });
   });
 }
@@ -168,13 +226,9 @@ exports.aliasGetHintSync = aliasGetHintSync;
 function aliasChangePassphraseSync(data){
   return new Promise(async (resolve) => {
     //TODOLIST
-    let isPassCheck = await db.aliasCheckPassphraseSync(data);
-    console.log('isPassCheck:',isPassCheck);
-    if(isPassCheck){
-      resolve(true);
-    }else{
-      resolve(false);
-    }
+    db.aliasChangePassphrase(data,(ack)=>{
+      resolve(ack);
+    });
   });
 }
 exports.aliasChangePassphraseSync = aliasChangePassphraseSync;

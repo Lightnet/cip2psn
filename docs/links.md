@@ -53,3 +53,26 @@
 # Name Generator:
  * https://zetcode.com/javascript/fakerjs/
  * https://www.npmjs.com/package/fakerator
+
+
+
+# Fastify
+ * https://www.fastify.io/docs/latest/Server/
+ * https://www.fastify.io/docs/v1.13.x/Server/
+ * https://www.fastify.io/ecosystem/
+ * https://www.fastify.io/docs/latest/Middleware/
+ * https://www.fastify.io/benchmarks/
+ * https://www.fastify.io/ecosystem/
+ * https://www.fastify.io/docs/latest/Getting-Started/
+ * https://www.npmjs.com/package/fastify-session
+ * https://www.npmjs.com/package/fastify-csrf
+ * https://github.com/mgcrea/fastify-session
+ * https://github.com/SerayaEryn/fastify-session
+ * https://github.com/fastify/example/blob/master/fastify-session-authentication/authentication.js
+ * https://github.com/fastify/fastify-auth
+ * https://github.com/fastify/fastify
+ * https://openbase.com/js/fastify-server-session/documentation
+ * https://devhints.io/fastify CHEATS
+ * https://blog.logrocket.com/how-to-build-a-blazingly-fast-api-with-fastify/
+ * 
+ * 
