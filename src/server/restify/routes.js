@@ -65,17 +65,17 @@ module.exports = (server)=>{
     //res.send('hello world!');
     //let token = req.cookies['token'];//pass  
     let key = req.cookies['token'];
-    console.log('key: ',key);
+    //console.log('key: ',key);
     let token;
     if(key){
       try{
         token = jwt.verify(req.cookies['token'], config.tokenKey);
         //console.log('[ token ]: ',token);
       }catch(err){
-        console.log('TOKEN ERROR');
+        //console.log('TOKEN ERROR');
       }
     }
-    console.log('token: ',token);
+    //console.log('token: ',token);
     let body;
     if(token){
       body = html_access();

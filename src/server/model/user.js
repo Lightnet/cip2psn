@@ -21,8 +21,6 @@ const {create32Key} =require('./utilities');
 //const jwtKey = "my_secret_key";
 //console.log('user init db?');
 //const jwtExpirySeconds = 300;
-//console.log(db.getuser);
-//console.log(db.getuser());
 //===============================================
 // CHECK ALIAS ID
 //===============================================
@@ -53,7 +51,7 @@ function createAliasSync(data){
       if(error){
         return resolve(null);
       }
-      console.log(data2);
+      //console.log(data2);
       if(data2){
         if(data2.message=='CREATED'){
           resolve('CREATED');
@@ -85,7 +83,10 @@ exports.createAliasSync = createAliasSync;
 //  
 function loginAliasSync(data){
   return new Promise(resolve => {
+    //console.log("PM LOGIN");
+    //console.log(db);
     db.getAliasPassphrase(data,async function(error,data2){
+      //console.log('PROGRESS....');
       if(error){
         //console.log('Login Error!');
         return resolve(null);
@@ -109,7 +110,7 @@ function loginAliasSync(data){
             //console.log('///////////////////////////////////////////');
             //console.log(data2)
             //console.log('///////////////////////////////////////////');
-            console.log('config.tokenKey:',config.tokenKey);
+            //console.log('config.tokenKey:',config.tokenKey);
 
             let token = jwt.sign({ 
               alias: data.alias
@@ -120,8 +121,8 @@ function loginAliasSync(data){
               //set expiry date
               //, exp: Math.floor(Date.now() / 1000) + (60 * 60)
             }, config.tokenKey);
-            console.log('typeof token');
-            console.log(typeof token);
+            //console.log('typeof token');
+            //console.log(typeof token);
             //console.log(token);
             //return callback(null,{message:'FOUND',token:token});
             resolve(token);
@@ -152,7 +153,7 @@ function aliasSetHintSync(data){
 }
 exports.aliasSetHintSync = aliasSetHintSync;
 //===============================================
-// ALIAS GET HINT
+// ALIAS FORGOT GET HINT
 //===============================================
 function aliasForgotGetHintSync(data){
   return new Promise(resolve => {
@@ -163,11 +164,11 @@ function aliasForgotGetHintSync(data){
         }else{
           let sec = await SEA.work(data.question1,data.question2);
           let hint = await SEA.decrypt(ack.hint, sec);
-          console.log(hint);
+          //console.log(hint);
           if(!hint){//incase of wrong password / passphrase
             hint='FAIL';
           }
-          resolve(hint);
+          //resolve(hint);
           //resolve(ack);
         }
       }else{
@@ -177,8 +178,9 @@ function aliasForgotGetHintSync(data){
   });
 }
 exports.aliasForgotGetHintSync = aliasForgotGetHintSync;
-
-
+//===============================================
+// ALIAS GET HINT
+//===============================================
 function aliasGetHintSync(data){
   return new Promise(resolve => {
     db.aliasGetHint(data,async (ack)=>{
@@ -195,7 +197,7 @@ function aliasGetHintSync(data){
           //let sec = await Gun.SEA.secret(user.is.epub, user._.sea);
           //console.log(data);
 
-          console.log(data.sea);
+          //console.log(data.sea);
           let sec = await SEA.secret(data.sea.epub, data.sea);
           question1 = await SEA.decrypt(question1, sec);
           question2 = await SEA.decrypt(question2, sec);
@@ -254,66 +256,7 @@ function aliasLogoutSync(data){
   });
 }
 exports.aliasLogoutSync = aliasLogoutSync;
-//===============================================
-// CHECK PUB EXIST FOR BLOG
-//===============================================
-function aliasCheckPubIdSync(data){
-  return new Promise(resolve => {
-    db.aliasCheckPubId(data,(ack)=>{
-      if(ack){
-        resolve(true);
-      }else{
-        resolve(false);
-      }
-    })
-  });
-}
-exports.aliasCheckPubIdSync = aliasCheckPubIdSync;
-//===============================================
-// CHECK PUB EXIST FOR BLOG
-//===============================================
-function aliasCreatePubIdSync(data){
-  return new Promise(resolve => {
-    db.aliasCreatePubId(data,(ack)=>{
-      if(ack){
-        resolve(true);
-      }else{
-        resolve(false);
-      }
-    });
-  });
-}
-exports.aliasCreatePubIdSync = aliasCreatePubIdSync;
-//===============================================
-// CHECK PUB CREATE POST
-//===============================================
-function aliasCreatePubIdPostSync(data){
-  return new Promise(resolve => {
-    db.aliasCreatePubIdPost(data,(ack)=>{
-      if(ack){
-        resolve(ack);
-      }else{
-        resolve(false);
-      }
-    });
-  });
-}
-exports.aliasCreatePubIdPostSync = aliasCreatePubIdPostSync;
-//===============================================
-// CHECK PUB GET POSTS
-//===============================================
-function aliasGetPubIdPostsSync(data){
-  return new Promise(resolve => {
-    db.aliasGetPubIdPosts(data,(ack)=>{
-      if(ack){
-        resolve(ack);
-      }else{
-        resolve(false);
-      }
-    });
-  });
-}
-exports.aliasGetPubIdPostsSync = aliasGetPubIdPostsSync;
+
 //===============================================
 // TMP SET UP
 //===============================================

@@ -85,19 +85,18 @@ module.exports = (app)=>{
   });
   //===============================================
   // VIEWS COUNT
-  app.use(async (ctx, next) => {
-    let n = ctx.session.views || 0;
-    ctx.session.views = ++n;
-    console.log("views:",ctx.session.views);
+  //app.use(async (ctx, next) => {
+    //let n = ctx.session.views || 0;
+    //ctx.session.views = ++n;
+    //console.log("views:",ctx.session.views);
     //console.log("ctx.keys:",ctx.keys);
-    return next(); // next progress
-  });
+    //return next(); // next progress
+  //});
   //===============================================
   // AUTH TOKEN
   app.use(async (ctx, next) => {
-    console.log('ctx.request.method:', ctx.request.method);
-    console.log('ctx.request.url:', ctx.request.url);
-
+    //console.log('ctx.request.method:', ctx.request.method);
+    //console.log('ctx.request.url:', ctx.request.url);
     //console.log(ctx);
     //WHITE LIST URL
     if(checkMatch(ctx.request.url,urllist)){
@@ -108,9 +107,9 @@ module.exports = (app)=>{
     if(token){
       try{
         let data = jwt.verify( token, config.tokenKey);
-        console.log('[ data ]: ',data);
+        //console.log('[ data ]: ',data);
       }catch(err){
-        console.log('TOKEN ERROR');
+        //console.log('TOKEN ERROR');
         ctx.statusCode=401;
         ctx.throw(401,{ message:'AUTH TOKEN INVALID!'});
         return next(false);
@@ -129,7 +128,7 @@ module.exports = (app)=>{
   async function url_index(ctx) {
     //ctx.body = 'Hello World! koa!';
     let token = ctx.cookies.get('token',{signed:true});
-    console.log('Token: ',token);
+    //console.log('Token: ',token);
     if(token){
       ctx.body = html_access({});
     }else{

@@ -19,8 +19,8 @@ const config=require('../../config');
 const routes = require('./express/routes');
 
 //INIT DATABASE
-console.log('Init Database...');
-db.init();
+//console.log('Init Database...');
+//db.init();
 console.log('Init Express modules...');
 const app = express();
 // parse application/x-www-form-urlencoded

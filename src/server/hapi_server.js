@@ -45,8 +45,6 @@ function checkMatch(url, list){
 
 const init = async () => {
     //INIT DATABASE
-    console.log('Init Database...');
-    db.init();
     console.log('Init Web Server Modules...');
     // SET UP WEB SERVER MODULES
     const server = Hapi.server({

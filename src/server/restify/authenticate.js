@@ -30,8 +30,8 @@ function checkMatch(url, list){
 
 // AUTH CHECKS
 function authenticate(req, res, next){
-  console.log(req.url);
-  console.log('req.method',req.method);
+  //console.log(req.url);
+  //console.log('req.method',req.method);
 
   if(checkMatch(req.url,urllist)){
     return next();
@@ -53,8 +53,8 @@ function authenticate(req, res, next){
       token = jwt.verify(token, config.tokenKey);
       //console.log('[ token ]: ',token);
     }catch(err){
-      console.log('TOKEN ERROR');
-      console.log(err);
+      //console.log('TOKEN ERROR');
+      //console.log(err);
       res.send({message:'Auth Token Invalid!'});
       return next(false);//stop next process
     }

@@ -11,11 +11,10 @@ const polka = require('polka');
 const { json } = require('body-parser');
 const session = require('express-session');
 const jwt = require("jsonwebtoken");
-const db = require('./db');
 const config=require('../../config');
 const routes=require('./polka/routes');
 // INIT DATABASE
-db.init();
+const db = require('./db');
 // POLKA FRAMEWORK SERVER
 const app = polka();
 //const sleep = ms => new Promise(r => setTimeout(r, ms));

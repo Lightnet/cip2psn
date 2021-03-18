@@ -107,15 +107,14 @@ async function routes (fastify, options, done) {
     let bCookie;
     let token = request.cookies.token;
     if(token){
-      console.log('[ FOUND TOKEN ]');
+      //console.log('[ FOUND TOKEN ]');
       bCookie = request.unsignCookie(request.cookies.token);
     }else{
-      console.log('[ NULL TOKEN ]');
+      //console.log('[ NULL TOKEN ]');
     }
     //console.log(token);
     //console.log(bCookie);
-    
-    console.log('URL:',request.url);
+    //console.log('URL:',request.url);
     //WHITELIST URL
     // Need to check for refresh load
     if(request.url == '/' && token == null){
@@ -137,7 +136,7 @@ async function routes (fastify, options, done) {
       //console.log('[ TOKEN ACCESS AUTH CHECKS]');
       //console.log('config.tokenKey:',config.tokenKey);
       let data = jwt.verify(bCookie.value, config.tokenKey);
-      console.log(data);
+      //console.log(data);
       //console.log(data.key)
       //console.log(data.sea)
       //let saltkey = await SEA.work(data.key, data.alias);
@@ -206,7 +205,7 @@ async function routes (fastify, options, done) {
       reply.redirect(302,'/');
       //reply.send(`<html><body>[ Logout ] <a href="/">Home</a></body></html>`);
     }else{
-      console.log('FAIL TOKEN');
+      //console.log('FAIL TOKEN');
       //reply.clearCookie('token',{
         //signed: true
       //});
@@ -231,13 +230,13 @@ async function routes (fastify, options, done) {
   fastify.register(require('./route_forgot')); // 
   fastify.register(require('./route_account')); // 
   fastify.register(require('./route_alias')); // 
-  fastify.register(require('./route_community')); // 
+  //fastify.register(require('./route_community')); // 
    
-  fastify.register(require('./route_blank')); // 
+  //fastify.register(require('./route_blank')); // 
   
-  fastify.register(require('./route_mod')); // 
-  fastify.register(require('./route_admin')); // 
-  fastify.register(require('./route_ticket')); //
+  //fastify.register(require('./route_mod')); // 
+  //fastify.register(require('./route_admin')); // 
+  //fastify.register(require('./route_ticket')); //
   // FINISH
   done();
 }

@@ -73,12 +73,12 @@ require('./src/server/fastifty_server'); // ok // out date session package
 //db.init();
 //console.log('||||||||||||||||||||||');
 //var db = require('./src/server/db/gv2/db')({test:'test'});
-var db = require('./src/server/db/gv2/db');
+//var db = require('./src/server/db/gv2/db');
 //console.log('()()()()()()()');
 //console.log(db);
-db.get('T0').put({text:'test'});
+//db.get('T0').put({text:'test'});
 
-var db1 = require('./src/server/db/gv2/db');
+//var db1 = require('./src/server/db/gv2/db');
 //console.log('//////////////');
 //console.log(db1);
 //console.log(db1);
@@ -86,6 +86,5 @@ var db1 = require('./src/server/db/gv2/db');
 //db1.get('T0').once((data,key)=>{
   //console.log(data);
 //});
-db1.settest();
-
-db1.gettest();
+//db1.settest();
+//db1.gettest();

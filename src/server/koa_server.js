@@ -22,7 +22,6 @@ const koaBody = require('koa-body');
 const db = require('./db');
 // INIT DATABASE
 console.log('Init database...');
-db.init();
 // CREATE WEB SERVER MODULE
 console.log('Init web server modules...');
 const app = new Koa();

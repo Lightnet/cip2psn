@@ -39,16 +39,16 @@ module.exports = function (fastify, opts, done) {
     //reply.type('text/html');
     const { question1, question2, hint } = JSON.parse(request.body);
     //reply.send('data');
-    console.log('SET HINT');
-    console.log('question1: ',question1);
-    console.log('question2: ',question2);
-    console.log('hint: ',hint);
+    //console.log('SET HINT');
+    //console.log('question1: ',question1);
+    //console.log('question2: ',question2);
+    //console.log('hint: ',hint);
 
     if(isEmpty(question1)==true || isEmpty(question2)==true || isEmpty(hint)==true){
       reply.send({message:'Empty question1 || question2 || hint'});
       return;
     }
-    console.log('START TOKEN');
+    //console.log('START TOKEN');
     let bCookie;
     let token = request.cookies.token;
     //let data;
@@ -65,25 +65,26 @@ module.exports = function (fastify, opts, done) {
       //console.log('sea');
       //console.log(sea);
     }catch(err){
-      console.log(err);
+      //console.log(err);
+      return reply.send({message:'TOKEN INVALID!'});
     }
     
     if(!token){
       return reply.send({message:'NOT FOUND ALIAS!'});
     }
-    console.log('END TOKEN');
-    console.log(token);
+    //console.log('END TOKEN');
+    //console.log(token);
 
     let alias = token.alias;
-    console.log('question1',question1);
-    console.log('question2',question2);
-    console.log('hint',hint);
+    //console.log('question1',question1);
+    //console.log('question2',question2);
+    //console.log('hint',hint);
     let chceckhint = await user.aliasSetHintSync({alias:alias,question1:question1,question2:question2,hint:hint,sea:sea});
     if(chceckhint){
-      console.log('FOUND');
+      //console.log('FOUND');
       reply.send({message:'FOUND',hint:chceckhint});
     }else{
-      console.log('NOTFOUND');
+      //console.log('NOTFOUND');
       reply.send({message:'NOTFOUND'});
     }
   });
@@ -105,29 +106,29 @@ module.exports = function (fastify, opts, done) {
       let saltkey = await SEA.work(token.key, token.alias);
       sea = await SEA.decrypt(token.sea, saltkey);
     }catch(err){
-      console.log(err);
-      console.log('NO TOKEN');
+      //console.log(err);
+      //console.log('NO TOKEN');
+      return reply.send({message:'TOKEN INVALID!'});
     }
 
     if(!token){
-      reply.send({message:'NOT FOUND ALIAS!'});
+      return reply.send({message:'TOKEN INVALID!'});
     }
 
     let chceckhint = await user.aliasGetHintSync({alias:token.alias,sea:sea});
     if(chceckhint){
-      console.log('FOUND');
+      //console.log('FOUND');
       reply.send({message:'FOUND',data:chceckhint});
     }else{
-      console.log('NOTFOUND');
+      //console.log('NOTFOUND');
       reply.send({message:'NOTFOUND'});
     }
-
   });
 
   fastify.post('/changepassphrase', async function (request, reply) {
     const { oldpassphrase, newpassphrase } = JSON.parse(request.body);
-    console.log('oldpassphrase',oldpassphrase);
-    console.log('newpassphrase',newpassphrase);
+    //console.log('oldpassphrase',oldpassphrase);
+    //console.log('newpassphrase',newpassphrase);
 
     let bCookie;
     let token = request.cookies.token;
@@ -157,11 +158,11 @@ module.exports = function (fastify, opts, done) {
           newpassphrase:newpassphrase,
           sea:sea
         });
-      console.log('isPassphraseChange:',isPassphraseChange);
+      //console.log('isPassphraseChange:',isPassphraseChange);
       reply.send({isPassphraseChange:isPassphraseChange});
 
     }catch(e){
-      console.log('No Token //////////////!');
+      //console.log('No Token //////////////!');
       console.log(e);
       reply.code( 401 ).send();
     }

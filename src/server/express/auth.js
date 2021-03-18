@@ -33,8 +33,8 @@ function checkMatch(url, list){
 module.exports = (req, res, next) => {
   //console.log(req.headers);
   //console.log(req.session);
-  console.log('req.method',req.method);
-  console.log('req.url',req.url);
+  //console.log('req.method',req.method);
+  //console.log('req.url',req.url);
 
   if(checkMatch(req.url,urllist)){
     return next();

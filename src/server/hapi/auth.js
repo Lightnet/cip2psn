@@ -70,7 +70,8 @@ exports.plugin = {
           let data = jwt.verify(token, config.tokenKey);
           //console.log('[ data ]: ', data);
         }else{
-          console.log('NO TOKEN');
+          //console.log('NO TOKEN');
+          h.state('token', '');
           const data = {message:'Auth Token Invalid!'};
           return h.response(data).code(401).takeover(); // works
         }
@@ -78,7 +79,7 @@ exports.plugin = {
         console.log('TOKEN ERROR');
         console.log(err);
         //clear cookie
-        //h.state('token', '');
+        h.state('token', '');
         //console.log(h);
         const data = {message:'Auth Token Invalid!'};
         //console.log(Boom.unauthorized('Auth Token Invalid!'));

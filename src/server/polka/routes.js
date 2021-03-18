@@ -5,7 +5,7 @@
 
   Created By: Lightnet
 
- */
+*/
 
 /*
 const polka = require('polka');
@@ -55,15 +55,15 @@ module.exports = (app)=>{
   // INDEX PAGE
   app.get('/', (req, res) => {
     let token=req.session.token;
-    console.log(req.session);
-    console.log('token: ',token);
+    //console.log(req.session);
+    //console.log('token: ',token);
     if(token){
       // if there key are change it will error out
       try{
         let data = jwt.verify( token, config.tokenKey);
-        console.log('[ data ]: ',data);
+        //console.log('[ data ]: ',data);
       }catch(err){
-        console.log('TOKEN ERROR');
+        //console.log('TOKEN ERROR');
       }
     }
     let body;

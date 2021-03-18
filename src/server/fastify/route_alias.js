@@ -14,7 +14,7 @@
  */
 
 const jwt = require("jsonwebtoken");
-const user=require('../model/user');
+//const user=require('../model/user');
 const blog=require('../model/blog');
 const { isEmpty }=require('../model/utilities');
 const config = require('../../../config');
@@ -40,7 +40,7 @@ module.exports = function (fastify, opts, done) {
   fastify.get('/alias',async function (request, reply) {
     //console.log("/ALIAS");
     let token = request.cookies.token;
-    let bCookie;
+    //let bCookie;
     //console.log('checking token...');
     if(!token){//401
       reply.code( 401 ).send();
@@ -68,7 +68,6 @@ module.exports = function (fastify, opts, done) {
     try{
       bCookie = request.unsignCookie(request.cookies.token);
 
-
       let data = jwt.verify(bCookie.value, config.tokenKey);
       let saltkey = await SEA.work(data.key, data.alias);
       sea = await SEA.decrypt(data.sea, saltkey);
@@ -78,21 +77,21 @@ module.exports = function (fastify, opts, done) {
       //console.log(data);
       bfound=true;
     }catch(e){
-      console.log('No Token //////////////!');
-      console.log(e);
+      //console.log('No Token //////////////!');
+      //console.log(e);
+      return reply.send({message:'TOKEN INVALID'});
     }
     if(bfound){
-      let isExistPub = await user.aliasCheckPubIdSync({pub:sea.pub});
-      console.log('isExistPub:',isExistPub);
+      let isExistPub = await blog.aliasCheckPubIdSync({pub:sea.pub});
+      //console.log('isExistPub:',isExistPub);
       if(isExistPub){
-        reply.send({message:'EXIST'});
+        return reply.send({message:'EXIST'});
       }else{
-        reply.send({message:'NONEXIST'});
+        return reply.send({message:'NONEXIST'});
       }
     }else{
-      reply.send({message:'FAIL'});
+      return reply.send({message:'FAIL'});
     }
-
     //reply.send({message:'data'});
   });
 
@@ -102,7 +101,7 @@ module.exports = function (fastify, opts, done) {
     let token = request.cookies.token;
     let bfound=false;
     let bCookie;
-    console.log('checking token...');
+    //console.log('checking token...');
     if(!token){//401
       reply.code( 401 ).send();
       //throw new Error('Unauthorized Access!');
@@ -123,9 +122,10 @@ module.exports = function (fastify, opts, done) {
     }catch(e){
       console.log('No Token //////////////!');
       console.log(e);
+      return reply.send({message:'TOKEN INVALID'});
     }
     if(bfound){
-      let isExistPub = await user.aliasCreatePubIdSync({
+      let isExistPub = await blog.aliasCreatePubIdSync({
         user:data,
         pub:sea.pub
       });
@@ -143,14 +143,14 @@ module.exports = function (fastify, opts, done) {
 
   fastify.post('/alias/post',async function (request, reply) {
     const { aliascontent } = JSON.parse(request.body);
-    console.log(aliascontent);
+    //console.log(aliascontent);
     if(isEmpty(aliascontent)==true){
       return reply.send({message:'FAIL'});
     }
 
     let token = request.cookies.token;
     let bCookie;
-    console.log('checking token...');
+    //console.log('checking token...');
     if(!token){//401
       return reply.code( 401 ).send();
     }
@@ -167,17 +167,18 @@ module.exports = function (fastify, opts, done) {
       //console.log('sea:',sea);
       bfound=true;
     }catch(e){
-      console.log('No Token //////////////!');
-      console.log(e);
-      return reply.send({message:'FAIL'});
+      //console.log('No Token //////////////!');
+      //console.log(e);
+      return reply.send({message:'TOKEN INVALID!'});
+      
     }
     if(bfound){
-      let isExistPost = await user.aliasCreatePubIdPostSync({
+      let isExistPost = await blog.aliasCreatePubIdPostSync({
         user:data
         , pub:sea.pub
         , content:aliascontent
       });
-      console.log('isExistPost:',isExistPost);
+      //console.log('isExistPost:',isExistPost);
       if(isExistPost){
         reply.send({message:'CREATE',post:isExistPost});
       }else{
@@ -194,7 +195,7 @@ module.exports = function (fastify, opts, done) {
     //console.log(aliascontent);
     let token = request.cookies.token;
     let bCookie;
-    console.log('checking token...');
+    //console.log('checking token...');
     if(!token){//401
       return reply.code( 401 ).send();
     }
@@ -211,18 +212,20 @@ module.exports = function (fastify, opts, done) {
       //console.log('sea:',sea);
       bfound=true;
     }catch(e){
-      console.log('No Token //////////////!');
-      console.log(e);
+      //console.log('No Token //////////////!');
+      //console.log(e);
+      return reply.send({message:'TOKEN INVALID'});
     }
     if(bfound){
-      let feeds = await blog.aliasGetPubIdPostsSync({
+      let feeds;
+      feeds = await blog.aliasGetPubIdPostsSync({
         user:data
         , pub:sea.pub
       });
-      console.log('feeds:',feeds);
+      //console.log('feeds:',feeds);
+      
       if(feeds){
         //console.log(feeds);
-
         reply.send({message:'FOUND',feeds:feeds});
       }else{
         reply.send({message:'FAIL'});
@@ -230,7 +233,7 @@ module.exports = function (fastify, opts, done) {
     }else{
       reply.send({message:'FAIL'});
     }
-    //reply.send({message:'CHECKING...'});
+    //reply.send({message:'CHECKING'});
   });
 
 

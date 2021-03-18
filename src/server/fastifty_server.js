@@ -21,7 +21,7 @@ const fastifyFormbody = require('fastify-formbody');
 var db = require('./db');
 // DATABASE
 //console.log(db);
-db.init();
+//db.init();
 //===============================================
 // Require the framework and instantiate it
 console.log('Init Fastify Web Server Modules...')

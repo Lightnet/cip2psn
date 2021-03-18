@@ -36,8 +36,6 @@ const port = 3000;
 // to prevent client tampering
 //const keys = ['keyboard cat']
 var keys = [config.cookieKey] || ['keyboard cat'];
-//INIT DATABASE
-db.init();
 //===============================================
 // Cookies
 //===============================================

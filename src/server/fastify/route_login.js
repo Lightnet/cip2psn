@@ -68,10 +68,12 @@ module.exports = function (fastify, opts, done) {
       return;
     }
     //CHECK IF HAS TOKEN OR NULL
+    //console.log('START loginAliasSync');
     let data = await user.loginAliasSync({
       alias:alias
       ,passphrase:passphrase
     });
+    //console.log('END loginAliasSync');
     //console.log(data);
     if(data){
       reply.setCookie('token',data,{

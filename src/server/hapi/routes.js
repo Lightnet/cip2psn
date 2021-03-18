@@ -69,7 +69,7 @@ module.exports = [
         //console.log('NO TOKEN');
       }
     }catch(err){
-      console.log('TOKEN ERROR');
+      //console.log('TOKEN ERROR');
       //clear cookie
       //h.state('token', '');
     }
