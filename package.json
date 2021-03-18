@@ -10,7 +10,9 @@
   },
   "keywords": [
     "peertopeer",
-    "polka",
+    "fastify",
+    "http",
+    "restify",
     "socket.io"
   ],
   "author": "Lightnet",
@@ -22,7 +24,6 @@
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
     "chalk": "^4.1.0",
-    "connect": "^3.7.0",
     "cookies": "^0.8.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
@@ -30,12 +31,13 @@
     "fastify": "^3.12.0",
     "fastify-caching": "^6.0.1",
     "fastify-cookie": "^5.1.0",
+    "fastify-cors": "^5.2.0",
+    "fastify-error-page": "^4.0.0",
     "fastify-favicon": "^3.1.0",
     "fastify-formbody": "^5.0.0",
+    "fastify-helmet": "^5.3.0",
     "fastify-plugin": "^3.0.0",
-    "fastify-session": "^5.2.1",
     "fastify-static": "^4.0.1",
-    "gulp": "^4.0.2",
     "gun": "^0.2020.520",
     "hapi-server-session": "^5.1.2",
     "hyperbee": "^1.5.3",
@@ -53,18 +55,18 @@
     "levelup": "^4.4.0",
     "nanoid": "^3.1.20",
     "nodemailer": "^6.5.0",
-    "point-of-view": "^4.13.0",
     "polka": "^0.5.2",
     "pouchdb": "^7.2.2",
     "pouchdb-adapter-hyperbee": "^1.0.3",
     "querystring": "^0.2.1",
-    "random-access-memory": "^3.1.2",
     "redom": "^3.27.1",
     "restify": "^8.5.1",
     "restify-cookies": "^0.2.6"
   },
   "devDependencies": {
     "gulp-nodemon": "^2.5.0",
-    "local-ip-url": "^1.0.3"
+    "local-ip-url": "^1.0.3",
+    "random-access-memory": "^3.1.2",
+    "gulp": "^4.0.2"
   }
 }

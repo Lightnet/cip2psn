@@ -38,7 +38,10 @@ var db;
 
 function init(){
    //file name
-   db = new PouchDB('my_pouchdb');
+   if(!db){
+      db = new PouchDB('my_pouchdb');
+   }
+   /*
    db.info(function(err, info) {
       if (err) {
          return console.log(err);
@@ -46,8 +49,12 @@ function init(){
          console.log(info);
       }
    });
+   */
 }
+init();
 exports.init = init;
+exports = db;
+
 //===============================================
 // CHECK ALIAS ID
 //===============================================

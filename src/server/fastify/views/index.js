@@ -30,12 +30,16 @@ function html_index(){
   <head>
     <title>Fastify</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://redom.js.org/redom.min.js"></script>
   </head>
   <body>
+  <script src="/client_access.js"></script>
+  <!--
     <a href="/login">Login</a>
     <a href="/signup">Sign Up</a>
     <a href="/forgot">Forgot</a>
     <br> <label> Weclome Guest! [Fastify]</label>
+    -->
   </body>
 </html>
 `;
@@ -49,6 +53,7 @@ function html_main(){
   <head>
     <title>Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://redom.js.org/redom.min.js"></script>
   </head>
   <body>
     <a href="/account">Account</a>

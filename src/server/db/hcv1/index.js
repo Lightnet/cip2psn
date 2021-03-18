@@ -49,30 +49,33 @@ var gunoptions={
 //INIT DATABASE
 function init(){
   //Gun Config
-  gun = Gun(gunoptions);
+  if(!db){
+    gun = Gun(gunoptions);
 
-  core = Hypercore('./my-dataset', {valueEncoding: 'utf-8'} );
-  db = new Hyperbee(core, {
-    keyEncoding: 'utf-8', // can be set to undefined (binary), utf-8, ascii or and abstract-encoding
-    valueEncoding: 'json' // same options as above
-  })
+    core = Hypercore('./my-dataset', {valueEncoding: 'utf-8'} );
+    db = new Hyperbee(core, {
+      keyEncoding: 'utf-8', // can be set to undefined (binary), utf-8, ascii or and abstract-encoding
+      valueEncoding: 'json' // same options as above
+    })
+  }
   //await db.put('key', {value:'test'});
   //await db.put('key', 'test');
   //const node = await db.get('key'); // null or { key, value }
   //console.log(node);
 }
+init();
 exports.init = init;
 //===============================================
 // GET DATABASE
 async function get(){
-  return gun;
+  return db;
 }
 exports.get = get;
 //===============================================
 // GET DB USER
 async function getuser(){
   //return user;
-  return gun;
+  return db;
 }
 exports.getuser=getuser;
 //===============================================

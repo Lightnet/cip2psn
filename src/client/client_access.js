@@ -19,57 +19,57 @@ function isMobile(){
     return false;
   }
 }
-console.log("isMobile:",isMobile);
+
+console.log("isMobile:",isMobile());
 //===============================================
 // LOGIN PANEL
 //===============================================
-// TITLE
-var tr_title_login=el("tr",[
-  el("td", {colspan:"2"}, el("Label",{textContent:"[Login Access]"}))
-]);
-// ALIAS
-var tr_alias=el("tr",[
-  el("td", el("label","Alias:")),
-  el("td", el("input",{name:"alias",id:"alias"}))
-]);
-// PASSPHRASE
-var tr_passphrase=el("tr",[
-  el("td", el("label","Passphrase:")),
-  el("td", el("input",{name:"passphrase",id:"passphrase"}))
-]);
-// HIDDEN ishuman
-var tr_ishuman=el("tr",[
-  el("td", el("label",{textContent:"Is Human?:"
-    ,hidden:true
-  })),
-  el("td", el("input",{
-    name:"ishuman"
-    ,type:'checkbox'
-    ,value:"false"
-    ,hidden:true
-  }))
-]);
-// SUBMIT
-var tr_button_login=el("tr",[
-  el("td", el("label","Actions:")),
-  el("td", el("input",{type:"submit"})),
-]);
+
 // FORM
-var form_login=el('form'
+var formLogin=el('form'
   ,{
     action:'/login',
     method:'post'
+    ,style:{
+      position:'fixed'
+      ,top:'32px'
+      //,left:'calc(50vh - 10px);'
+      ,left:'calc(50% - 100px)'
+      ,width:'100%'
+    }
   }
   ,el("table",[
-    tr_title_login
-    ,tr_alias
-    ,tr_passphrase
-    ,tr_ishuman
-    ,tr_button_login
+    el("tr",[
+      el("td", {colspan:"2"}, el("Label",{textContent:"[Login Access]"}))
+    ])
+    ,el("tr",[
+      el("td", el("label","Alias:")),
+      el("td", el("input",{name:"alias",id:"alias"}))
+    ])
+    ,el("tr",[
+      el("td", el("label","Passphrase:")),
+      el("td", el("input",{name:"passphrase",id:"passphrase"}))
+    ])
+    ,el("tr",[
+      el("td", el("label",{textContent:"Is Human?:"
+        ,hidden:true
+      })),
+      el("td", el("input",{
+        name:"ishuman"
+        ,type:'checkbox'
+        ,value:"false"
+        ,hidden:true
+      }))
+    ])
+    ,el("tr",[
+      el("td", el("label","Actions:")),
+      el("td", el("input",{type:"submit"})),
+    ])
   ])
 );
-var div_login_panel=el("div",form_login);
-mount(document.body, div_login_panel);
+var divLoginPanel=el("div",formLogin);
+mount(document.body, divLoginPanel);
+divLoginPanel.style.display = 'none';
 //===============================================
 // STYLE
 //===============================================
@@ -84,21 +84,68 @@ mount(document.head, htmlstyle);
 //===============================================
 // CONTENT
 //===============================================
-var div_content=el("div",{textContent:"Content"});
+var div_content=el("div",{textContent:"Content",
+  style:{
+  position:'fixed'
+  ,top:'32px'
+  ,width:'100%'
+  }
+});
 mount(document.body, div_content);
 
 //===============================================
 // Nav Bar Top
 //===============================================
 var DivNavBarTop =el("div",{
-  textContent:"NAVBARTOP"
+  textContent:""
   ,style:{
     position:'fixed'
     ,top:0
     ,width:'100%'
+    ,height:'32px'
   }
-});
+},[
+  el('button',{onclick:btnToggle,textContent:'Menu',style:{
+    float:'left'
+  }}),
+  el('span',{id:'navMenu',
+      style:{
+        float:'left'
+      }
+    
+    },[
+    el('a',{href:'#',onclick:btnToggleLogin,textContent:'Login'}),
+    el('span','-|-'),
+    el('a',{href:'/signup',textContent:'Sign Up'}),
+    el('span','-|-'),
+    el('a',{href:'/forgot',textContent:'Forgot'}),
+    el('span','-|-'),
+    el('a',{href:'/about',textContent:'About'}),
+    el('span','-|-'),
+    el('a',{href:'/settings',textContent:'Settings'}),
+    el('span','-|-'),
+    el('a',{href:'/admin',textContent:'Admin'}),
+    el('span',''),
+  ])
+]);
 mount(document.body, DivNavBarTop);
+function btnToggle(){
+  let menuDisplay = document.getElementById('navMenu').style.display;
+  if(menuDisplay === 'none'){
+    document.getElementById('navMenu').style.display = 'block';
+  }else{
+    document.getElementById('navMenu').style.display = 'none';
+  }
+}
+
+function btnToggleLogin(){
+  let menuDisplay = divLoginPanel.style.display;
+  if(menuDisplay === 'none'){
+    divLoginPanel.style.display = 'block';
+  }else{
+    divLoginPanel.style.display = 'none';
+  }
+}
 
 //var access_panel =el("div");
 //const hello = el("h1", "Hello world!");

@@ -18,33 +18,16 @@
 // https://github.com/fastify/example/blob/master/fastify-session-authentication/authentication.js
 // https://devhints.io/fastify CHEATS
 
-// https://github.com/mgcrea/fastify-session
-//const fastifySession = require('@mgcrea/fastify-session');
-// https://www.npmjs.com/package/fastify-session
-const fastifySession = require('fastify-session'); // error request 
 const fastifyCookie = require('fastify-cookie');
 const fastifyFormbody = require('fastify-formbody');
-const SESSION_SECRET = 'a secret with minimum length of 32 characters';
-var SESSION_TTL = 864e3; // 1 day in seconds
 // Require the framework and instantiate it
 const fastify = require('fastify')({ 
   //logger: true 
   logger: false
 });
-//HTML PARAM
-//fastify.register(require('point-of-view'), {
-  //engine: {
-    //ejs: require('ejs')
-  //}
-//});
 // BODY PRASE
 fastify.register(fastifyFormbody);
 fastify.register(fastifyCookie);
-// SESSION
-//fastify.register(fastifySession, {
-  //secret: SESSION_SECRET,
-  //cookie: { maxAge: SESSION_TTL },
-//});
 // https://github.com/SerayaEryn/fastify-session
 // a secret with minimum length of 32 characters
 fastify.register(fastifySession, {

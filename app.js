@@ -28,6 +28,8 @@
 //console.log(db);
 
 console.log('init web server...');
+if(process.env.NODE_ENV !== 'production') console.log('DEV MODE');
+console.log('process.env.NODE_ENV : >> ',process.env.NODE_ENV);
 //const port = process.env.PORT;
 //const host = process.env.HOST;
 //console.log("PORT:",port );

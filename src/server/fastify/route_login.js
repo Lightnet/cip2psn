@@ -76,10 +76,10 @@ module.exports = function (fastify, opts, done) {
     //console.log('END loginAliasSync');
     //console.log(data);
     if(data){
-      reply.setCookie('token',data,{
-        domain: 'localhost'
-        , path: '/'
-        , httpOnly: true //client browser document.cookie
+      reply.setCookie('token', data, {
+        //domain: 'localhost'
+        //, path: '/',
+        httpOnly: true //client browser document.cookie
         , signed: true
       });
       reply.redirect('/');

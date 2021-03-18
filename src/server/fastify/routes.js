@@ -15,7 +15,7 @@
 const user=require('../model/user');
 const jwt = require("jsonwebtoken");
 const config =require('../../../config');
-const SEA = require('gun/sea');
+//const SEA = require('gun/sea');
 
 const {html_index,html_main }=require('./views/index');
 
@@ -95,6 +95,8 @@ async function routes (fastify, options, done) {
     , '/logout'
     , '/termofservice'
     , '/about'
+    , '/client_access.js'
+    , '/favicon.ico'
   ]
 
   // Request/Response validation and hooks
@@ -206,9 +208,9 @@ async function routes (fastify, options, done) {
       //reply.send(`<html><body>[ Logout ] <a href="/">Home</a></body></html>`);
     }else{
       //console.log('FAIL TOKEN');
-      //reply.clearCookie('token',{
-        //signed: true
-      //});
+      reply.clearCookie('token',{
+        signed: true
+      });
 
       //reply.redirect('/');
       //reply.redirect(302,'/');
