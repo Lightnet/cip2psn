@@ -80,7 +80,7 @@ Note:
 | hyperbee    | Peer-to-peer key/value database   | yes           | yes         | yes       | yes       | hyper://      |
 | hyperdrive  | Peer-to-peer file archives        | yes           | yes         | yes       | yes       | hyper://      |
 ```
-* pouchdb client connect to nodejs server does not work. Out date server pouchdb rest api.
+* pouchdb express server (have not tested). Out date server pouchdb rest api.
 https://github.com/hypercore-protocol/hypercore
 https://github.com/hypercore-protocol/cli
 
