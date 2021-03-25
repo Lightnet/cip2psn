@@ -33,6 +33,20 @@
   The hard part that ticket system for users, mods and admins report that required some module setup.
 
 
+# Fastify Setup:
+  Note: cookie setup is a bit hard to handle. Reason is prevent cookie edit modifier checks. 
+
+```javascript
+  //npm fastify-cookie
+  //mod
+
+  fastify.decorate('unsignCookie', function unsignCookie (value) {
+    return signer.unsign(value)
+  })
+  
+```
+
+
   
 
 

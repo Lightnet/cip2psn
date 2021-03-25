@@ -47,7 +47,25 @@ require('./src/server/fastifty_server'); // ok // out date session package
 //require('./src/server/restify_server'); // ok // no session. cookie to able to store user token
 
 //===============================================
+// DATABASE HTTP SERVER REST API
+
+require('./database');
+
+
+//===============================================
+//
+//require = require("esm")(module/*, options*/)
+//module.exports = require('./src/tests/expressprom_server');
+//require('./src/tests/expressprom_server'); // ok
+
+//===============================================
 // Simple Tests
+
+//require('./tests/expressuploadserver');
+//require('./tests/httpupload01');
+//require('./tests/httpupload02');
+//require('./tests/readfile');
+
 //require('./src/tests/http_server01');
 //require('./src/tests/httpcookie_server');
 
@@ -90,3 +108,4 @@ require('./src/server/fastifty_server'); // ok // out date session package
 //});
 //db1.settest();
 //db1.gettest();
+

@@ -3,8 +3,11 @@ my-dataset/
 my-hypercore/
 my-hyperdrive/
 my_pouchdb/
+database/
 node_modules/
+pouchdb/
 public/
 mydb/
 radata/
+uploads/
 package-lock.json

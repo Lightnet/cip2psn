@@ -22,10 +22,37 @@ function isMobile(){
 
 console.log("isMobile:",isMobile());
 //===============================================
+
+let username='test';
+let password='test';
+var urlDatabase='http://127.0.0.1:5984/pouchdb';
+//urlDatabase='http://localhost:5984/pouchdb';
+console.log(urlDatabase);
+
+var db = new PouchDB(urlDatabase, {
+  skip_setup: true,
+  //auth: { username, password },
+  fetch: (url, opts) => {
+    //console.log('DATABASE FETCH!');
+    //opts.credentials = 'include';//error
+    //opts.origins = 'http://127.0.0.1:3000'//not tested
+    //opts.credentials = 'omit';//ok
+    return PouchDB.fetch(url, opts);
+  },
+});
+
+function getDbInfo(){
+  db.info().then(function (info) {
+    console.log(info);
+    //setResult(info);
+  });
+}
+
+//===============================================
 // LOGIN PANEL
 //===============================================
 
-// FORM
+// FORM LOGIN
 var formLogin=el('form'
   ,{
     action:'/login',
@@ -44,11 +71,11 @@ var formLogin=el('form'
     ])
     ,el("tr",[
       el("td", el("label","Alias:")),
-      el("td", el("input",{name:"alias",id:"alias"}))
+      el("td", el("input",{name:"alias",id:"alias",value:'testalias'}))
     ])
     ,el("tr",[
       el("td", el("label","Passphrase:")),
-      el("td", el("input",{name:"passphrase",id:"passphrase"}))
+      el("td", el("input",{name:"passphrase",id:"passphrase",value:'testpass'}))
     ])
     ,el("tr",[
       el("td", el("label",{textContent:"Is Human?:"
@@ -126,6 +153,7 @@ var DivNavBarTop =el("div",{
     el('span','-|-'),
     el('a',{href:'/admin',textContent:'Admin'}),
     el('span',''),
+    el('button',{onclick:getDbInfo,textContent:'pouchdb'}),
   ])
 ]);
 mount(document.body, DivNavBarTop);

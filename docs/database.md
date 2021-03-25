@@ -75,3 +75,24 @@ comment id
 }
 
 ```
+pouchdb can't remote self need proxy to work.
+pouchdb can't http. need helper frameworks.
+
+
+
+# List of database:
+ * redis
+ * pouchdb
+ * https://github.com/orbitdb/orbit-db
+ * sqlitebrowser
+ * https://www.tutorialsteacher.com/nodejs/data-access-in-nodejs
+ * https://expressjs.com/en/guide/database-integration.html
+ * https://github.com/pubkey/rxdb
+ * 
+# peer to peer
+ * https://peerjs.com/
+ * https://www.freedomjs.org/ outdate
+ * 
+ * 
+ * 
+ * 

@@ -250,12 +250,31 @@ const parseJwt = (token) => {
 ```
 
 ```javascript
+// https://socket.io/docs/v3/emit-cheatsheet/
+//socket.emit allows you to emit custom events on the server and client
+//socket.send sends messages which are received with the 'message' event
+
+// sending to all clients except sender
+socket.broadcast.emit("broadcast", "hello friends!");
+
+socket.send('hello!');
+
+socket.on('message', function (message) {
+  console.log(message);
+});
 ```
 
 ```javascript
 ```
 
 ```javascript
+  //npm fastify-cookie
+  //mod
+
+  fastify.decorate('unsignCookie', function unsignCookie (value) {
+    return signer.unsign(value)
+  })
+  
 ```
 
 

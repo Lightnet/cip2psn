@@ -1,9 +1,7 @@
 
-
-
-
 # Links:
  * https://stackoverflow.com/questions/11381673/detecting-a-mobile-browser
+ * https://github.com/mafintosh/hypercore-crypto
 
 
 # Tools:
@@ -74,5 +72,23 @@
  * https://openbase.com/js/fastify-server-session/documentation
  * https://devhints.io/fastify CHEATS
  * https://blog.logrocket.com/how-to-build-a-blazingly-fast-api-with-fastify/
+ * 
+ * 
+
+
+# upload:
+ * https://stackabuse.com/handling-file-uploads-in-node-js-with-expres-and-multer/
+
+
+# UI:
+ * https://alertifyjs.com/
+ * https://www.w3schools.com/howto/howto_js_alert.asp
+ * https://jsfiddle.net/joshnh/FxfHc/
+ * https://joshnh.com/weblog/how-to-make-an-alert-bar/
+ * 
+ * 
+ * 
+ * 
+ * 
  * 
  * 

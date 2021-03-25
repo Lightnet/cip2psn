@@ -20,6 +20,9 @@ const path = require('path');
 const fastifyCookie = require('fastify-cookie');
 const fastifyCaching = require('fastify-caching');
 const fastifyFormbody = require('fastify-formbody');
+const cookie = require("cookie");
+const jwt =require('jsonwebtoken');
+const config=require('../../config');
 //const helmet = require('fastify-helmet');
 //const mobile = require('is-mobile');
 //const SESSION_SECRET = 'a secret with minimum length of 32 characters';
@@ -36,12 +39,16 @@ const fastify = require('fastify')({
   logger: false
 });
 
-fastify.register(require('fastify-helmet'),
+//fastify.register(require('fastify-helmet'),
   // Example disables the `contentSecurityPolicy` middleware but keeps the rest.
-  { contentSecurityPolicy: false }
-)
+  //{ contentSecurityPolicy: false }
+//)
 fastify.register(require('fastify-cors'), { 
   // put your options here
+  //origin: "http://127.0.0.1:5984",
+  //origin: "*",
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Accept', 'Content-Type', 'Authorization'],
+  methods: ['GET', 'PUT', 'OPTIONS', 'POST', 'DELETE']
 })
 //===============================================
 // dev tool
@@ -65,6 +72,18 @@ fastify.register(require('fastify-static'), {
   //,prefix: '/public/', // optional: default '/'
   ,prefix:'/'
 });
+//===============================================
+// SOCKET.IO
+// https://socket.io/docs/v3/server-api/index.html
+fastify.register(require('fastify-socket.io'), {
+  // put your options here
+  //path: "/test",
+  //serveClient: false,
+  // below are engine.IO options
+  //pingInterval: 10000,
+  //pingTimeout: 5000,
+  //cookie: false
+})
 //===============================================
 // ROUTES
 //===============================================
@@ -92,7 +111,7 @@ const start = async () => {
         }
         //console.log(address);
         //console.log(`>Fastify server running on http://localhost:${PORT}`);
-        console.log(`>Fastify server running on %s`,address);
+        console.log(`>Fastify Server on %s`,address);
     });
   } catch (err) {
     fastify.log.error(err);

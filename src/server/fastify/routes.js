@@ -34,17 +34,95 @@ function checkUrl(value,arr){
 
 // https://developer.okta.com/blog/2020/10/12/build-modern-api-using-fastify
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+// https://www.html.cn/dev/fastify.html
+// https://stackoverflow.com/questions/65557198/how-to-use-fastify-cors-to-enable-just-one-api-to-cross-domain
 // ROUTES
 async function routes (fastify, options, done) {
   //fastify.get('/', async (request, reply) => {
     //return { hello: 'world' }
   //});
+
+  fastify.addHook('onRequest', function(request, reply, done) {
+    //console.log('query', request.query);
+    //console.log('params', request.params);
+    //console.log(request.headers);
+    //reply.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE')
+    done();
+  })
+  //https://github.com/fastify/fastify/issues/1251
+  //nope it been remove for fastify 3.0 version
+  //fastify.use(function(req, res, next) {
+    //reply.header("Access-Control-Allow-Origin", "*"); 
+    //reply.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Origin, Cache-Control"); 
+    //next() 
+  //});
+  // https://www.fastify.io/docs/latest/Hooks/#onsend
+  // https://www.fastify.io/docs/v3.14.x/Reply/
+  fastify.addHook('onSend', (request, reply, payload, next) => { 
+    console.log('////////////////////////');
+    console.log('onsend');
+    console.log('request.url',request.url);
+    console.log('request.method',request.method);
+    //console.log(reply.getHeaders());
+    const err = null;
+    //const newPayload = payload.replace('some-text', 'some-new-text');
+    const newPayload = payload;
+    //reply.header("Access-Control-Allow-Origin", "*"); 
+    //reply.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Origin, Cache-Control"); 
+    // // res.json({data: [1,2,3,4]}) // res.send('hello') 
+    next(err,newPayload);
+  })
+
   // https://stackoverflow.com/questions/35408729/express-js-prevent-get-favicon-ico/35408810
   //fastify.register(require('fastify-favicon'))
   fastify.get('/favicon.ico', function (request, reply) {
-    console.log("No Favicon!");
+    //console.log("No Favicon!");
     reply.code(204); // 204 No Content
   });
+
+  fastify.ready(err => {
+    if (err) throw err
+    //console.log('SERVER READY!');
+    //console.log('INIT SOCKET.IO');
+    fastify.io.on('connect', (socket) =>{
+      //console.log(socket);
+      //const cookies = cookie.parse(socket.request.headers.cookie || "");
+      try{
+        //let token = cookies.token;
+        //console.log('token:',token.split('.').length); // must be 3 for jwt to work
+        //console.log('token',token);
+        let cookies = fastify.parseCookie(socket.request.headers.cookie);
+        let bCookie = fastify.unsignCookie(cookies.token);
+        //console.log(bCookie);
+        let data = jwt.verify(bCookie.value, config.tokenKey);
+        //console.log(data);
+        console.log('PASS ALIAS');
+        //socket.emit('alias',{alias:data.alias});
+        socket.alias = data.alias;
+      }catch(err){
+        console.log('FAIL ALIAS');
+      }
+      //https://socket.io/docs/v3/emit-cheatsheet/
+      //socket.send('hello!');
+      socket.on('test',(data)=>{
+        console.log('data',data);
+        console.log(socket.alias);
+      });
+
+      socket.on('chatmessage',(data)=>{
+        console.log('data',data);
+        socket.local.emit('chatmessage',data);
+      });
+
+      //console.info('Socket connected!', socket.id);
+    });
+  });
+
+  fastify.get('/emitserver', async function (request, reply) {
+    //fastify.io.emit('server','test');
+    reply.send('socket.io test!');
+  });
+
   // https://github.com/fastify/fastify/blob/master/docs/Middleware.md
   // https://www.fastify.io/docs/latest/Decorators/
   // Decorate request with a 'user' property
@@ -161,6 +239,7 @@ async function routes (fastify, options, done) {
     // Useful for custom error logging
     // You should not use this hook to update the error
   })
+
   // https://www.fastify.io/docs/latest/Reply/#raw
   // GET INDEX PAGE
   fastify.get('/', async function (request, reply) {
@@ -226,19 +305,18 @@ async function routes (fastify, options, done) {
   });
 
   //ROUTES
-  //fastify.register(require('./route_login'), { prefix: '/v1' }); //nope, crash
   fastify.register(require('./route_login')); // works
   fastify.register(require('./route_signup')); // 
   fastify.register(require('./route_forgot')); // 
   fastify.register(require('./route_account')); // 
   fastify.register(require('./route_alias')); // 
+  fastify.register(require('./route_chatmessage')); // 
+  fastify.register(require('./route_privatemessage')); // 
   //fastify.register(require('./route_community')); // 
-   
-  //fastify.register(require('./route_blank')); // 
-  
   //fastify.register(require('./route_mod')); // 
   //fastify.register(require('./route_admin')); // 
   //fastify.register(require('./route_ticket')); //
+  //fastify.register(require('./route_blank')); // 
   // FINISH
   done();
 }

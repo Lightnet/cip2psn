@@ -31,6 +31,7 @@ function html_index(){
     <title>Fastify</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://redom.js.org/redom.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/pouchdb@7.2.1/dist/pouchdb.js"></script>
   </head>
   <body>
   <script src="/client_access.js"></script>
@@ -57,6 +58,8 @@ function html_main(){
   </head>
   <body>
     <a href="/account">Account</a>
+    <a href="/chatmessage">Chat Message</a>
+    <a href="/privatemessage">Private Message</a>
     <a href="/alias">Alias</a>
     <a href="/community">Community</a>
     <a href="/ticket">Ticket</a>
