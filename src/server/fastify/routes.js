@@ -31,6 +31,13 @@ function checkUrl(value,arr){
   }
   return status;
 }
+// https://stackoverflow.com/questions/38701847/how-can-i-convert-a-date-into-an-integer/38702011
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
+function DateToTime(){
+  //return new Date().toString();
+  //return new Date().toUTCString();
+  return new Date().getTime();
+}
 
 // https://developer.okta.com/blog/2020/10/12/build-modern-api-using-fastify
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
@@ -111,7 +118,13 @@ async function routes (fastify, options, done) {
 
       socket.on('chatmessage',(data)=>{
         console.log('data',data);
-        socket.local.emit('chatmessage',data);
+        socket.local.emit('chatmessage',{
+          alias:socket.alias
+          , msg:data
+          , date:DateToTime()
+        });
+
+        //socket.local.emit('chatmessage',data);
       });
 
       //console.info('Socket connected!', socket.id);

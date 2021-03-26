@@ -1,6 +1,10 @@
 # CHEAT SHEETS
 
 ```javascript
+// https://www.codementor.io/@manashkumarchakrobortty/authentication-and-authorization-in-node-js-19brdvhsyw
+authentication
+authorization
+auth-token?
 ```
 
 

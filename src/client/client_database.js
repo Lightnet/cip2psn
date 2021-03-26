@@ -34,19 +34,6 @@ async function settestdoc(){
   } catch (err) {
     console.log(err);
   }
-
-
-  /*
-  db.put({
-    _id: 'mydoc',
-    title: 'Heroes'
-  }).then(function (doc) {
-    // handle doc
-    console.log(doc);
-  }).catch(function (err) {
-    console.log(err);
-  });
-  */
 }
 
 function gettestdoc(){

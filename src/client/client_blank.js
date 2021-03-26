@@ -3,28 +3,29 @@
  */
 const { el, mount } = redom;
 
-// FORM
-var form_blank=el('form',{
-  action:'/blank',
-  method:'post'
+
+var divBlank=el('form',{
+  //action:'/blank',
+  //method:'post'
   },
   el("table",[
     el("tr",[
       el("td", el("label",{textContent:"Action:"})),
       el("td", el("input",{name:'content',value:"test content"})),
-      el("td", el("input",{type:"submit"})),
+      el("td", el("input",{onclick:clickBlank,type:"submit"})),
     ])
   ])
 );
 
-var link_home=el('a',{href:'/',textContent:'Home'});
+var navMenuHome=el('a',{href:'/',textContent:'Home'});
+var navMenuLogout=el('a',{href:'/',textContent:'Home'});
 
-var div_panel=el("div",[
-  link_home,
-  form_blank
+var divPanel=el("div",[
+  navMenuHome,
+  navMenuLogout,
+  divBlank
 ]);
-mount(document.body, div_panel);
+mount(document.body, divPanel);
 function clickBlank(){
   console.log('blank');
 }
-

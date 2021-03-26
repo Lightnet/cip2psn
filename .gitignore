@@ -4,6 +4,7 @@ my-hypercore/
 my-hyperdrive/
 my_pouchdb/
 database/
+!src/database/
 node_modules/
 pouchdb/
 public/

@@ -4,27 +4,67 @@
 const { el, mount } = redom;
 
 // FORM
-var form_blank=el('form',{
-  action:'/blank',
-  method:'post'
+var divPrivateMessagePanel=el('div',{
   },
   el("table",[
     el("tr",[
-      el("td", el("label",{textContent:"Action:"})),
-      el("td", el("input",{name:'content',value:"test content"})),
-      el("td", el("input",{type:"submit"})),
+      el("td", el("label",{textContent:"Message:"})),
+      el("td", el("input",{id:'pminput',onkeyup:typingMessage,value:"test content"})),
+      el("td", el("button",{onclick:btnSend,textContent:'Sent'})),
     ])
   ])
 );
 
-var link_home=el('a',{href:'/',textContent:'Home'});
+var navMenuHome=el('a',{href:'/',textContent:'Home'});
+var navMenuLout=el('a',{href:'/logout',textContent:'Logout'});
 
 var div_panel=el("div",[
-  link_home,
-  form_blank
+  navMenuHome,
+  el('span',' - | - '),
+  el('label',{textContent:'Public Key'}),
+  el('select',{textContent:''}),
+
+  el('input',{id:'pmpublickey',placeholder:'Public Key'}),
+  
+  el('button',{onclick:addContact,textContent:'+'}),
+  el('button',{onclick:removeContact,textContent:'-'}),
+  el('label',{textContent:'Status:'}),
+  el('label',{textContent:'None'}),
+  el('span',' - | - '),
+  navMenuLout,
+  divPrivateMessagePanel
 ]);
 mount(document.body, div_panel);
-function clickBlank(){
-  console.log('blank');
+
+function typingMessage(event){
+  console.log('test...')
+  console.log(event.keyCode)
+  if(event.keyCode==13){
+    console.log('test')
+    processMessage();
+  }
 }
 
+function btnSend(){
+  console.log('blank');
+  processMessage();
+}
+function processMessage(){
+  console.log($('#pminput').val());
+}
+
+function addContact(){
+  console.log($('#pmpublickey').val())
+
+  fetch('/privatemessage/addcontact',{
+    method: 'POST',
+    credentials: 'same-origin', // include, *same-origin, omit
+    body: JSON.stringify({pub:$('#pmpublickey').val()})
+  })
+  .then(response => response.json())
+  .then(data => console.log(data));
+}
+
+function removeContact(){
+  
+}

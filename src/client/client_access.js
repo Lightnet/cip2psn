@@ -5,7 +5,7 @@
 
 
 const { el, mount } = redom;
-
+var isMobileView;
 function isMobile(){
   // credit to Timothy Huang for this regex test:
   // https://dev.to/timhuang/a-simple-way-to-detect-if-browser-is-on-a-mobile-device-with-javascript-44j3
@@ -19,16 +19,14 @@ function isMobile(){
     return false;
   }
 }
-
+isMobileView=isMobile();
 console.log("isMobile:",isMobile());
 //===============================================
-
 let username='test';
 let password='test';
 var urlDatabase='http://127.0.0.1:5984/pouchdb';
 //urlDatabase='http://localhost:5984/pouchdb';
-console.log(urlDatabase);
-
+//console.log(urlDatabase);
 var db = new PouchDB(urlDatabase, {
   skip_setup: true,
   //auth: { username, password },
@@ -40,18 +38,23 @@ var db = new PouchDB(urlDatabase, {
     return PouchDB.fetch(url, opts);
   },
 });
-
 function getDbInfo(){
   db.info().then(function (info) {
     console.log(info);
     //setResult(info);
   });
 }
-
+//===============================================
+function TestTrigger(){
+  $(document).trigger( "cbtn");
+}
+$( document).on( "cbtn", function() {
+  //alert( $( this ).text() );
+  console.log('test trigger');
+});
 //===============================================
 // LOGIN PANEL
 //===============================================
-
 // FORM LOGIN
 var formLogin=el('form'
   ,{
@@ -62,7 +65,8 @@ var formLogin=el('form'
       ,top:'32px'
       //,left:'calc(50vh - 10px);'
       ,left:'calc(50% - 100px)'
-      ,width:'100%'
+      //,width:'100%'
+      ,'border-style': 'solid'
     }
   }
   ,el("table",[
@@ -107,7 +111,6 @@ overflow: hidden;
 */
 `});
 mount(document.head, htmlstyle);
-
 //===============================================
 // CONTENT
 //===============================================
@@ -119,7 +122,6 @@ var div_content=el("div",{textContent:"Content",
   }
 });
 mount(document.body, div_content);
-
 //===============================================
 // Nav Bar Top
 //===============================================
@@ -139,7 +141,6 @@ var DivNavBarTop =el("div",{
       style:{
         float:'left'
       }
-    
     },[
     el('a',{href:'#',onclick:btnToggleLogin,textContent:'Login'}),
     el('span','-|-'),
@@ -154,6 +155,7 @@ var DivNavBarTop =el("div",{
     el('a',{href:'/admin',textContent:'Admin'}),
     el('span',''),
     el('button',{onclick:getDbInfo,textContent:'pouchdb'}),
+    el('button',{onclick:TestTrigger,textContent:'jqbtntest'}),
   ])
 ]);
 mount(document.body, DivNavBarTop);
@@ -174,7 +176,3 @@ function btnToggleLogin(){
     divLoginPanel.style.display = 'none';
   }
 }
-
-//var access_panel =el("div");
-//const hello = el("h1", "Hello world!");
-//mount(document.body, hello);

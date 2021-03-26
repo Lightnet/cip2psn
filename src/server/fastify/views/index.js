@@ -30,6 +30,7 @@ function html_index(){
   <head>
     <title>Fastify</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://redom.js.org/redom.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/pouchdb@7.2.1/dist/pouchdb.js"></script>
   </head>

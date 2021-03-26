@@ -48,3 +48,25 @@ password:<user password>
  * pouchdb [test build for login/sign up]
 
   Testing and learning some in and out of the database format. It has it own pros and cons of the setup.
+
+
+# Ticket and report system:
+  The hard part that ticket system for users, mods and admins report that required some module setup.
+
+# Data Protection laws:
+  The set up for data protection law is not easy to do as prevent easy used.
+
+  One that database is half encrypted. As well prevent hacker impersonation to login into to download requested. It would required admin to allow access to grant permission. Since the keys can be decode base on the data encode to revise engineer.(opinion or guess.)
+
+  Which required access to their full data like user info and data history record. Which required to need data to convert to encryted to decode but the identy must be verify. This required time, cost and other things.
+
+  There are two ways but depend on the developement.
+
+
+# Configs:
+  Each web server site has own config and secret keys. As well config other web admin to talk among to allow access to database from other hub sites.
+```
+
+```
+
+

@@ -19,15 +19,7 @@
   
 })();
 
-//;(async () => {
-//})();
-
-//const db = require('./src/server/db/gv1');
-//const db = require('./src/server/db/hcv1/index');
-//const db = require('./src/server/db');
-//console.log(db);
-
-console.log('init web server...');
+console.log('init Nodejs server...');
 if(process.env.NODE_ENV !== 'production') console.log('DEV MODE');
 console.log('process.env.NODE_ENV : >> ',process.env.NODE_ENV);
 //const port = process.env.PORT;
@@ -48,16 +40,13 @@ require('./src/server/fastifty_server'); // ok // out date session package
 
 //===============================================
 // DATABASE HTTP SERVER REST API
-
-require('./database');
-
+//require('./src/server/database_server');
 
 //===============================================
 //
 //require = require("esm")(module/*, options*/)
 //module.exports = require('./src/tests/expressprom_server');
 //require('./src/tests/expressprom_server'); // ok
-
 //===============================================
 // Simple Tests
 
@@ -87,25 +76,3 @@ require('./database');
 //require('./src/tests/hypercorepouchdb01');
 //require('./src/tests/hypercorepouchdb02');
 //require('./src/tests/hyperbeelocalstorage');
-
-
-//const db= require('./src/server/db/pv1');
-//db.init();
-//console.log('||||||||||||||||||||||');
-//var db = require('./src/server/db/gv2/db')({test:'test'});
-//var db = require('./src/server/db/gv2/db');
-//console.log('()()()()()()()');
-//console.log(db);
-//db.get('T0').put({text:'test'});
-
-//var db1 = require('./src/server/db/gv2/db');
-//console.log('//////////////');
-//console.log(db1);
-//console.log(db1);
-//db1.get('T0');
-//db1.get('T0').once((data,key)=>{
-  //console.log(data);
-//});
-//db1.settest();
-//db1.gettest();
-

@@ -85,10 +85,10 @@
  * https://www.w3schools.com/howto/howto_js_alert.asp
  * https://jsfiddle.net/joshnh/FxfHc/
  * https://joshnh.com/weblog/how-to-make-an-alert-bar/
- * 
- * 
- * 
- * 
- * 
- * 
+ * https://stackoverflow.com/questions/36802163/how-to-make-a-animation-to-an-alert
+ * https://www.cssscript.com/css3-animated-alert-notifications-jsalert/
+ * https://www.jqueryscript.net/tags.php?/alert/
+ * https://api.jquery.com/triggerHandler/
+ * https://api.jquery.com/trigger/
+ * https://www.jqueryscript.net/other/jQuery-Event-Based-Notification-Plugin-For-Bootstrap-BS-Alerts.html
  * 

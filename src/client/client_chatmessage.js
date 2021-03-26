@@ -32,9 +32,8 @@ socket.on('message', function (message) {
 });
 socket.on('chatmessage', function (message) {
   console.log('SERVER message:',message);
+  ServerChatMessageParse(message);
 });
-
-
 // socket.emit('alias',{alias:'name'})
 socket.on("alias", (data) =>{
   //console.log(data);
@@ -48,9 +47,19 @@ socket.on("server", (data) =>{
 // div Chat Panel
 var divChatPanel=el('div',{
   },
-  el("table",[
+  el("table",{
+    style:{
+      'border-style': 'solid'
+    }
+  },
+  [
     el("tr",[
-    el("td", {colspan:'3',style:{height:'100px',width:'100px'}},el("div",{style:{height:'100px',width:'100px'}},{id:'chatmessages',textContent:"Chat Messages"})),
+    el("td", {colspan:'3',style:{height:'300px',width:'300px'}},
+      el("div",{style:{
+        height:'300px'
+        ,width:'300px'
+        ,'overflow-y': 'scroll'
+      }},{id:'chatmessages',textContent:"Chat Messages"})),
     ]),
     el("tr",[
       el("td", el("label",{textContent:"Chat:"})),
@@ -59,11 +68,22 @@ var divChatPanel=el('div',{
     ])
   ])
 );
+// https://stackoverflow.com/questions/4249353/jquery-scroll-to-bottom-of-the-page
+function ServerChatMessageParse(data){
+  console.log(data);
+
+  let usermsg = el('div',{id:data.date,textContent:`${data.alias} : ${data.msg}`});
+
+  $('#chatmessages').append(usermsg);
+  var scroll=$('#chatmessages');
+  scroll.animate({scrollTop: scroll.prop("scrollHeight")});
+}
+
 // oninput
 function getChatInput(){
-  let msg = document.getElementById('chatinput').value;
+  //let msg = document.getElementById('chatinput').value;
   //console.log(msg);
-  processChatInput(msg);
+  processChatInput();
 }
 
 function inputChat(event){
@@ -71,17 +91,18 @@ function inputChat(event){
   event = event || window.event;
   //console.log(event.keyCode); //13
   if(event.keyCode == 13){
-    let msg = document.getElementById('chatinput').value;
+    //let msg = document.getElementById('chatinput').value;
     //console.log(msg);
-    processChatInput(msg);
+    processChatInput();
   }
 }
 
-function processChatInput(msg){
+function processChatInput(){
+  let msg = document.getElementById('chatinput').value;
   //console.log('MSG:',msg);
   if(isEmpty(msg)==false){
     //console.log('MSG:',msg);
-    socket.emit('chatmessage', msg);
+    socket.emit('chatmessage',msg);
   }
 }
 

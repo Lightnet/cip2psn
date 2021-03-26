@@ -18,6 +18,7 @@ function blankPage () {
     `<head>
       <title>chatmessage</title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
       <script src="https://redom.js.org/redom.min.js"></script>
       <script src="/socket.io/socket.io.js"></script>
     </head>
