@@ -13,6 +13,8 @@ const { isEmpty }=require('../model/utilities');
 const config = require('../../../config');
 const SEA = require('gun/sea');
 
+const { processAccessToken } =require('./helper');
+
 // HTML PAGE
 function accountPage () {
   return '<html>' +
@@ -33,6 +35,17 @@ module.exports = function (fastify, opts, done) {
   fastify.get('/account', function (request, reply) {
     reply.type('text/html');
     reply.send(accountPage());
+  });
+
+  fastify.get('/account/pubkey', async function (request, reply) {
+    //reply.type('text/html');
+    let data = await processAccessToken(request, reply);
+    console.log(data);
+    if(data){
+      reply.send({publickey:data.sea.pub});
+    }else{
+      reply.send({error:'TOKEN INVALID'});
+    }
   });
 
   fastify.post('/sethint', async function (request, reply) {

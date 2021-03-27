@@ -236,7 +236,6 @@ module.exports = function (fastify, opts, done) {
     //reply.send({message:'CHECKING'});
   });
 
-
   //=============================================
   fastify.get('/alias/:id', function (request, reply) {
     console.log("ALIAS ID?");

@@ -11,6 +11,11 @@
 const { isEmpty }=require('../model/utilities');
 const jwt = require("jsonwebtoken");
 const config = require('../../../config');
+const SEA = require('gun/sea');
+
+const message=require('../model/model_message');
+
+const { processAccessToken }=require('./helper');
 
 // HTML PAGE
 function blankPage () {
@@ -27,6 +32,7 @@ function blankPage () {
     '</body>' +
     '</html>'
 }
+
 // ROUTES
 module.exports = function (fastify, opts, done) {
   // GET LOGIN
@@ -47,60 +53,73 @@ module.exports = function (fastify, opts, done) {
   });
 
   fastify.post('/privatemessage/addcontact', async function (request, reply) {
+    console.log('ADD CONTACT');
     //reply.type('text/html');
-    //const { content } = JSON.parse(request.body); //fetch
+    var { pub } = JSON.parse(request.body); //fetch
     //const { content } = request.body;
     //console.log(content);
     //if(isEmpty(content)){
       //reply.send({message:'empty!'});  
     //}
-    let bCookie;
-    let token = request.cookies.token;
-    let data;
-    if(token){
-      //console.log('[ FOUND TOKEN ]');
-      bCookie = request.unsignCookie(request.cookies.token);
+    //console.log(request.body)
+    //var { pub } =request.body;
+    //console.log(pub);
+    //console.log(isEmpty(pub));
+    if(isEmpty(pub)){
+      return reply.send({error:'PUBKEY NULL'});
+    }
+    let data = await processAccessToken(request, reply);
+    //console.log(data);
+    //console.log(data.sea.pub);
+    if(pub == data.sea.pub){
+      //console.log('SAMEPUBLICKEY')
+      return reply.send({error:'SAMEPUBLICKEY'});
+    }
+    if(data){
+      //console.log(request.body);
+      //console.log('process add');
+      let result = await message.addPMContactSync({
+        user:data
+        ,sender:pub
+      });
+      //console.log(result);
+      reply.send({message:'ok'});
     }else{
-      //console.log('[ NULL TOKEN ]');
+      reply.send({error:'TOKEN INVALID'});
     }
-    try{
-      data = jwt.verify(bCookie.value, config.tokenKey);
-    }catch(err){
-      console.log(err);
-    }
-    console.log(data);
-    console.log(request.body);
-    reply.send({message:'privatemessage'});
   });
 
   fastify.post('/privatemessage/removecontact', async function (request, reply) {
-    //reply.type('text/html');
-    let bCookie;
-    let token = request.cookies.token;
-    let data;
-    if(token){
-      //console.log('[ FOUND TOKEN ]');
-      bCookie = request.unsignCookie(request.cookies.token);
-    }else{
-      //console.log('[ NULL TOKEN ]');
-    }
-    try{
-      data = jwt.verify(bCookie.value, config.tokenKey);
-    }catch(err){
-      console.log(err);
-    }
-    console.log(data);
-
-
     console.log(request.body);
     const { pub } = JSON.parse(request.body); //fetch
     console.log(pub)
-    //const { content } = request.body;
+    reply.send({message:'privatemessage'});
+  });
+
+  fastify.get('/privatemessage/listcontact', async function (request, reply) {
     //console.log(request.body);
-    //console.log(content);
-    //if(isEmpty(content)){
-      //reply.send({message:'empty!'});  
+    //const { pub } = JSON.parse(request.body); //fetch
+    //console.log(pub)
+
+    let data = await processAccessToken(request, reply);
+    //console.log(data);
+    //console.log(data.sea.pub);
+    //if(pub == data.sea.pub){
+      //console.log('SAMEPUBLICKEY')
+      //return reply.send({error:'SAMEPUBLICKEY'});
     //}
+    if(data){
+      //console.log(request.body);
+      //console.log('process add');
+      let result = await message.listPMContactSync(data);
+      console.log(result);
+      reply.send({alias:result.alias,pub:result.pub});
+
+      //reply.send({message:'ok'});
+    }else{
+      reply.send({error:'TOKEN INVALID'});
+    }
+
     reply.send({message:'privatemessage'});
   });
   // FINISH

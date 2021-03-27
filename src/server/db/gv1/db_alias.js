@@ -69,7 +69,16 @@ function createAliasId(data, callback){
           sea = await SEA.encrypt(sea, saltkey);
           let userId = await createUserId();
           //console.log('userId:',userId)
+          let time = timeStamp();
 
+          // for SEARCH PUB ID for username
+          gun.get(pub).put({
+            alias:data.alias
+            ,pub:pub
+            ,time:time
+          })
+          
+          /// for account set up
           gun.get(data.alias).put({
             alias:data.alias
             ,aliasId:userId
@@ -77,8 +86,8 @@ function createAliasId(data, callback){
             ,role:'user'
             ,token:''
             ,pub:pub
-            ,sea:sea
-            ,date:timeStamp()
+            ,auth:sea
+            ,date:time
           });
           return callback(null,{message:"CREATED",alias:data.alias});
         }
@@ -116,7 +125,7 @@ function getAliasPassphrase(data, callback){
         return callback(null,{
           message:'FOUND'
           , passphrase: datasub.passphrase
-          , sea:datasub.sea
+          , sea:datasub.auth
           , aliasId:datasub.aliasId
         });
       }else{
@@ -232,7 +241,7 @@ function aliasChangePassphrase(data,callback){
           // passphrase is verify
           //callback('PASS');
           //console.log(datasub);
-          let sea =datasub.sea;
+          let sea =datasub.auth;
           //console.log(sea);
           let oldSaltKey = await SEA.work(data.oldpassphrase, data.alias);
           sea = await SEA.decrypt(sea, oldSaltKey);
@@ -243,7 +252,7 @@ function aliasChangePassphrase(data,callback){
           let pass = bcrypt.hashSync(data.newpassphrase, saltRounds);
 
           gun.get(data.alias).put({
-            sea:sea,
+            auth:sea,
             passphrase:pass
           },(ack)=>{
             if(ack.err){

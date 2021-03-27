@@ -56,7 +56,6 @@ exports.get = get;
 //exports.getuser=getuser;
 
 //get alias functions
-
 const {
   checkAliasId
   , createAliasId
@@ -92,14 +91,14 @@ module.exports.aliasCreatePubId = aliasCreatePubId;
 module.exports.aliasCreatePubIdPost = aliasCreatePubIdPost;
 module.exports.aliasGetPubIdPosts = aliasGetPubIdPosts;
 
+const {
+  addPMContact
+  , removePMContact
+  , listPMContact
+  , sentPrivateMessage
+}=require('./db_message');
 
-//===============================================
-// ALIAS
-//===============================================
-//function alias(data,callback){
-  //callback(null);
-//}
-//exports.alias = alias;
-//===============================================
-// TESTING AREA
-//===============================================
+module.exports.addPMContact = addPMContact;
+module.exports.removePMContact = removePMContact;
+module.exports.listPMContact = listPMContact;
+module.exports.sentPrivateMessage = sentPrivateMessage;

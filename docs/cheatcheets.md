@@ -1,14 +1,46 @@
 # CHEAT SHEETS
 
 ```javascript
+localStorage.clear();
+
+var gun = Gun();
+
+let user = gun.user();
+
+user.create('alias', 'pass', (ack)=>{
+  //console.log(ack);
+  
+  user.auth('alias', 'pass', (ack)=>{
+    //console.log(ack);
+    devUser();
+  },{})
+},{})
+
+async function devUser(){
+  //console.log('test');
+  let user = gun.user();
+  let own = await user.then();
+  console.log(own);
+  
+  let data = await gun.get('~'+own.pub).then();
+  console.log(data);
+  
+  data = await gun.get('~'+'alias').then();
+  console.log(data);
+  
+  data = await gun.get('~@'+'alias').then();
+  console.log(data);
+}
+
+
+```
+
+```javascript
 // https://www.codementor.io/@manashkumarchakrobortty/authentication-and-authorization-in-node-js-19brdvhsyw
 authentication
 authorization
 auth-token?
 ```
-
-
-
 Links:
  * https://www.npmjs.com/package/pouchdb-adapter-hyperbee
 

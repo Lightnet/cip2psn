@@ -50,6 +50,8 @@ require('./src/server/fastifty_server'); // ok // out date session package
 //===============================================
 // Simple Tests
 
+//require('./tests/seasalt');
+
 //require('./tests/expressuploadserver');
 //require('./tests/httpupload01');
 //require('./tests/httpupload02');
