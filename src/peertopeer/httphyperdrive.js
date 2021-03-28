@@ -17,7 +17,7 @@ Note: not to used it
 const http = require('http');
 
 const { Client: HyperspaceClient } = require('hyperspace');
-const huperdrive = require('hyperdrive');
+const hyperdrive = require('hyperdrive');
 
 //36.16
 
@@ -26,7 +26,7 @@ async function main(keyStr){
 
   const client = new HyperspaceClient();
   
-  const drive= huperdrive(client.corestore(), key);
+  const drive= hyperdrive(client.corestore(), key);
    
   //await drive.promises.ready();
   //console.log(await drive.promises.readdir('/'));

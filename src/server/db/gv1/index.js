@@ -35,6 +35,15 @@ function init(){
   if(!gun){
     console.log("NEW DATABASE GUN...");
     gun = Gun(gunoptions);
+    //gun.get({'.':{'*': '#'}}).once(ack=>{
+      //console.log('//////////////////');
+      //console.log(ack);
+    //})
+
+    //gun.get('!').once(ack=>{
+      //console.log('//////////////////');
+      //console.log(ack);
+    //})
   }else{
     console.log("REUSED DATABASE GUN...");
   }
@@ -96,9 +105,11 @@ const {
   , removePMContact
   , listPMContact
   , sentPrivateMessage
+  , getPrivateMessageList
 }=require('./db_message');
 
 module.exports.addPMContact = addPMContact;
 module.exports.removePMContact = removePMContact;
 module.exports.listPMContact = listPMContact;
 module.exports.sentPrivateMessage = sentPrivateMessage;
+module.exports.getPrivateMessageList = getPrivateMessageList;

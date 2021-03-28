@@ -89,3 +89,17 @@ pub: 'XbH-D5W_6xm9uNN4YMfVYZ9D_QQbB3bJNlUi1NrHRCM.rxRYlYBcduYyTqRwCDwuwOx6zLearg
   SEA.work('pass',(act.auth = auth).s, act.d, act.enc);
 
 }
+
+//gun.get('test').get('data').get('pu1321').put({pub:'test1'})
+//gun.get('test').get('data').get('pu21234').put({pub:'test2'})
+//gun.get('test').get('data').get('pu3234').put({pub:'test3'})
+
+gun.get('test').get('data').once().map().once((data,key)=>{
+  //console.log(data);
+  //console.log(key);
+});
+
+gun.get('test').get('data').once((data,key)=>{
+  console.log(data);
+  console.log(key);
+});

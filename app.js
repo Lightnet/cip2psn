@@ -50,6 +50,8 @@ require('./src/server/fastifty_server'); // ok // out date session package
 //===============================================
 // Simple Tests
 
+//require('./tests/hyperdriveb01');
+
 //require('./tests/seasalt');
 
 //require('./tests/expressuploadserver');
@@ -78,3 +80,6 @@ require('./src/server/fastifty_server'); // ok // out date session package
 //require('./src/tests/hypercorepouchdb01');
 //require('./src/tests/hypercorepouchdb02');
 //require('./src/tests/hyperbeelocalstorage');
+
+const { timeStamp } =require('./src/server/model/utilities');
+console.log(timeStamp());

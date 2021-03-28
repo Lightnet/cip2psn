@@ -123,18 +123,16 @@ async function routes (fastify, options, done) {
           , msg:data
           , date:DateToTime()
         });
-
         //socket.local.emit('chatmessage',data);
       });
-
       //console.info('Socket connected!', socket.id);
     });
   });
 
-  fastify.get('/emitserver', async function (request, reply) {
+  //fastify.get('/emitserver', async function (request, reply) {
     //fastify.io.emit('server','test');
-    reply.send('socket.io test!');
-  });
+    //reply.send('socket.io test!');
+  //});
 
   // https://github.com/fastify/fastify/blob/master/docs/Middleware.md
   // https://www.fastify.io/docs/latest/Decorators/
@@ -303,7 +301,6 @@ async function routes (fastify, options, done) {
       reply.clearCookie('token',{
         signed: true
       });
-
       //reply.redirect('/');
       //reply.redirect(302,'/');
       reply.send(`<html><body>[ FAIL ] <a href="/">Home</a></body></html>`);
@@ -325,10 +322,12 @@ async function routes (fastify, options, done) {
   fastify.register(require('./route_alias')); // 
   fastify.register(require('./route_chatmessage')); // 
   fastify.register(require('./route_privatemessage')); // 
-  //fastify.register(require('./route_community')); // 
-  //fastify.register(require('./route_mod')); // 
-  //fastify.register(require('./route_admin')); // 
-  //fastify.register(require('./route_ticket')); //
+  fastify.register(require('./route_rpg')); //
+  fastify.register(require('./route_note')); //
+  fastify.register(require('./route_community')); //
+  fastify.register(require('./route_mod')); // 
+  fastify.register(require('./route_admin')); // 
+  fastify.register(require('./route_ticket')); //
   //fastify.register(require('./route_blank')); // 
   // FINISH
   done();

@@ -18,6 +18,16 @@ var divPrivateMessagePanel=el('div',{
 var navMenuHome=el('a',{href:'/',textContent:'Home'});
 var navMenuLout=el('a',{href:'/logout',textContent:'Logout'});
 var btnGetContactList=el('button',{onclick:btnGetContacts,textContent:'Get Contacts'});
+var btnGetPMList=el('button',{onclick:getPrivateMessageList,textContent:'Get Messages'});
+var divMessages=el('div',{
+  id:'messages',
+  style:{
+    height:'200px'
+    , width:'200px'
+    , 'overflow-y':'scroll'
+    , 'border-style':'solid'
+  }
+})
 
 var div_panel=el("div",[
   navMenuHome,
@@ -33,9 +43,11 @@ var div_panel=el("div",[
   el('label',{textContent:'Status:'}),
   el('label',{textContent:'None'}),
   el('span',' - | - '),
-  navMenuLout,
-  divPrivateMessagePanel,
-  btnGetContactList
+  navMenuLout
+  ,divPrivateMessagePanel
+  ,btnGetContactList
+  ,btnGetPMList
+  , divMessages
 ]);
 mount(document.body, div_panel);
 // https://www.w3.org/TR/clipboard-apis/#async-clipboard-api
@@ -70,9 +82,13 @@ function btnGetContacts(){
   .then(data => {
     console.log(data);
     if(data){
-      if(data.alias){
-        let option = el('option',{id:data.pub,value:data.pub},data.alias);
-        $('#pmcontacts').append(option);
+      if(data.list){
+        let list = data.list;
+        for(let i in list){
+          console.log(list[i]);
+          let option = el('option',{id:list[i].pub,value:list[i].pub},list[i].alias);
+          $('#pmcontacts').append(option);
+        }
       }
     }
   });
@@ -82,7 +98,9 @@ btnGetContacts();
 function selectPMPublicKey(){
   console.log('select?');
   console.log($('#pmcontacts').val());
-  $('#pmpublickey').val($('#pmcontacts').val())
+  if($('#pmcontacts').val() != 'Select PM Contacts'){
+    $('#pmpublickey').val($('#pmcontacts').val());
+  }
 }
 
 function typingMessage(event){
@@ -98,10 +116,25 @@ function btnSend(){
   console.log('blank');
   processMessage();
 }
+
 function processMessage(){
   console.log($('#pminput').val());
-}
+  let msg = ($('#pminput').val() || '').trim();
+  console.log(msg);
+  if(!msg){
+    console.log('EMPTY!');
+    return;
+  }
 
+  fetch('/privatemessage',{
+    method: 'POST',
+    credentials: 'same-origin', // include, *same-origin, omit
+    body: JSON.stringify({pub:$('#pmpublickey').val(),msg:msg})
+  })
+  .then(response => response.json())
+  .then(data => console.log(data));
+}
+// RBY-QnjrJFHLchvfCWCpr8_EDk48ALcwJK0DEkKH-Vo.Eo6h9qTq646XvWPvqEgHCZNutEUDiquFsFARwP7UWfA
 function addContact(){
   console.log($('#pmpublickey').val())
 
@@ -115,5 +148,48 @@ function addContact(){
 }
 
 function removeContact(){
-  
+  console.log($('#pmpublickey').val())
+
+  fetch('/privatemessage/removecontact',{
+    method: 'POST',
+    credentials: 'same-origin', // include, *same-origin, omit
+    body: JSON.stringify({pub:$('#pmpublickey').val()})
+  })
+  .then(response => response.json())
+  .then(data => console.log(data));
 }
+
+function getPrivateMessageList(){
+  console.log($('#pminput').val());
+  divMessages.textContent = '';
+  let msg = ($('#pminput').val() || '').trim();
+  console.log(msg);
+  if(!msg){
+    console.log('EMPTY!');
+    return;
+  }
+
+  fetch('/privatemessage/list',{
+    method: 'POST',
+    credentials: 'same-origin', // include, *same-origin, omit
+    body: JSON.stringify({pub:$('#pmpublickey').val()})
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    if(data.ok){
+      let list = data.list;
+      for(let i in list){
+        
+        let msg = el('div',{id:list[i].id,textContent:list[i].msg});
+        //msg
+        divMessages.append(msg);
+        var element = document.getElementById('messages');
+        //var element = document.divMessages;
+        element.scrollTop = element.scrollHeight - element.clientHeight;
+      }
+    }
+  });
+}
+
+

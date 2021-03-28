@@ -38,3 +38,25 @@ function listPMContactSync(args){
   });
 }
 module.exports.listPMContactSync=listPMContactSync;
+
+function sentPrivateMessageSync(args){
+  //console.log(db);
+  return new Promise(resolve => {
+    db.sentPrivateMessage(args,(data)=>{
+      resolve(data);
+    });
+    //resolve(null);
+  });
+}
+module.exports.sentPrivateMessageSync=sentPrivateMessageSync;
+
+function getPrivateMessageListSync(args){
+  //console.log(db);
+  return new Promise(resolve => {
+    db.getPrivateMessageList(args,(data)=>{
+      resolve(data);
+    });
+    //resolve(null);
+  });
+}
+module.exports.getPrivateMessageListSync=getPrivateMessageListSync;

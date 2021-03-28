@@ -6,7 +6,16 @@
 // https://www.sitepoint.com/css-theming-custom-properties-javascript/
 // https://blog.logrocket.com/a-guide-to-theming-in-css/
 // https://danklammer.com/articles/simple-css-toggle-switch/
-const { el,setStyle,setAttr, mount } = redom;
+
+// https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_alerts
+// 
+// 
+// 
+// 
+// 
+// 
+
+const { el,setStyle,setAttr, mount,unmount,text } = redom;
 
 var htmlstyle=el("style",{textContent:`
 /*
@@ -40,6 +49,36 @@ button {
   #padding: 10px 20px;
   border: 0;
   #border-radius: 5px;
+}
+
+/* alert */
+.alert {
+  padding: 8px;
+  background-color: #f44336;
+  color: white;
+  opacity: 1;
+  transition: opacity 0.6s;
+  display:block;
+  height:32px;
+}
+
+.alert.success {background-color: #4CAF50;}
+.alert.info {background-color: #2196F3;}
+.alert.warning {background-color: #ff9800;}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
 }
 
 /* toggle swtich */
@@ -109,7 +148,6 @@ button {
   background-color: #2196F3;
   color: #fff;
 }
-
 
 `});
 mount(document.head, htmlstyle);
@@ -203,12 +241,11 @@ btn_dark.addEventListener('click',function(){
   setTheme('theme-dark');
 });
 
-
 var DivNavBarTop =el("div",{
   style:{
     position:'fixed'
-    ,top:0
-    ,width:'100%'
+    ,top:'32px'
+    //,width:'100%'
   }}
   //,textContent:"NAVBARTOP"
   ,[
@@ -217,9 +254,7 @@ var DivNavBarTop =el("div",{
   ]
   );
 mount(document.body, DivNavBarTop);
-
 var btn_test01=el("button","Test");
-
 var switch_test01=el("input",{
   textContent:""
   ,type:'checkbox'
@@ -227,15 +262,9 @@ var switch_test01=el("input",{
   ,class:'toggle'
   ,onclick:toggleTheme()
 });
-
 var intput_test01=el("input",{
   textContent:""
-  //,type:'checkbox'
-  //,id:'switch'
-  //,class:'toggle'
-  //,onclick:toggleTheme()
 });
-
 var DivContent =el("div",{
   style:{
     position:'fixed'
@@ -253,14 +282,56 @@ var DivContent =el("div",{
 mount(document.body, DivContent);
 
 // https://www.w3schools.com/howto/howto_js_draggable.asp
-var mydiv=el('div',{id:'mydiv'},[
+// PANEL DRAG
+/*
+var mydiv=el('div',{id:'mydiv',style:{
+  position:'fixed'
+    ,top:'48px'
+    //,width:'100%'
+}},[
   el('div',{id:'mydivheader'},{textContent:'Click to move'}),
   el('p','move'),
   el('p','this'),
   el('p','DIV')
 ]);
-
 mount(document.body, mydiv);
-
 //Make the DIV element draggagle:
 dragElement(document.getElementById("mydiv"));
+*/
+
+//ALERT NOTIFY
+let btnAlertEl=el('button',{textContent:'Alert',onclick:btnAlertTest});
+mount(document.body, btnAlertEl);
+// notifyEl
+var notifyEl=el('div',{id:'notify',style:{
+  position:'fixed'
+  ,'vertical-align':'bottom'
+  ,top:'4px'
+  ,right: '4px'
+  ,'z-index': '999999999 !important'
+}})
+mount(document.body, notifyEl);
+// https://stackoverflow.com/questions/16834320/using-times-word-in-html-changes-to-%C3%97
+// &times;
+// https://www.toptal.com/designers/htmlarrows/math/multiplication-sign/
+// https://www.w3schools.com/charsets/ref_html_entities_4.asp
+// https://stackoverflow.com/questions/44811451/css-alerts-not-on-top
+function btnAlertTest(){
+  var divAlert = el('div',{class:'alert'},[
+    el('span',{class:'closebtn',onclick:btnCloseAlert,textContent:"X"},text('')),
+    el('strong',{textContent:'Danger!'})
+  ]);
+  mount(notifyEl, divAlert);
+}
+function btnCloseAlert(){
+  //var div = this.parentElement.parentElement;
+  var div = this.parentElement;
+  var divalert = this.parentElement;
+  divalert.style.opacity = "0";
+  //this.parentElement.style.display='none';
+  setTimeout(function(){
+     div.style.display = "none"; 
+     //unmount(document.body, div);
+     unmount(notifyEl, div);
+  }, 600);
+}
