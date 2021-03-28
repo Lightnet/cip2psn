@@ -31,30 +31,59 @@ html, body {
 }
 
 .theme-light {
-  --color-primary: #0060df;
-  --color-secondary: #fbfbfe;
-  --color-accent: #fd6f53;
+  --color-dark:#808080;
+  --color-primary: #999999;
+  --color-secondary: #d9d9d9;
+  --color-accent: #f2f2f2;
   --font-color: #000000;
+
+  --color-alert:#f44336;
+  --color-success:#4CAF50;
+  --color-info:#2196F3;
+  --color-warning:#ff9800;
 }
 .theme-dark {
-  --color-primary: #17ed90;
-  --color-secondary: #243133;
-  --color-accent: #12cdea;
+  --color-dark: #000000;
+  --color-primary: #595959;
+  --color-secondary: #999999;
+  --color-accent: #cccccc;
   --font-color: #ffffff;
+
+  --color-alert:#800000;
+  --color-success:#008000;
+  --color-info:#33334d;
+  --color-warning:#804d00;
 }
 
 button {
   color: var(--font-color);
-  background: var(--color-primary);
+  background: var(--color-dark);
   #padding: 10px 20px;
+  padding: 8px 8px;
   border: 0;
   #border-radius: 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  /*border: 2px solid #4CAF50;*/ /* Green */
 }
+
+button.primary{background-color: var(--color-primary);}
+button.secondary{background-color: var(--color-secondary);}
+button.accent{background-color: var(--color-accent);}
+
+button.alert{background-color: var(--color-alert);}
+button.success{background-color: var(--color-success);}
+button.info{background-color: var(--color-info);}
+button.warning{background-color: var(--color-warning);}
+
 
 /* alert */
 .alert {
   padding: 8px;
-  background-color: #f44336;
+  /*background-color: #f44336;*/
+  background-color: var(--color-alert);
   color: white;
   opacity: 1;
   transition: opacity 0.6s;
@@ -62,9 +91,15 @@ button {
   height:32px;
 }
 
+.alert.success {background-color: var(--color-success);}
+.alert.info {background-color: var(--color-info);}
+.alert.warning {background-color: var(--color-warning);}
+
+/*
 .alert.success {background-color: #4CAF50;}
 .alert.info {background-color: #2196F3;}
 .alert.warning {background-color: #ff9800;}
+*/
 
 .closebtn {
   margin-left: 15px;
@@ -91,12 +126,13 @@ button {
   height: 32px;
   display: inline-block;
   position: relative;
+  bottom:-14px;
   border-radius: 50px;
   overflow: hidden;
   outline: none;
   border: none;
   cursor: pointer;
-  background-color: #707070;
+  background-color: var(--color-dark);
   transition: background-color ease 0.3s;
 }
 
@@ -124,7 +160,7 @@ button {
 }
 
 .toggle:checked {
-  background-color: #4CD964;
+  background-color: var(--color-success);
 }
 
 .toggle:checked:before {
@@ -208,20 +244,22 @@ function setTheme(themeName) {
 // function to toggle between light and dark theme
 function toggleTheme() {
   if (localStorage.getItem('theme') === 'theme-dark') {
-      setTheme('theme-light');
+    setTheme('theme-light');
   } else {
-      setTheme('theme-dark');
+    setTheme('theme-dark');
   }
 }
 
 // Immediately invoked function to set the theme on initial load
 (function () {
   if (localStorage.getItem('theme') === 'theme-dark') {
-      setTheme('theme-dark');
+    setTheme('theme-dark');
   } else {
-      setTheme('theme-light');
+    setTheme('theme-light');
   }
 })();
+//setTheme('theme-light');
+
 //===============================================
 // Nav Bar Top
 //===============================================
@@ -241,45 +279,17 @@ btn_dark.addEventListener('click',function(){
   setTheme('theme-dark');
 });
 
-var DivNavBarTop =el("div",{
-  style:{
-    position:'fixed'
-    ,top:'32px'
-    //,width:'100%'
-  }}
-  //,textContent:"NAVBARTOP"
-  ,[
-    btn_light
-    ,btn_dark
-  ]
-  );
-mount(document.body, DivNavBarTop);
 var btn_test01=el("button","Test");
 var switch_test01=el("input",{
   textContent:""
   ,type:'checkbox'
   ,id:'switch'
   ,class:'toggle'
-  ,onclick:toggleTheme()
+  //,onclick:toggleTheme()
 });
 var intput_test01=el("input",{
-  textContent:""
+  textContent:"test text"
 });
-var DivContent =el("div",{
-  style:{
-    position:'fixed'
-    ,top:'48px'
-    ,width:'100%'
-  }}
-  ,
-  [
-    btn_test01
-    ,switch_test01
-    ,intput_test01
-  ]
-);
-
-mount(document.body, DivContent);
 
 // https://www.w3schools.com/howto/howto_js_draggable.asp
 // PANEL DRAG
@@ -300,8 +310,8 @@ dragElement(document.getElementById("mydiv"));
 */
 
 //ALERT NOTIFY
-let btnAlertEl=el('button',{textContent:'Alert',onclick:btnAlertTest});
-mount(document.body, btnAlertEl);
+//let btnAlertEl=el('button',{textContent:'Alert',onclick:btnAlertWarn});
+//mount(document.body, btnAlertEl);
 // notifyEl
 var notifyEl=el('div',{id:'notify',style:{
   position:'fixed'
@@ -316,13 +326,68 @@ mount(document.body, notifyEl);
 // https://www.toptal.com/designers/htmlarrows/math/multiplication-sign/
 // https://www.w3schools.com/charsets/ref_html_entities_4.asp
 // https://stackoverflow.com/questions/44811451/css-alerts-not-on-top
-function btnAlertTest(){
-  var divAlert = el('div',{class:'alert'},[
+
+
+function btnAlert(){
+  AlertNotify({
+    msg:'Hello world!'
+  });
+}
+
+function btnAlertWarn(){
+  AlertNotify({
+    type:'warn'
+    , msg:'Hello world!'
+  });
+}
+function btnAlertSuccess(){
+  AlertNotify({
+    type:'success'
+    , msg:'Hello world!'
+  });
+}
+
+function btnAlertInfo(){
+  AlertNotify({
+    type:'info'
+    , msg:'Hello world!'
+  });
+}
+// NOTIFY ALERT
+function AlertNotify(arg){
+  let classname = '';
+  let msgicon='Danger!';
+  let msg=arg.msg || "None";
+  if(!arg){
+    arg={};
+    classname='alert';
+    msgicon='Danger!';
+    msg='alert';
+  }
+  if(!arg.type){
+    classname='alert';
+    msgicon="Error!"
+  }
+  if(arg.type=='info'){
+    classname='alert info';
+    msgicon="Info!"
+  }
+  if(arg.type=='success'){
+    classname='alert success';
+    msgicon="Success!"
+  }
+  if((arg.type=='warn') ||(arg.type=='warning')){
+    classname='alert warning';
+    msgicon="Warn!"
+  }
+
+  let divAlert = el('div',{class:classname},[
     el('span',{class:'closebtn',onclick:btnCloseAlert,textContent:"X"},text('')),
-    el('strong',{textContent:'Danger!'})
+    el('strong',{textContent:msgicon},text(msg))
   ]);
   mount(notifyEl, divAlert);
 }
+
 function btnCloseAlert(){
   //var div = this.parentElement.parentElement;
   var div = this.parentElement;
@@ -335,3 +400,37 @@ function btnCloseAlert(){
      unmount(notifyEl, div);
   }, 600);
 }
+
+var DivNavBarTop =el("div",{
+  style:{
+    position:'fixed'
+    ,top:'64px'
+    ,left:'64px'
+    //,width:'100%'
+  }}
+  //,textContent:"NAVBARTOP"
+  ,[
+    btn_light
+    ,btn_dark
+    ,el('br')
+    ,btn_test01
+    ,el('br')
+    ,el('button',{class:'',textContent:'normal'})
+    ,switch_test01
+    ,intput_test01
+    ,el('button',{class:'',textContent:'normal'})
+    ,el('br')
+    ,el('br')
+    ,el('button',{class:'alert',textContent:'Alert Normal',onclick:btnAlert})
+    ,el('button',{class:'warning',textContent:'Alert Warn',onclick:btnAlertWarn})
+    ,el('button',{class:'success',textContent:'Alert Success',onclick:btnAlertSuccess})
+    ,el('button',{class:'info',textContent:'Alert Info',onclick:btnAlertInfo})
+
+    ,el('br')
+    ,el('button',{class:'',textContent:'normal'})
+    ,el('button',{class:'primary',textContent:'primary'})
+    ,el('button',{class:'secondary',textContent:'secondary'})
+    ,el('button',{class:'accent',textContent:'accent'})
+  ]
+  );
+mount(document.body, DivNavBarTop);
