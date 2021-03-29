@@ -15,7 +15,8 @@
 // 
 // 
 
-const { el,setStyle,setAttr, mount,unmount,text } = redom;
+const { el,setStyle,setAttr, mount,unmount,text,html } = redom;
+console.log(redom);
 
 var htmlstyle=el("style",{textContent:`
 /*
@@ -78,28 +79,21 @@ button.success{background-color: var(--color-success);}
 button.info{background-color: var(--color-info);}
 button.warning{background-color: var(--color-warning);}
 
-
 /* alert */
 .alert {
   padding: 8px;
-  /*background-color: #f44336;*/
   background-color: var(--color-alert);
   color: white;
   opacity: 1;
   transition: opacity 0.6s;
-  display:block;
-  height:32px;
+  /*display:block;*/
+  display: inline-block;
+  float:right;
 }
 
 .alert.success {background-color: var(--color-success);}
 .alert.info {background-color: var(--color-info);}
 .alert.warning {background-color: var(--color-warning);}
-
-/*
-.alert.success {background-color: #4CAF50;}
-.alert.info {background-color: #2196F3;}
-.alert.warning {background-color: #ff9800;}
-*/
 
 .closebtn {
   margin-left: 15px;
@@ -110,6 +104,7 @@ button.warning{background-color: var(--color-warning);}
   line-height: 20px;
   cursor: pointer;
   transition: 0.3s;
+  /*z-index:-10;*/
 }
 
 .closebtn:hover {
@@ -187,10 +182,8 @@ button.warning{background-color: var(--color-warning);}
 
 `});
 mount(document.head, htmlstyle);
-
 // Make the DIV element draggable:
 //dragElement(document.getElementById("mydiv"));
-
 function dragElement(elmnt) {
   var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
   if (document.getElementById(elmnt.id + "header")) {
@@ -231,7 +224,6 @@ function dragElement(elmnt) {
     document.onmousemove = null;
   }
 }
-
 //===============================================
 // Theme
 //===============================================
@@ -240,7 +232,6 @@ function setTheme(themeName) {
   localStorage.setItem('theme', themeName);
   document.documentElement.className = themeName;
 }
-
 // function to toggle between light and dark theme
 function toggleTheme() {
   if (localStorage.getItem('theme') === 'theme-dark') {
@@ -249,7 +240,6 @@ function toggleTheme() {
     setTheme('theme-dark');
   }
 }
-
 // Immediately invoked function to set the theme on initial load
 (function () {
   if (localStorage.getItem('theme') === 'theme-dark') {
@@ -259,27 +249,22 @@ function toggleTheme() {
   }
 })();
 //setTheme('theme-light');
-
 //===============================================
 // Nav Bar Top
 //===============================================
 // https://redom.js.org/#update-elements
-
+// THEME BUTTON
 var btn_light=el("button","Light");
-
 var btn_dark=el("button","Dark");
-
 btn_light.addEventListener('click',function(){
   console.log('Light theme...');
   setTheme('theme-light');
 });
-
 btn_dark.addEventListener('click',function(){
   console.log('Dark theme...');
   setTheme('theme-dark');
 });
-
-var btn_test01=el("button","Test");
+//INPUT
 var switch_test01=el("input",{
   textContent:""
   ,type:'checkbox'
@@ -315,11 +300,17 @@ dragElement(document.getElementById("mydiv"));
 // notifyEl
 var notifyEl=el('div',{id:'notify',style:{
   position:'fixed'
-  ,'vertical-align':'bottom'
+  //,width:'512px'
+  //, width:'none'
+  //, display:'inline-block'
+  , display: 'flex'
+  , 'flex-direction':'column'
+  //,'vertical-align':'bottom'
   ,top:'4px'
   ,right: '4px'
-  ,'z-index': '999999999 !important'
+  //,'z-index': '999999999 !important'
 }})
+
 mount(document.body, notifyEl);
 // https://stackoverflow.com/questions/16834320/using-times-word-in-html-changes-to-%C3%97
 // &times;
@@ -327,17 +318,16 @@ mount(document.body, notifyEl);
 // https://www.w3schools.com/charsets/ref_html_entities_4.asp
 // https://stackoverflow.com/questions/44811451/css-alerts-not-on-top
 
-
+//TEST ALERT
 function btnAlert(){
   AlertNotify({
     msg:'Hello world!'
   });
 }
-
 function btnAlertWarn(){
   AlertNotify({
     type:'warn'
-    , msg:'Hello world!'
+    , msg:'Hello world! asda sda asd asd ad sd fsd fs fsd fsdf sdf sdf sdf sdf sdf da sda asd asd ad sd fsd fs fsd fsdf sdf sdda sda asd asd ad sd fsd fs fsd fsdf sdf sdda sda asd asd ad sd fsd fs fsd fsdf sdf sd'
   });
 }
 function btnAlertSuccess(){
@@ -346,7 +336,6 @@ function btnAlertSuccess(){
     , msg:'Hello world!'
   });
 }
-
 function btnAlertInfo(){
   AlertNotify({
     type:'info'
@@ -358,6 +347,7 @@ function AlertNotify(arg){
   let classname = '';
   let msgicon='Danger!';
   let msg=arg.msg || "None";
+  let isAutoClose=arg.isAutoClose || true;
   if(!arg){
     arg={};
     classname='alert';
@@ -381,16 +371,43 @@ function AlertNotify(arg){
     msgicon="Warn!"
   }
 
+  //let time=  $('<span>&times;</span>');
+  //time.html("&times;");
+  //let btnCloseEl = el('span',{class:'closebtn',onclick:btnCloseAlert});
+  //btnCloseEl.innerHTML ='&times;';
+
   let divAlert = el('div',{class:classname},[
-    el('span',{class:'closebtn',onclick:btnCloseAlert,textContent:"X"},text('')),
-    el('strong',{textContent:msgicon},text(msg))
+    //el('span',{class:'closebtn',onclick:btnCloseAlert,textContent:""},time),
+    el('span',{class:'closebtn',onclick:btnCloseAlert,innerHTML:"&times;"})
+    //, el('div',{style:{
+      //width:'200px'
+      //position:'relative'
+      //, bottom:'-4px'
+    //}},[
+      , el('strong',{textContent:msgicon})
+      , el('span',{innerHTML:"&nbsp;"})
+      , text(msg)
+    //]),
+    //el('span',{class:'closebtn',onclick:btnCloseAlert,innerHTML:"&times;"})
   ]);
-  mount(notifyEl, divAlert);
+
+  var divSpace=el('div',divAlert)
+  //mount(notifyEl, divAlert);
+  mount(notifyEl, divSpace);
+  if(isAutoClose){
+    setTimeout(()=>{
+      divAlert.style.opacity = "0";
+      setTimeout(()=>{
+      //unmount(notifyEl, divAlert);
+      unmount(notifyEl, divSpace);
+      },2000);
+    },3000);
+  }
 }
 
 function btnCloseAlert(){
-  //var div = this.parentElement.parentElement;
-  var div = this.parentElement;
+  var div = this.parentElement.parentElement;
+  //var div = this.parentElement;
   var divalert = this.parentElement;
   divalert.style.opacity = "0";
   //this.parentElement.style.display='none';
@@ -401,7 +418,37 @@ function btnCloseAlert(){
   }, 600);
 }
 
-var DivNavBarTop =el("div",{
+//MODEL
+var divModel=el('div',{id:'divModel',style:{
+  position:'absolute'
+  , left:'50%'
+  , top:'50%'
+  , width:'200px'
+}},[
+  el('div',{id:'divheader',
+  style:{'border-style':'solid','border-width': '1px'}}
+  ,{textContent:'[MODEL]'}),
+  el('div',{style:{'border-style':'solid','border-width': '1px'}},[
+    text('Hello World!')
+    , el('br')
+    , el('button',{class:'primary',textContent:'Okay',
+      style:{
+        //'text-align': 'center'
+        'display': 'block'
+        , 'margin-left': 'auto'
+        , 'margin-right': 'auto'
+        //, 'left':'50%'
+      }
+    })
+  ]),
+])
+mount(document.body, divModel);
+
+
+
+
+// TEST CONTENT
+var DivNavBarTop=el("div",{
   style:{
     position:'fixed'
     ,top:'64px'
@@ -413,13 +460,10 @@ var DivNavBarTop =el("div",{
     btn_light
     ,btn_dark
     ,el('br')
-    ,btn_test01
-    ,el('br')
     ,el('button',{class:'',textContent:'normal'})
     ,switch_test01
     ,intput_test01
     ,el('button',{class:'',textContent:'normal'})
-    ,el('br')
     ,el('br')
     ,el('button',{class:'alert',textContent:'Alert Normal',onclick:btnAlert})
     ,el('button',{class:'warning',textContent:'Alert Warn',onclick:btnAlertWarn})

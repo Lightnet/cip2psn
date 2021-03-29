@@ -1,5 +1,100 @@
 # CHEAT SHEETS
 
+
+
+
+
+
+
+
+
+
+
+
+
+```javascript
+//$(document.body).append('<div>hello</div>');    
+// or
+//$('<span>&time;</span>').appendTo(document.body);
+let time=  $('<span>&time;</span>');
+$(document.body).append(time);
+time.html("&uarr;");
+
+console.log('init');
+//console.log($);
+
+```
+
+stacking div
+
+https://jsfiddle.net/fq4g3t71/1/ working idea design
+
+https://jsfiddle.net/wdvuy02r/7/
+https://jsfiddle.net/k0fx384a/1/
+https://jsfiddle.net/wdvuy02r/6/
+
+```html
+<div class="contain">
+  <div >
+    <div class="box">
+      hello world
+    </div>
+  </div>
+  <div>
+    <div class="box">
+      hello world asd as da 
+      hello world asd as da hello world asd as da hello world asd as da hello world asd as da 
+    </div>
+  </div>
+  
+  <div>
+    <div class="box">
+      hello world
+    </div>
+  </div>
+  
+</div>
+```
+
+
+
+
+```css
+div{
+  border-style:solid;
+  border-width:1px;
+}
+
+.contain{
+  display: flex;
+  flex-direction:column;
+  position:absolute;
+  right:0px;
+  top:0px;
+}
+
+.box{
+  display:inline-block;
+  float:right;
+}
+
+```
+
+
+
+
+
+
+```css
+#center
+textarea {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+#pointer-events: none;
+```
+
 ```javascript
 localStorage.clear();
 
